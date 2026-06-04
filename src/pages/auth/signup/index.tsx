@@ -25,9 +25,11 @@ export default function SignupPage() {
 	const navigate = useNavigate()
 	const { setAuth } = useAuthStore()
 
-	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignupForm>({
+	const { register, handleSubmit, formState } = useForm<SignupForm>({
 		resolver: zodResolver(signupSchema),
 	})
+	const errors = formState.errors;
+	const isSubmitting = formState.isSubmitting;
 
 	const onSubmit = async (data: SignupForm) => {
 		try {

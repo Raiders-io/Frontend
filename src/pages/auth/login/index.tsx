@@ -20,9 +20,11 @@ export default function LoginPage() {
 	const navigate = useNavigate()
 	const { setAuth } = useAuthStore()
 
-	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>({
+	const { register, handleSubmit, formState } = useForm<LoginForm>({
 		resolver: zodResolver(loginSchema),
 	})
+	const errors = formState.errors;
+	const isSubmitting = formState.isSubmitting;
 
 	const onSubmit = async (data: LoginForm) => {
 		try {
