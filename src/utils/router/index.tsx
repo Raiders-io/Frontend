@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import LoginPage from '@/pages/auth/login'
 import SignupPage from '@/pages/auth/signup'
 import HomePage from '@/pages/home'
+import ChatPage from '@/pages/services/chat/chat_page'
 import ProtectedRoute from '@/utils/router/protected_route'
 import LessonPage from '@/pages/lesson/lesson_home_page'
 import LessonHomePage from '@/pages/lesson/lesson_home_page'
@@ -35,5 +36,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/file/list',
 		element: <FileListPage />,
+	},
+	{
+		path: '/chat',
+		element: <ChatPage />,
 	},
 ])
