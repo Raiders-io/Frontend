@@ -1,5 +1,5 @@
 import api from '@/utils/lib/axios'
-import type { Lesson } from '@/utils/types/lesson'
+import type { Lesson, LessonSearchParams, PaginatedLessonsResponse, Tag } from '@/utils/types/lesson'
 
 export const lessonService = {
   getAllLessons: async (): Promise<Lesson[]> => {
@@ -9,12 +9,6 @@ export const lessonService = {
 
   getLessonBySlug: async (slug: string): Promise<Lesson> => {
     const { data } = await api.get<Lesson>(`/lessons/${slug}`)
-    return data
-  },
-  
-  getLessonsByTags: async (tags: string[]): Promise<Lesson[]> => {
-    const queryParams = tags.map((tag) => `tags=${encodeURIComponent(tag)}`).join('&')
-    const { data } = await api.get<Lesson[]>(`/lessons/by-tags?${queryParams}`)
     return data
   },
 
@@ -37,8 +31,18 @@ export const lessonService = {
     await api.delete(`/lessons/${id}`)
   },
 
-  searchLessons: async (query: string): Promise<Lesson[]> => {
-    const { data } = await api.get<Lesson[]>(`/search?query=${encodeURIComponent(query)}`)
+  searchLessons: async (params: LessonSearchParams = {}): Promise<PaginatedLessonsResponse> => {
+    const { data } = await api.get<PaginatedLessonsResponse>('/search', {
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
+    })
     return data
-  }
+  },
+
+  getAllTags: async (): Promise<Tag[]> => {
+    const { data } = await api.get<Tag[]>('/lessons/tags')
+    return data
+  },
 }
