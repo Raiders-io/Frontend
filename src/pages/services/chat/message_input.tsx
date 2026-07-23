@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { ArrowUp } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -12,13 +13,16 @@ type FormValues = z.infer<typeof schema>
 
 interface MessageInputProps {
 	onSend: (content: string) => void
+	placeholder?: string
 }
 
-export function MessageInput({ onSend }: MessageInputProps) {
-	const { register, handleSubmit, reset, formState } = useForm<FormValues>({
+export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: MessageInputProps) {
+	const { register, handleSubmit, reset, watch } = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: { content: '' },
 	})
+
+	const canSend = watch('content').trim().length > 0
 
 	const submit = handleSubmit(({ content }) => {
 		onSend(content)
@@ -26,11 +30,24 @@ export function MessageInput({ onSend }: MessageInputProps) {
 	})
 
 	return (
-		<form onSubmit={submit} className="flex gap-2 border-t p-3">
-			<Input {...register('content')} placeholder="Écrire un message…" autoComplete="off" />
-			<Button type="submit" disabled={formState.isSubmitting}>
-				Envoyer
-			</Button>
+		<form onSubmit={submit} className="shrink-0 border-t p-4">
+			<div className="flex items-center gap-2">
+				<Input
+					{...register('content')}
+					placeholder={placeholder}
+					autoComplete="off"
+					className="h-11 rounded-full border-transparent bg-muted px-5 focus-visible:border-input focus-visible:bg-background"
+				/>
+				<Button
+					type="submit"
+					size="icon"
+					disabled={!canSend}
+					className="size-11 shrink-0 rounded-full transition-opacity disabled:opacity-30"
+				>
+					<ArrowUp className="size-4" strokeWidth={2.5} />
+					<span className="sr-only">Envoyer</span>
+				</Button>
+			</div>
 		</form>
 	)
 }

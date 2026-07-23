@@ -1,13 +1,15 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate, Link } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { authService } from '@/services/auth_service'
 import { useAuthStore } from '@/utils/stores/auth_store'
+import { AuthLayout } from '@/pages/auth/auth_layout'
 
 const loginSchema = z.object({
 	email: z.string().email('Email invalide'),
@@ -19,66 +21,89 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
 	const navigate = useNavigate()
 	const { setAuth } = useAuthStore()
+	const [formError, setFormError] = useState<string | null>(null)
 
 	const { register, handleSubmit, formState } = useForm<LoginForm>({
 		resolver: zodResolver(loginSchema),
 	})
-	const errors = formState.errors;
-	const isSubmitting = formState.isSubmitting;
+	const { errors, isSubmitting } = formState
 
 	const onSubmit = async (data: LoginForm) => {
+		setFormError(null)
 		try {
 			const response = await authService.login(data)
 			setAuth(response.data.user, response.data.token)
 			navigate('/')
 		} catch (error) {
 			console.error('Login error:', error)
+			setFormError(
+				isAxiosError(error) && error.response
+					? 'Email ou mot de passe incorrect.'
+					: 'Le serveur est injoignable. Réessaie dans un instant.',
+			)
 		}
 	}
 
 	return (
-		<div>
-			<Card>
-				<CardHeader>
-					<CardTitle>Connexion</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<div>
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								type="email"
-								placeholder="example@gmail.com"
-								{...register('email')}
-							/>
-							{errors.email && (
-								<p>{errors.email.message}</p>
-							)}
-						</div>
-						<div>
-							<Label htmlFor="password">Mot de passe</Label>
-							<Input
-								id="password"
-								type="password"
-								{...register('password')}
-							/>
-							{errors.password && (
-								<p>{errors.password.message}</p>
-							)}
-						</div>
-						<Button type="submit" disabled={isSubmitting}>
-							{isSubmitting ? 'Connexion...' : 'Se connecter'}
-						</Button>
-						<p>
-							Pas de compte ?
-							<Link to="/signup">
-								S'inscrire
-							</Link>
-						</p>
-					</form>
-				</CardContent>
-			</Card>
-		</div>
+		<AuthLayout
+			title="Connexion"
+			subtitle="Entre tes identifiants pour accéder à ton compte."
+			footer={
+				<>
+					Pas encore de compte ?{' '}
+					<Link
+						to="/signup"
+						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+					>
+						Créer un compte
+					</Link>
+				</>
+			}
+		>
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+				<div className="space-y-1.5">
+					<Label htmlFor="email" className="text-xs font-medium text-foreground">
+						Email
+					</Label>
+					<Input
+						id="email"
+						type="email"
+						placeholder="exemple@gmail.com"
+						autoComplete="email"
+						className="h-11 bg-background"
+						{...register('email')}
+					/>
+					<p className="min-h-4 text-xs leading-4 text-destructive">
+						{errors.email?.message}
+					</p>
+				</div>
+
+				<div className="space-y-1.5">
+					<Label htmlFor="password" className="text-xs font-medium text-foreground">
+						Mot de passe
+					</Label>
+					<Input
+						id="password"
+						type="password"
+						autoComplete="current-password"
+						className="h-11 bg-background"
+						{...register('password')}
+					/>
+					<p className="min-h-4 text-xs leading-4 text-destructive">
+						{errors.password?.message}
+					</p>
+				</div>
+
+				{formError && (
+					<div className="rounded-md border border-destructive/25 bg-destructive/5 px-3.5 py-3">
+						<p className="text-sm text-destructive">{formError}</p>
+					</div>
+				)}
+
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full">
+					{isSubmitting ? 'Connexion…' : 'Se connecter'}
+				</Button>
+			</form>
+		</AuthLayout>
 	)
 }
