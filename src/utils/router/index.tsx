@@ -3,6 +3,8 @@ import LoginPage from '@/pages/auth/login'
 import SignupPage from '@/pages/auth/signup'
 import HomePage from '@/pages/home'
 import ProtectedRoute from '@/utils/router/protected_route'
+import LessonPage from '@/pages/lesson/lesson_home_page'
+import LessonHomePage from '@/pages/lesson/lesson_home_page'
 
 export const router = createBrowserRouter([
 	{
@@ -21,4 +23,12 @@ export const router = createBrowserRouter([
 		path: '/signup',
 		element: <SignupPage />,
 	},
+	{
+		path: '/lessons/',
+		element: <LessonHomePage />,
+	},
+	{
+		path: '/lessons/:slug',
+		element: <LessonPage />,
+	}
 ])
