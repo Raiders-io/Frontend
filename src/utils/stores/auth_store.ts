@@ -8,12 +8,12 @@ interface AuthState {
 	logout: () => void
 }
 
-function stateBuilder(set) {
+function stateBuilder(set: (state: Partial<AuthState>) => void): AuthState {
     const state: AuthState = {
         user: null,
         token: localStorage.getItem('token'),
 
-        setAuth: function(user: User | null, token: string | null) {
+        setAuth: function(user: User | null, token: string | '') {
             localStorage.setItem('token', token);
             set({ user: user, token: token });
         },
