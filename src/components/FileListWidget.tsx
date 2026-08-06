@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { objectService } from '@/services/object_service'
+import FileListDropOverlay from '@/components/file-list/file-list-drop-overlay'
 import FileListUploadFeedback from '@/components/file-list/file-list-upload-feedback'
 import FileListPagination from '@/components/file-list/file-list-pagination'
 import FileListTableHeadRow, { type FileListTableColumn } from '@/components/file-list/file-list-table-head-row'
@@ -282,19 +283,7 @@ export default function FileListWidget({
 				<input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleInputChange} />
 			)}
 
-			{isDragging && showUpload && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-					<div className="max-w-md rounded-2xl border border-dashed border-primary bg-background p-8 text-center shadow-xl">
-						<p className="text-lg font-semibold">Drop your files here</p>
-						<p className="mt-2 text-sm text-muted-foreground">
-							Multiple file types are supported, upload will start automatically.
-						</p>
-						<p className="mt-3 text-sm text-muted-foreground">
-							Formats: txt, pdf, md, tex.
-						</p>
-					</div>
-				</div>
-			)}
+			<FileListDropOverlay visible={isDragging && showUpload} />
 
 			<Card>
 				{mode === 'full' && (
