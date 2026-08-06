@@ -5,7 +5,7 @@ import HomePage from '@/pages/home'
 import ProtectedRoute from '@/utils/router/protected_route'
 import LessonPage from '@/pages/lesson/lesson_home_page'
 import LessonHomePage from '@/pages/lesson/lesson_home_page'
-import IndexPage from '@/pages/objects/index'
+import FileListPage from '@/pages/file/index'
 
 export const router = createBrowserRouter([
 	{
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
 		element: <LessonPage />,
 	},
 	{
-		path: '/objects/index',
-		element: <IndexPage />,
+		path: '/file/list',
+		element: <FileListPage />,
 	},
 ])
