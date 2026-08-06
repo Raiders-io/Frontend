@@ -110,6 +110,22 @@ export default function FileListWidget({
 		void loadFiles()
 	}, [page, limit])
 
+	useEffect(() => {
+		const resetDragging = () => {
+			setIsDragging(false)
+		}
+
+		window.addEventListener('dragend', resetDragging)
+		window.addEventListener('drop', resetDragging)
+		window.addEventListener('blur', resetDragging)
+
+		return () => {
+			window.removeEventListener('dragend', resetDragging)
+			window.removeEventListener('drop', resetDragging)
+			window.removeEventListener('blur', resetDragging)
+		}
+	}, [])
+
 	const currentPage = meta?.currentPage ?? page
 	const lastPage = meta?.lastPage ?? Math.max(page, 1)
 	const totalFiles = meta?.total ?? files.length
@@ -266,6 +282,10 @@ export default function FileListWidget({
 		await uploadFiles(event.dataTransfer.files)
 	}
 
+	const handleDragEnd = () => {
+		setIsDragging(false)
+	}
+
 	const containerClassName = mode === 'compact' ? 'w-full p-4' : 'mx-auto w-full max-w-6xl p-6'
 	const visibleColumns: FileListTableColumn[] =
 		mode === 'compact' ? ['Icon', 'Name', 'Size'] : ['Icon', 'Name', 'Size', 'Type', 'Visibility', 'Created at']
@@ -277,6 +297,7 @@ export default function FileListWidget({
 			onDragOver={showUpload ? handleDragOver : undefined}
 			onDragLeave={showUpload ? handleDragLeave : undefined}
 			onDrop={showUpload ? handleDrop : undefined}
+			onDragEnd={showUpload ? handleDragEnd : undefined}
 			style={maxHeight ? { maxHeight, overflow: 'auto' } : undefined}
 		>
 			{showUpload && (
