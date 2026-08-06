@@ -1,39 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { objectService } from '@/services/object_service'
-
-type FileObject = {
-	id?: string
-	name: string
-	sizeBytes?: number
-	mimeType?: string
-	visibility?: string
-	createdAt?: string
-}
-
-type PaginationMeta = {
-	currentPage?: number
-	lastPage?: number
-	perPage?: number
-	total?: number
-}
-
-type ObjectIndexResponse = {
-	meta?: PaginationMeta
-	data?: FileObject[]
-	objects?: FileObject[]
-}
-
-export type FileListWidgetProps = {
-	mode?: 'full' | 'compact'
-	showPagination?: boolean
-	showUpload?: boolean
-	initialLimit?: number
-	maxHeight?: string
-}
+import FileListUploadFeedback from '@/components/file-list/file-list-upload-feedback'
+import FileListPagination from '@/components/file-list/file-list-pagination'
+import FileListTableHeadRow, { type FileListTableColumn } from '@/components/file-list/file-list-table-head-row'
+import FileListTableBodyRow from '@/components/file-list/file-list-table-body-row'
+import { type FileListWidgetProps, type FileObject, type PaginationMeta, type ObjectIndexResponse } from '@/utils/types/object'
 
 function isFileObject(value: unknown): value is FileObject {
 	return typeof value === 'object' && value !== null && 'name' in value && typeof (value as FileObject).name === 'string'
@@ -160,14 +133,6 @@ export default function FileListWidget({
 	const goNextPage = () => {
 		if (hasNextPage) {
 			setPage(currentPage + 1)
-		}
-	}
-
-	const handleLimitChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const nextLimit = Number(event.target.value)
-		if (!Number.isNaN(nextLimit) && nextLimit > 0) {
-			setPage(1)
-			setLimit(nextLimit)
 		}
 	}
 
@@ -301,7 +266,8 @@ export default function FileListWidget({
 	}
 
 	const containerClassName = mode === 'compact' ? 'w-full p-4' : 'mx-auto w-full max-w-6xl p-6'
-	const visibleColumns = mode === 'compact' ? ['Icon', 'Name', 'Size'] : ['Icon', 'Name', 'Size', 'Type', 'Visibility', 'Created at']
+	const visibleColumns: FileListTableColumn[] =
+		mode === 'compact' ? ['Icon', 'Name', 'Size'] : ['Icon', 'Name', 'Size', 'Type', 'Visibility', 'Created at']
 
 	return (
 		<div
@@ -361,40 +327,24 @@ export default function FileListWidget({
 				)}
 
 				<CardContent className="space-y-4">
-					{uploadError && (
-						<div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-							{uploadError}
-						</div>
-					)}
-					{uploadSuccess && (
-						<div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4 text-sm text-emerald-700 dark:text-emerald-300">
-							{uploadSuccess}
-						</div>
-					)}
+					<FileListUploadFeedback uploadError={uploadError} uploadSuccess={uploadSuccess} />
 
 					{showPagination && mode === 'full' && (
-						<div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-end md:justify-between">
-							<div className="space-y-1">
-								<p className="text-sm font-medium">Pagination</p>
-								<p className="text-sm text-muted-foreground">
-									Page {currentPage} sur {lastPage}
-								</p>
-							</div>
-							<div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-								<div className="space-y-2">
-									<Label htmlFor="limit">Files per page</Label>
-									<Input id="limit" type="number" min={1} value={limit} onChange={handleLimitChange} className="w-28" />
-								</div>
-								<div className="flex gap-2">
-									<Button type="button" variant="outline" onClick={goPreviousPage} disabled={!hasPreviousPage}>
-										Previous
-									</Button>
-									<Button type="button" variant="outline" onClick={goNextPage} disabled={!hasNextPage}>
-										Next
-									</Button>
-								</div>
-							</div>
-						</div>
+						<FileListPagination
+							currentPage={currentPage}
+							lastPage={lastPage}
+							limit={limit}
+							hasPreviousPage={hasPreviousPage}
+							hasNextPage={hasNextPage}
+							onPreviousPage={goPreviousPage}
+							onNextPage={goNextPage}
+							onLimitChange={(nextLimit) => {
+								if (!Number.isNaN(nextLimit) && nextLimit > 0) {
+									setPage(1)
+									setLimit(nextLimit)
+								}
+							}}
+						/>
 					)}
 
 					{loading ? (
@@ -411,51 +361,18 @@ export default function FileListWidget({
 						<div className="overflow-hidden rounded-lg border">
 							<table className={`w-full caption-bottom ${mode === 'compact' ? 'text-xs' : 'text-sm'}`}>
 								<thead className="border-b bg-muted/50">
-									<tr>
-										{visibleColumns.includes('Icon') && (
-											<th className="px-4 py-3 font-medium">Icon</th>
-										)}
-										{visibleColumns.includes('Name') && (
-											<th className="px-4 py-3 font-medium">Name</th>
-										)}
-										{visibleColumns.includes('Size') && (
-											<th className="px-4 py-3 font-medium">Size</th>
-										)}
-										{visibleColumns.includes('Type') && (
-											<th className="px-4 py-3 font-medium">Type</th>
-										)}
-										{visibleColumns.includes('Visibility') && (
-											<th className="px-4 py-3 font-medium">Visibility</th>
-										)}
-										{visibleColumns.includes('Created at') && (
-											<th className="px-4 py-3 font-medium">Created at</th>
-										)}
-									</tr>
+									<FileListTableHeadRow columns={visibleColumns} />
 								</thead>
 								<tbody>
 									{files.map((file) => (
-										<tr key={file.id ?? file.name} className="border-b last:border-0 hover:bg-muted/30">
-											{visibleColumns.includes('Icon') && (
-												<td className={`px-4 py-3 ${mode === 'compact' ? 'text-sm' : 'text-lg'}`}>
-													{getFileIcon(file.mimeType, file.name)}
-												</td>
-											)}
-											{visibleColumns.includes('Name') && (
-												<td className="px-4 py-3 font-medium">{file.name}</td>
-											)}
-											{visibleColumns.includes('Size') && (
-												<td className="px-4 py-3">{formatFileSize(file.sizeBytes)}</td>
-											)}
-											{visibleColumns.includes('Type') && (
-												<td className="px-4 py-3 text-muted-foreground">{file.mimeType ?? '-'}</td>
-											)}
-											{visibleColumns.includes('Visibility') && (
-												<td className="px-4 py-3 capitalize">{file.visibility ?? '-'}</td>
-											)}
-											{visibleColumns.includes('Created at') && (
-												<td className="px-4 py-3 text-muted-foreground">{formatDate(file.createdAt)}</td>
-											)}
-										</tr>
+										<FileListTableBodyRow
+											file={file}
+											columns={visibleColumns}
+											icon={getFileIcon(file.mimeType, file.name)}
+											formatFileSize={formatFileSize}
+											formatDate={formatDate}
+											compact={mode === 'compact'}
+										/>
 									))}
 								</tbody>
 							</table>
