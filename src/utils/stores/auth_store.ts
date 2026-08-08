@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import type { User } from '@/utils/types/auth'
 
 interface AuthState {
@@ -8,22 +9,18 @@ interface AuthState {
 	logout: () => void
 }
 
-function stateBuilder(set: (state: Partial<AuthState>) => void): AuthState {
-    const state: AuthState = {
-        user: null,
-        token: localStorage.getItem('token'),
-
-        setAuth: function(user: User | null, token: string | '') {
-            localStorage.setItem('token', token);
-            set({ user: user, token: token });
-        },
-
-        logout: function() {
-            localStorage.removeItem('token');
-            set({ user: null, token: null });
-        }
-    };
-    return state;
-}
-
-export const useAuthStore = create<AuthState>(stateBuilder);
+export const useAuthStore = create<AuthState>()(
+	persist(
+		(set) => ({
+			user: null,
+			token: null,
+			setAuth: (user, token) => set({ user, token }),
+			logout: () => set({ user: null, token: null }),
+		}),
+		{
+			name: 'auth-storage',
+			storage: createJSONStorage(() => localStorage),
+			partialize: (state) => ({ user: state.user, token: state.token }),
+		},
+	),
+)
