@@ -1,12 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom'
-import LoginPage from '@/pages/auth/login'
-import SignupPage from '@/pages/auth/signup'
-import HomePage from '@/pages/home'
-import ChatPage from '@/pages/services/chat/chat_page'
+import { lazy } from 'react'
 import ProtectedRoute from '@/utils/router/protected_route'
-import LessonPage from '@/pages/lesson/lesson_home_page'
-import LessonHomePage from '@/pages/lesson/lesson_home_page'
-import FileListPage from '@/pages/file/index'
+
+const LoginPage = lazy(() => import('@/pages/auth/login'))
+const SignupPage = lazy(() => import('@/pages/auth/signup'))
+const HomePage = lazy(() => import('@/pages/home'))
+const LessonHomePage = lazy(() => import('@/pages/lesson/lesson_home_page'))
+const LessonPage = lazy(() => import('@/pages/lesson/lesson_home_page'))
+const FileListPage = lazy(() => import('@/pages/file/index'))
+const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
 
 export const router = createBrowserRouter([
 	{

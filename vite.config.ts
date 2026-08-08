@@ -9,6 +9,22 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 	],
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (!id.includes('node_modules')) return
+
+					if (id.includes('react-router')) return 'router'
+					if (id.includes('react-hook-form') || id.includes('zod')) return 'forms'
+					if (id.includes('lucide-react')) return 'icons'
+					if (id.includes('@radix-ui')) return 'radix'
+
+					return 'vendor'
+				},
+			},
+		},
+	},
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
