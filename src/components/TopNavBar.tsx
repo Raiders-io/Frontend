@@ -5,6 +5,8 @@ import { AvatarDropdown } from "./AvatarDropDown";
 import { useEffect, useRef } from "react";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { LogOutDropDown } from "./LogOutDropDown";
+import { useAuthStore } from "@/utils/stores/auth_store";
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +60,7 @@ const TopNavBar = () => {
       </div>
 
       <div className="flex items-center">
-        <AvatarDropdown />
+        {useAuthStore().user ? (<AvatarDropdown />) : (<LogOutDropDown />)}
       </div>
     </nav>
   );
