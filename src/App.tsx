@@ -1,6 +1,12 @@
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/utils/router'
+import TopNavBar from './components/TopNavBar'
 
 export default function App() {
-	return <RouterProvider router={router} />
+	return (
+	<>
+		<TopNavBar />
+		<RouterProvider router={router} />
+	</>
+	)
 }
