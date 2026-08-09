@@ -1,18 +1,35 @@
-export type FileListTableColumn = 'Icon' | 'Name' | 'Size' | 'Type' | 'Visibility' | 'Created at'
+import { TableRow, TableHead } from "@/components/ui/table"
+
+export type FileListTableColumn =
+  "Icon" | "Name" | "Size" | "Type" | "Visibility" | "Created at"
 
 type FileListTableHeadRowProps = {
-	columns: FileListTableColumn[]
+  columns: FileListTableColumn[]
 }
 
-export default function FileListTableHeadRow({ columns }: FileListTableHeadRowProps) {
-	return (
-		<tr className="text-left">
-			{columns.includes('Icon') && <th className="px-4 py-3 font-medium">Icon</th>}
-			{columns.includes('Name') && <th className="px-4 py-3 font-medium">Name</th>}
-			{columns.includes('Size') && <th className="px-4 py-3 font-medium">Size</th>}
-			{columns.includes('Type') && <th className="px-4 py-3 font-medium">Type</th>}
-			{columns.includes('Visibility') && <th className="px-4 py-3 font-medium">Visibility</th>}
-			{columns.includes('Created at') && <th className="px-4 py-3 font-medium">Created at</th>}
-		</tr>
-	)
+export default function FileListTableHeadRow({
+  columns,
+}: FileListTableHeadRowProps) {
+  return (
+    <TableRow>
+      {columns.includes("Icon") && (
+        <TableHead className="px-4 py-3 font-medium">Icon</TableHead>
+      )}
+      {columns.includes("Name") && (
+        <TableHead className="px-4 py-3 font-medium">Name</TableHead>
+      )}
+      {columns.includes("Size") && (
+        <TableHead className="px-4 py-3 font-medium">Size</TableHead>
+      )}
+      {columns.includes("Type") && (
+        <TableHead className="px-4 py-3 font-medium">Type</TableHead>
+      )}
+      {columns.includes("Visibility") && (
+        <TableHead className="px-4 py-3 font-medium">Visibility</TableHead>
+      )}
+      {columns.includes("Created at") && (
+        <TableHead className="px-4 py-3 font-medium">Created at</TableHead>
+      )}
+    </TableRow>
+  )
 }
