@@ -1,10 +1,28 @@
 import { SearchIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from "@/components/ui/button-group";
 import { AvatarDropdown } from "./AvatarDropDown";
+import { useEffect, useRef } from "react";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 const TopNavBar = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <nav className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-3">
@@ -20,12 +38,22 @@ const TopNavBar = () => {
 
       <div className="flex-1 mx-8">
         <div className="relative">
-          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-          <Input
-            type="search"
-            placeholder="Search lesson..."
-            className="w-full pl-10"
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <SearchIcon />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              placeholder="Search lesson..."
+              className="w-full pl-10"
+              ref={searchInputRef}
+            />
+            <InputGroupAddon align="inline-end">
+              <KbdGroup>
+                <Kbd>Ctrl</Kbd><Kbd>K</Kbd>
+              </KbdGroup>
+            </InputGroupAddon>
+          </InputGroup>
         </div>
       </div>
 
