@@ -45,16 +45,16 @@ export function AvatarDropdown() {
             <BookIcon />
             My Lessons
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <UsersIcon />
-            My Friends
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <UserIcon />
             Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UsersIcon />
+            My Friends
           </DropdownMenuItem>
           <DropdownMenuItem>
             <SettingsIcon />
