@@ -7,6 +7,9 @@ import ProtectedRoute from '@/utils/router/protected_route'
 import LessonPage from '@/pages/lesson/lesson_home_page'
 import LessonHomePage from '@/pages/lesson/lesson_home_page'
 import FileListPage from '@/pages/file/index'
+// import Question from '../../pages/exam/Question'
+//import path from 'path'
+import ExamAuthoring from '../../pages/exam/ExamAuthoring'
 
 export const router = createBrowserRouter([
 	{
@@ -40,5 +43,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/chat',
 		element: <ChatPage />,
+	},
+	{
+		path: '/exam/authoring',
+		element: <ExamAuthoring />,
 	},
 ])
