@@ -3,7 +3,7 @@ import type { Conversation, Message } from '@/utils/types/chat'
 
 export const chatService = {
 	fetchConversations: async (): Promise<Conversation[]> => {
-		const { data } = await api.get<{ data: Conversation[] }>('/messaging/conversations')
+		const { data } = await api.get<{ data: Conversation[] }>('/api/messaging/conversations')
 		return data.data
 	},
 
