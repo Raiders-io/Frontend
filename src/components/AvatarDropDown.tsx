@@ -24,7 +24,36 @@ import {
 } from "lucide-react"
 
 export function AvatarDropdown() {
-  const { user } = useAuthStore()
+  const { user, logout } = useAuthStore()
+  
+  const handleLogout = () => {
+    logout()
+    window.location.href = '/login'
+  }
+
+  const handleProfile = () => {
+    window.location.href = '/profile'
+  }
+
+  const handleFiles = () => {
+    window.location.href = '/file/list'
+  }
+
+  const handleLessons = () => {
+    window.location.href = '/lessons'
+  }
+
+  const handleFriends = () => {
+    window.location.href = '/friends'
+  }
+
+  const handleMessages = () => {
+    window.location.href = '/messages'
+  }
+
+  const handleEditProfile = () => {
+    window.location.href = '/edit-profile'
+  }
   
   return (
     <DropdownMenu>
@@ -38,37 +67,37 @@ export function AvatarDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleFiles}>
             <FileIcon />
             My Files
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLessons}>
             <BookIcon />
             My Lessons
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleProfile}>
             <UserIcon />
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleFriends}>
             <UsersIcon />
             My Friends
           </DropdownMenuItem>
-           <DropdownMenuItem>
+           <DropdownMenuItem onClick={handleMessages}>
             <MessageCircleIcon />
             Messages
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditProfile}>
             <SettingsIcon />
             Edit Profile
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem variant="destructive">
+          <DropdownMenuItem variant="destructive" onClick={handleLogout}>
             <LogOutIcon />
             Log out
           </DropdownMenuItem>

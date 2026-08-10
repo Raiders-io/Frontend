@@ -25,6 +25,10 @@ const TopNavBar = () => {
     };
   }, []);
 
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+  };
+
   return (
     <nav className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-3">
@@ -39,24 +43,26 @@ const TopNavBar = () => {
       </div>
 
       <div className="flex-1 mx-8">
-        <div className="relative">
-          <InputGroup>
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              placeholder="Search lesson..."
-              className="w-full pl-10"
-              ref={searchInputRef}
-            />
-            <InputGroupAddon align="inline-end">
-              <KbdGroup>
-                <Kbd>Ctrl</Kbd><Kbd>K</Kbd>
-              </KbdGroup>
-            </InputGroupAddon>
-          </InputGroup>
-        </div>
+        <form onSubmit={handleSearch}>
+          <div className="relative">
+            <InputGroup>
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                type="search"
+                placeholder="Search lesson..."
+                className="w-full pl-10"
+                ref={searchInputRef}
+              />
+              <InputGroupAddon align="inline-end">
+                <KbdGroup>
+                  <Kbd>Ctrl</Kbd><Kbd>K</Kbd>
+                </KbdGroup>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+        </form>
       </div>
 
       <div className="flex items-center">

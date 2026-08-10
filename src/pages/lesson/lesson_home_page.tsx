@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, ArrowRight, BookOpen, Search } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 type SortOption = 'created_at' | 'updated_at' | 'title' | 'name'
 
@@ -18,6 +19,7 @@ const sortOptions: { label: string; value: SortOption; direction: 'asc' | 'desc'
 ]
 
 export default function LessonHomePage() {
+  const location = useLocation()
   const [draftTitle, setDraftTitle] = useState('')
   const [appliedTitle, setAppliedTitle] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -36,6 +38,15 @@ export default function LessonHomePage() {
     perPage: limit,
     total: 0,
   })
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const searchQuery = searchParams.get('search')
+    if (searchQuery) {
+      setDraftTitle(searchQuery)
+      setAppliedTitle(searchQuery)
+    }
+  }, [location.search])
 
   useEffect(() => {
     const loadTags = async () => {

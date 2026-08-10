@@ -17,5 +17,30 @@ export const objectService = {
 	store: async (formData: FormData): Promise<any> => {
 		const { data } = await api.post<any>('/api/v1/storage/objects', formData)
 		return data
+	},
+
+	show: async (id: string): Promise<any> => {
+		const { data } = await api.get<any>(`/api/v1/storage/objects/${id}`)
+		return data
+	},
+
+	download: async (fileName: string): Promise<Blob> => {
+		const response = await api.get<Blob>(
+			`/api/v1/storage/objects/${encodeURIComponent(fileName)}`,
+			{ responseType: 'blob' },
+		)
+		return response.data
+	},
+
+	destroy: async (id: string): Promise<any> => {
+		const { data } = await api.delete<any>(`/api/v1/storage/objects/${id}`)
+		return data
+	},
+
+	destroyMany: async (ids: string[]): Promise<any> => {
+		const { data } = await api.delete<any>('/api/v1/storage/objects', {
+			data: { ids },
+		})
+		return data
 	}
 }

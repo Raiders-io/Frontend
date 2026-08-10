@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,7 +19,6 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-	const navigate = useNavigate()
 	const { setAuth } = useAuthStore()
 	const [formError, setFormError] = useState<string | null>(null)
 
@@ -33,7 +32,7 @@ export default function LoginPage() {
 		try {
 			const response = await authService.login(data)
 			setAuth(response.data.user, response.data.token)
-			navigate('/')
+			window.location.href = '/'
 		} catch (error) {
 			console.error('Login error:', error)
 			setFormError(

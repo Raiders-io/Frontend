@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useChat } from '@/utils/hooks/use_chat'
 import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
@@ -11,7 +10,6 @@ export default function UsersList() {
 	const { createConversation } = useChat()
 	const [members, setMembers] = useState<User[]>([])
 	const [isLoading, setIsLoading] = useState(true)
-	const navigate = useNavigate()
 
 	useEffect(() => {
 		userService.fetchUsers()
@@ -22,7 +20,7 @@ export default function UsersList() {
 
 	const startConversation = (userId: string) => {
 		createConversation([userId])
-		navigate('/chat')
+		window.location.href = '/chat'
 	}
 
 	return (

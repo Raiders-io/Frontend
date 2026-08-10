@@ -1,7 +1,14 @@
 import { TableRow, TableHead } from "@/components/ui/table"
 
 export type FileListTableColumn =
-  "Icon" | "Name" | "Size" | "Type" | "Visibility" | "Created at"
+  | "Icon"
+  | "Name"
+  | "Size"
+  | "Type"
+  | "Visibility"
+  | "Created at"
+  | "Select"
+  | "Actions"
 
 type FileListTableHeadRowProps = {
   columns: FileListTableColumn[]
@@ -12,6 +19,9 @@ export default function FileListTableHeadRow({
 }: FileListTableHeadRowProps) {
   return (
     <TableRow>
+      {columns.includes("Select") && (
+        <TableHead className="px-4 py-3 font-medium">Select</TableHead>
+      )}
       {columns.includes("Icon") && (
         <TableHead className="px-4 py-3 font-medium">Icon</TableHead>
       )}
@@ -29,6 +39,9 @@ export default function FileListTableHeadRow({
       )}
       {columns.includes("Created at") && (
         <TableHead className="px-4 py-3 font-medium">Created at</TableHead>
+      )}
+      {columns.includes("Actions") && (
+        <TableHead className="px-4 py-3 font-medium">Actions</TableHead>
       )}
     </TableRow>
   )

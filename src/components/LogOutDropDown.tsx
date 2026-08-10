@@ -13,6 +13,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function LogOutDropDown() {
+
+  const handleLogin = () => {
+    window.location.href = '/login'
+  }
+
+  const handleSignup = () => {
+    window.location.href = '/signup'
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,11 +34,11 @@ export function LogOutDropDown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Sign In
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogin}>
             Login
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleSignup}>
+            Sign Up
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

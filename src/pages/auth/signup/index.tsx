@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -24,7 +24,6 @@ const signupSchema = z.object({
 type SignupForm = z.infer<typeof signupSchema>
 
 export default function SignupPage() {
-	const navigate = useNavigate()
 	const { setAuth } = useAuthStore()
 	const [formError, setFormError] = useState<string | null>(null)
 
@@ -38,7 +37,7 @@ export default function SignupPage() {
 		try {
 			const response = await authService.signup(data)
 			setAuth(response.data.user, response.data.token)
-			navigate('/')
+			window.location.href = '/'
 		} catch (error) {
 			console.error('Signup error:', error)
 			setFormError(

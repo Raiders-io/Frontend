@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { avatarColor, initials } from '@/utils/lib/avatar'
@@ -10,11 +10,9 @@ const NAV_ITEMS = [
 
 export function AppHeader() {
 	const { user, logout } = useAuthStore()
-	const navigate = useNavigate()
 
 	const handleLogout = () => {
 		logout()
-		navigate('/login')
 	}
 
 	return (

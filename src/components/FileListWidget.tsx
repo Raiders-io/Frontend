@@ -136,6 +136,7 @@ export default function FileListWidget({
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(initialLimit)
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
@@ -348,8 +349,55 @@ export default function FileListWidget({
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
   const visibleColumns: FileListTableColumn[] =
     mode === "compact"
-      ? ["Icon", "Name", "Size"]
-      : ["Icon", "Name", "Size", "Type", "Visibility", "Created at"]
+      ? ["Select", "Icon", "Name", "Size", "Actions"]
+      : ["Select", "Icon", "Name", "Size", "Type", "Visibility", "Created at", "Actions"]
+
+  const toggleFileSelection = (fileName: string) => {
+    setSelectedFiles((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(fileName)) {
+        newSet.delete(fileName)
+      } else {
+        newSet.add(fileName)
+      }
+      return newSet
+    })
+  }
+
+  const handleDownload = async (fileName: string) => {
+    try {
+      const blob = await objectService.download(fileName)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.setAttribute("download", fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode?.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Download error:", error)
+    }
+  }
+
+  const handleDelete = async (fileName: string) => {
+    try {
+      await objectService.destroy(fileName)
+      await refreshFiles()
+    } catch (error) {
+      console.error('Delete error:', error)
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    try {
+      await objectService.destroyMany(Array.from(selectedFiles))
+      setSelectedFiles(new Set())
+      await refreshFiles()
+    } catch (error) {
+      console.error('Bulk delete error:', error)
+    }
+  }
 
   return (
     <div
@@ -466,6 +514,10 @@ export default function FileListWidget({
                       formatFileSize={formatFileSize}
                       formatDate={formatDate}
                       compact={mode === "compact"}
+                      onSelect={toggleFileSelection}
+                      onDownload={handleDownload}
+                      onDelete={handleDelete}
+                      isSelected={selectedFiles.has(file.name)}
                     />
                   ))}
                 </TableBody>
@@ -473,6 +525,19 @@ export default function FileListWidget({
                   <TableFooter>
                     <TableRow>
                       <TableCell colSpan={3}>
+                        <div className="flex items-center gap-2">
+                          {selectedFiles.size > 0 && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={handleBulkDelete}
+                            >
+                              Delete Selected
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell colSpan={3} className="text-right">
                         Total: {totalFiles} file(s)
                       </TableCell>
                       <TableCell colSpan={3} className="text-right">
@@ -486,6 +551,8 @@ export default function FileListWidget({
           )}
         </CardContent>
       </Card>
+
+
     </div>
   )
 }
