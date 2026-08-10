@@ -20,6 +20,7 @@ import {
   BookIcon,
   FileIcon,
   UsersIcon,
+  MessageCircleIcon,
 } from "lucide-react"
 
 export function AvatarDropdown() {
@@ -55,6 +56,10 @@ export function AvatarDropdown() {
           <DropdownMenuItem>
             <UsersIcon />
             My Friends
+          </DropdownMenuItem>
+           <DropdownMenuItem>
+            <MessageCircleIcon />
+            Messages
           </DropdownMenuItem>
           <DropdownMenuItem>
             <SettingsIcon />
