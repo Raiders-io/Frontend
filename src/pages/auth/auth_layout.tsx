@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { BookOpen, PenLine, CircleCheck } from 'lucide-react'
 
 interface AuthLayoutProps {
 	title: string
