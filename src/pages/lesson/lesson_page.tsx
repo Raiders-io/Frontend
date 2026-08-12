@@ -5,6 +5,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useState } from 'react'
 
 export default function IndexPage() {
@@ -13,18 +14,25 @@ export default function IndexPage() {
 
     return (
 <>
-    <div>
-      <Button onClick={() => setZoneOneVisible(!zoneOneVisible)}>{zoneOneVisible ? 'Hide One' : 'Show One'}</Button>
-      <Button onClick={() => setZoneTwoVisible(!zoneTwoVisible)}>{zoneTwoVisible ? 'Hide Two' : 'Show Two'}</Button>
-    </div>
+     
     <ResizablePanelGroup orientation="horizontal">
+    {!zoneTwoVisible ? "" :(
+      <Button onClick={() => setZoneOneVisible(!zoneOneVisible)}>
+        {zoneOneVisible ? <PanelLeftClose /> : <PanelLeftOpen />}
+      </Button>
+    )}
     {zoneOneVisible && (
       <ResizablePanel>
         Zone One
         <FileListWidget mode="full" showPagination={true} showUpload={true} initialLimit={10} />
       </ResizablePanel>
     )}
-    <ResizableHandle />
+    {!zoneOneVisible || !zoneTwoVisible ? null : <ResizableHandle />}
+    {!zoneOneVisible ? "" :(
+      <Button onClick={() => setZoneTwoVisible(!zoneTwoVisible)}>
+        {zoneTwoVisible ? <PanelRightClose /> : <PanelRightOpen />}
+      </Button>
+    )}
     {zoneTwoVisible && (
       <ResizablePanel>
         Zone Two
