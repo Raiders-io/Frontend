@@ -9,6 +9,7 @@ const LessonHomePage = lazy(() => import('@/pages/lesson/lesson_home_page'))
 const LessonPage = lazy(() => import('@/pages/lesson/lesson_page'))
 const FileListPage = lazy(() => import('@/pages/file/index'))
 const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
+const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
 
 export const router = createBrowserRouter([
 	{
@@ -42,5 +43,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/chat',
 		element: <ChatPage />,
+	},
+	{
+		path: '/edit-profile',
+		element: <EditProfile />,
 	},
 ])
