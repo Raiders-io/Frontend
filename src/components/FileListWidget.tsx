@@ -238,7 +238,7 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName ?? ""}`.toLowerCase()
+    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
 
     if (label.includes("image")) return "🖼️"
     if (label.includes("video")) return "🎞️"
