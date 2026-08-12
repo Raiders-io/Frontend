@@ -6,3 +6,6 @@ deploy:
 
 lint:
 	npx prettier --write src/components/*[^ui]
+
+generate-sitemap:
+	npm run generate:sitemap

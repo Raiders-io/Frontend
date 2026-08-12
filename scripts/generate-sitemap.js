@@ -16,6 +16,12 @@ fs.mkdirSync(outputDir, { recursive: true });
 
 const today = new Date().toISOString().split('T')[0];
 
+// Source : https://www.sitemaps.org/protocol.html
+// Source : https://www.webrankinfo.com/dossiers/sitemaps/tutoriel-fichier-sitemap
+
+// Generate sitemap.xml content
+// Priority is ignored by search engines, but we include it for completeness
+// Change frequency is also ignored by search engines
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes
@@ -23,7 +29,7 @@ ${routes
     (route) => `  <url>
     <loc>${siteUrl}${route}</loc>
     <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>always</changefreq>
     <priority>0.8</priority>
   </url>`
   )
