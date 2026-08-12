@@ -11,6 +11,7 @@ const FileListPage = lazy(() => import('@/pages/file/index'))
 const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
 const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
 const AboutPage = lazy(() => import('@/pages/about'))
+const NotFound = lazy(() => import('@/pages/NotFound'))
 
 export const router = createBrowserRouter([
 	{
@@ -64,5 +65,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/about',
 		element: <AboutPage />,
+	},
+	{
+		path: '*',
+		element: <NotFound />,
 	},
 ])
