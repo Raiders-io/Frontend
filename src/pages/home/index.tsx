@@ -5,6 +5,7 @@ import { avatarColor, initials } from '@/utils/lib/avatar'
 import { Button } from '@/components/ui/button'
 import { AppHeader } from '@/components/app_header'
 import type { User } from '@/utils/types/auth'
+import { changePageHome } from '@/utils/router/changePage'
 
 export default function UsersList() {
 	const { createConversation } = useChat()
@@ -20,7 +21,7 @@ export default function UsersList() {
 
 	const startConversation = (userId: string) => {
 		createConversation([userId])
-		window.location.href = '/chat'
+		changePageHome()
 	}
 
 	return (

@@ -23,39 +23,11 @@ import {
   MessageCircleIcon,
 } from "lucide-react"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { changePageChat, changePageEditProfile, changePageFileList, changePageFriends, changePageLessons, changePageLogin, changePageProfile } from "@/utils/router/changePage"
 
 export function AvatarDropdown() {
-  const { user, logout } = useAuthStore()
-  
-  const handleLogout = () => {
-    logout()
-    window.location.href = '/login'
-  }
+  const { user } = useAuthStore()
 
-  const handleProfile = () => {
-    window.location.href = '/profile'
-  }
-
-  const handleFiles = () => {
-    window.location.href = '/file/list'
-  }
-
-  const handleLessons = () => {
-    window.location.href = '/lessons'
-  }
-
-  const handleFriends = () => {
-    window.location.href = '/friends'
-  }
-
-  const handleMessages = () => {
-    window.location.href = '/messages'
-  }
-
-  const handleEditProfile = () => {
-    window.location.href = '/edit-profile'
-  }
-  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -68,37 +40,37 @@ export function AvatarDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleFiles}>
+          <DropdownMenuItem onClick={changePageFileList}>
             <FileIcon />
             My Files
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleLessons}>
+          <DropdownMenuItem onClick={changePageLessons}>
             <BookIcon />
             My Lessons
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleProfile}>
+          <DropdownMenuItem onClick={changePageProfile}>
             <UserIcon />
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleFriends}>
+          <DropdownMenuItem onClick={changePageFriends}>
             <UsersIcon />
             My Friends
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleMessages}>
+          <DropdownMenuItem onClick={changePageChat}>
             <MessageCircleIcon />
             Messages
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleEditProfile}>
+          <DropdownMenuItem onClick={changePageEditProfile}>
             <SettingsIcon />
             Edit Profile
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <LogOutButton action={handleLogout} />
+          <LogOutButton action={changePageLogin} />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/input-group"
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import { changePageHome } from "@/utils/router/changePage"
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -37,10 +38,10 @@ const TopNavBar = () => {
     <nav className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-3">
         <ButtonGroup>
-          <Button variant="ghost" size="icon" className="rounded-full">
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={changePageHome}>
             <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
           </Button>
-          <Button variant="ghost" className="text-lg font-semibold">
+          <Button variant="ghost" className="text-lg font-semibold" onClick={changePageHome}>
             Raiders.io
           </Button>
         </ButtonGroup>

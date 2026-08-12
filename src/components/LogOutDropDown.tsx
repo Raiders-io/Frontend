@@ -11,17 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { changePageLogin, changePageSignup } from "@/utils/router/changePage"
 
 export function LogOutDropDown() {
-
-  const handleLogin = () => {
-    window.location.href = '/login'
-  }
-
-  const handleSignup = () => {
-    window.location.href = '/signup'
-  }
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,10 +26,10 @@ export function LogOutDropDown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleLogin}>
+          <DropdownMenuItem onClick={changePageLogin}>
             Login
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleSignup}>
+          <DropdownMenuItem onClick={changePageSignup}>
             Sign Up
           </DropdownMenuItem>
         </DropdownMenuGroup>

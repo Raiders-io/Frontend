@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { authService } from '@/services/auth_service'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { AuthLayout } from '@/pages/auth/auth_layout'
+import { changePageHome } from '@/utils/router/changePage'
 
 const signupSchema = z.object({
 	fullName: z.string().min(2, 'Nom trop court'),
@@ -37,7 +38,7 @@ export default function SignupPage() {
 		try {
 			const response = await authService.signup(data)
 			setAuth(response.data.user, response.data.token)
-			window.location.href = '/'
+			changePageHome()
 		} catch (error) {
 			console.error('Signup error:', error)
 			setFormError(
