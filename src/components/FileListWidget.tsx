@@ -36,6 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { AudioLines, FileArchiveIcon, FileImageIcon, FileJsonIcon, FileText, MonitorPlay, ScrollText, Type } from "lucide-react"
 
 function isFileObject(value: unknown): value is FileObject {
   return (
@@ -240,16 +241,21 @@ export default function FileListWidget({
   const getFileIcon = (mimeType?: string, fileName?: string) => {
     const label = `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
 
-    if (label.includes("image")) return "🖼️"
-    if (label.includes("video")) return "🎞️"
-    if (label.includes("audio")) return "🎵"
-    if (label.includes("pdf")) return "📕"
+    if (label.includes("image")) 
+      return <FileImageIcon className="h-4 w-4" />
+    if (label.includes("video")) 
+      return <MonitorPlay className="h-4 w-4" />
+    if (label.includes("audio")) 
+      return <AudioLines className="h-4 w-4" />
+    if (label.includes("pdf")) 
+      return <ScrollText className="h-4 w-4" />
     if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
-      return "🗜️"
-    if (label.includes("json")) return "🧩"
-    if (label.includes("text") || label.includes("plain")) return "📄"
-
-    return "📁"
+      return <FileArchiveIcon className="h-4 w-4" />
+    if (label.includes("json")) 
+      return <FileJsonIcon className="h-4 w-4" />
+    if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
+      return <FileText className="h-4 w-4" />
+    return <Type className="h-4 w-4" />
   }
 
   const refreshFiles = async () => {

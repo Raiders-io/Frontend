@@ -8,7 +8,7 @@ import { DownloadIcon, TrashIcon } from "lucide-react"
 type FileListTableBodyRowProps = {
   file: FileObject
   columns: FileListTableColumn[]
-  icon: string
+  icon: React.ReactNode | string
   formatFileSize: (bytes?: number) => string
   formatDate: (dateString?: string) => string
   compact: boolean
