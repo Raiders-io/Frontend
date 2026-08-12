@@ -38,14 +38,26 @@ export const router = createBrowserRouter([
 	},
 	{
 		path: '/file/list',
-		element: <FileListPage />,
+		element: (
+			<ProtectedRoute>
+				<FileListPage />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/chat',
-		element: <ChatPage />,
+		element: (
+			<ProtectedRoute>
+				<ChatPage />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/edit-profile',
-		element: <EditProfile />,
+		element: (
+			<ProtectedRoute>
+				<EditProfile />
+			</ProtectedRoute>
+		),
 	},
 ])
