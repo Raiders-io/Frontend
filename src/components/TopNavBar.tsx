@@ -1,33 +1,37 @@
-import { SearchIcon } from "lucide-react";
-import { Button } from '@/components/ui/button';
-import { ButtonGroup } from "@/components/ui/button-group";
-import { AvatarDropdown } from "./AvatarDropDown";
-import { useEffect, useRef } from "react";
-import { Kbd, KbdGroup } from "@/components/ui/kbd";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { LogOutDropDown } from "./LogOutDropDown";
-import { useAuthStore } from "@/utils/stores/auth_store";
+import { SearchIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { AvatarDropdown } from "./AvatarDropDown"
+import { useEffect, useRef } from "react"
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import { LogOutDropDown } from "./LogOutDropDown"
+import { useAuthStore } from "@/utils/stores/auth_store"
 
 const TopNavBar = () => {
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'k') {
-        event.preventDefault();
-        searchInputRef.current?.focus();
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault()
+        searchInputRef.current?.focus()
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown)
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
 
   const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <nav className="flex items-center justify-between p-4 border-b">
@@ -57,7 +61,8 @@ const TopNavBar = () => {
               />
               <InputGroupAddon align="inline-end">
                 <KbdGroup>
-                  <Kbd>Ctrl</Kbd><Kbd>K</Kbd>
+                  <Kbd>Ctrl</Kbd>
+                  <Kbd>K</Kbd>
                 </KbdGroup>
               </InputGroupAddon>
             </InputGroup>
@@ -66,10 +71,10 @@ const TopNavBar = () => {
       </div>
 
       <div className="flex items-center">
-        {useAuthStore().user ? (<AvatarDropdown />) : (<LogOutDropDown />)}
+        {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default TopNavBar;
+export default TopNavBar

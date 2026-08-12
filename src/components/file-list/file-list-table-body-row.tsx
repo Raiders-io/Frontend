@@ -4,6 +4,7 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DownloadIcon, TrashIcon } from "lucide-react"
+import { DeleteButton } from "../FileListWidget"
 
 type FileListTableBodyRowProps = {
   file: FileObject
@@ -74,12 +75,18 @@ export default function FileListTableBodyRow({
       {columns.includes("Actions") && (
         <TableCell className="px-4 py-3">
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => onDownload(file.name)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDownload(file.name)}
+            >
               <DownloadIcon className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => onDelete(file.name)}>
-              <TrashIcon className="h-4 w-4" />
-            </Button>
+            <DeleteButton action={() => onDelete(file.name)}>
+              <Button variant="destructive" size="sm">
+                <TrashIcon className="h-4 w-4" />
+              </Button>
+            </DeleteButton>
           </div>
         </TableCell>
       )}

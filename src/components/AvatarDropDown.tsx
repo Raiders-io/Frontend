@@ -87,7 +87,7 @@ export function AvatarDropdown() {
             <UsersIcon />
             My Friends
           </DropdownMenuItem>
-           <DropdownMenuItem onClick={handleMessages}>
+          <DropdownMenuItem onClick={handleMessages}>
             <MessageCircleIcon />
             Messages
           </DropdownMenuItem>
@@ -107,27 +107,34 @@ export function AvatarDropdown() {
 
 const LogOutButton = ({ action }: { action: () => void }) => {
   return (
-  <AlertDialog>
-    <AlertDialogTrigger asChild>
-      <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()} className="cursor-pointer">
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <DropdownMenuItem
+          variant="destructive"
+          onSelect={(e) => e.preventDefault()}
+          className="cursor-pointer"
+        >
           <LogOutIcon />
           Log out
         </DropdownMenuItem>
-    </AlertDialogTrigger>
-    <AlertDialogContent size="sm">
-      <AlertDialogHeader>
-        <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
-          <LogOutIcon />
-        </AlertDialogMedia>
-        <AlertDialogTitle>Log out</AlertDialogTitle>
-        <AlertDialogDescription>
-          You will get disconnected
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-        <AlertDialogAction variant="destructive" onClick={action}>Log out</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-)}
+      </AlertDialogTrigger>
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+            <LogOutIcon />
+          </AlertDialogMedia>
+          <AlertDialogTitle>Log out</AlertDialogTitle>
+          <AlertDialogDescription>
+            You will get disconnected
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={action}>
+            Log out
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}

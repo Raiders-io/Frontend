@@ -36,7 +36,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { AudioLines, FileArchiveIcon, FileImageIcon, FileJsonIcon, FileText, MonitorPlay, ScrollText, Type } from "lucide-react"
+import {
+  AudioLines,
+  FileArchiveIcon,
+  FileImageIcon,
+  FileJsonIcon,
+  FileText,
+  MonitorPlay,
+  ScrollText,
+  Type,
+} from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { TrashIcon } from "lucide-react"
 
 function isFileObject(value: unknown): value is FileObject {
   return (
@@ -533,13 +555,12 @@ export default function FileListWidget({
                       <TableCell colSpan={3}>
                         <div className="flex items-center gap-2">
                           {selectedFiles.size > 0 && (
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={handleBulkDelete}
-                            >
-                              Delete Selected
-                            </Button>
+                            <DeleteButton action={handleBulkDelete}>
+                              <Button variant="destructive" size="sm">
+                                <TrashIcon />
+                                Delete Selected
+                              </Button>
+                            </DeleteButton>
                           )}
                         </div>
                       </TableCell>
@@ -557,8 +578,37 @@ export default function FileListWidget({
           )}
         </CardContent>
       </Card>
-
-
     </div>
+  )
+}
+
+export const DeleteButton = ({
+  action,
+  children,
+}: {
+  action: () => void
+  children: React.ReactNode
+}) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+            <TrashIcon />
+          </AlertDialogMedia>
+          <AlertDialogTitle>Delete File</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={action}>
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
