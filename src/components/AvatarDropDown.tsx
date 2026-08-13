@@ -23,7 +23,9 @@ import {
   MessageCircleIcon,
 } from "lucide-react"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { changePageChat, changePageEditProfile, changePageFileList, changePageFriends, changePageLessons, changePageLogin, changePageProfile } from "@/utils/router/changePage"
+import { changePageChat, changePageEditProfile, changePageFileList, changePageFriends, changePageLessons, changePageProfile } from "@/utils/router/changePage"
+import { authService } from "@/services/auth_service"
+import { router } from "@/utils/router"
 
 export function AvatarDropdown() {
   const { user } = useAuthStore()
@@ -70,14 +72,26 @@ export function AvatarDropdown() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <LogOutButton action={changePageLogin} />
+          <LogOutButton />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-const LogOutButton = ({ action }: { action: () => void }) => {
+const LogOutButton = () => {
+  const { logout } = useAuthStore()
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout()
+      logout()
+      router.navigate('/login')
+    } catch (error) {
+      console.error('Error during logout:', error)
+    }
+  }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -102,7 +116,7 @@ const LogOutButton = ({ action }: { action: () => void }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={action}>
+          <AlertDialogAction variant="destructive" onClick={handleLogout}>
             Log out
           </AlertDialogAction>
         </AlertDialogFooter>

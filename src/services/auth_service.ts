@@ -11,4 +11,12 @@ export const authService = {
 		const { data } = await api.post<AuthResponse>('/api/v1/auth/signup', payload)
 		return data
 	},
+
+	deleteAccount: async (): Promise<void> => {
+		await api.delete('/api/v1/auth/users/')
+	},
+
+	logout: async (): Promise<void> => {
+		await api.post('/api/v1/account/logout')
+	},
 }

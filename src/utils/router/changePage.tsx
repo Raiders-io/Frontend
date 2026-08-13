@@ -1,5 +1,4 @@
 import { router } from "@/utils/router"
-import { useAuthStore } from '@/utils/stores/auth_store'
 
 export const changePageHome = () => {
 	router.navigate('/')
@@ -11,12 +10,6 @@ export const changePageLogin = () => {
 
 export const changePageSignup = () => {
 	router.navigate('/signup')
-}
-
-export const changePageToLogout = () => {
-	const { logout } = useAuthStore()
-	logout()
-	router.navigate('/login')
 }
 
 export const changePageProfile = () => {
