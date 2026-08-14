@@ -2,16 +2,26 @@
 
 ## Stack technique
 
-### React + TS
+### React TS
+
+A framework for designing component-based interfaces, enabling reactive and conditionally rendered interfaces, and thus simplifying the design process. React TS helps us write more reliable and consistent code during development.
 
 ### Vite
-Bundler : outil de dev/build
-### ShadcnUI (en test pour le moment)
-UI component : composantà à copier dans le projet, basé sur Tailwind.
+
+Frontend build tool for web apps
+
+### Shadcn
+
+A library of basic components that ensures consistency across all interfaces and is based on Tailwind.
+
 ### Tailwind
-Librairie CSS, standart actuel et s'intègre parfaitement a shadcn
-### Zustand (a voir)
-State manager : pour gérer l'état global (user connecté, notifs...)
-https://www.youtube.com/watch?v=YMXN-t4jXbU
+
+CSS library, industry standard, and integrates seamlessly with Shadcn.
+
+### Zustand
+
+State manager: to manage the overall state (logged-in user, notifications, etc.) See : <https://www.youtube.com/watch?v=YMXN-t4jXbU>
+
 ### TanStack Query (a voir)
+
 gère le cache, les états de chargement, les erreurs, la synchronisation des données avec l'API
