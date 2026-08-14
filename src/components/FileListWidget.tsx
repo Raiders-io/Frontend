@@ -555,7 +555,7 @@ export default function FileListWidget({
                       <TableCell colSpan={3}>
                         <div className="flex items-center gap-2">
                           {selectedFiles.size > 0 && (
-                            <DeleteButton action={handleBulkDelete}>
+                            <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
                               <Button variant="destructive" size="sm">
                                 <TrashIcon />
                                 Delete Selected
@@ -583,9 +583,13 @@ export default function FileListWidget({
 }
 
 export const DeleteButton = ({
+  title = "Delete",
+  description = "Are you sure you want to delete this ? This action cannot be undone.",
   action,
   children,
 }: {
+  title?: string
+  description?: string
   action: () => void
   children: React.ReactNode
 }) => {
@@ -597,9 +601,9 @@ export const DeleteButton = ({
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <TrashIcon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete File</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone.
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription style={{ whiteSpace: "pre-line" }}>
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

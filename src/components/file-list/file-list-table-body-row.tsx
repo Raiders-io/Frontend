@@ -82,7 +82,7 @@ export default function FileListTableBodyRow({
             >
               <DownloadIcon className="h-4 w-4" />
             </Button>
-            <DeleteButton action={() => onDelete(file.name)}>
+            <DeleteButton action={() => onDelete(file.name)} title={`Delete ${file.name}`} description="This action cannot be undone.">
               <Button variant="destructive" size="sm">
                 <TrashIcon className="h-4 w-4" />
               </Button>
