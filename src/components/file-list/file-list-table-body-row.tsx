@@ -4,7 +4,7 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { CustomCheckbox } from "@/components/CustomCheckbox"
 import { DownloadIcon, TrashIcon } from "lucide-react"
-import { DeleteButton } from "../FileListWidget"
+import { DeleteButton } from "@/components/DeleteButton"
 
 type FileListTableBodyRowProps = {
   file: FileObject
