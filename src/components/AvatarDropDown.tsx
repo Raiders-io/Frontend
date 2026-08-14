@@ -85,11 +85,11 @@ const LogOutButton = () => {
   const handleLogout = async () => {
     try {
       await authService.logout()
-      logout()
-      router.navigate('/login')
     } catch (error) {
       console.error('Error during logout:', error)
     }
+    logout()
+    router.navigate('/login')
   }
 
   return (
