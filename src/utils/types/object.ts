@@ -13,6 +13,14 @@ export type ObjectStoreResponse = {
 	objects: (ObjectError | ObjectSuccess)[]
 }
 
+export type ObjectDestroyResponse = {
+	data: ObjectError | ObjectSuccess | { __response: ObjectError | ObjectSuccess; }
+}
+
+export type ObjectDestroyManyResponse = {
+	data: (ObjectError | ObjectSuccess)[]
+}
+
 export type ObjectError = {
   key: string
   error: string

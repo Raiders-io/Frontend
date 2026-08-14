@@ -1,5 +1,5 @@
 import api from '@/utils/lib/axios'
-import type { ObjectIndexResponse, ObjectStoreResponse } from '@/utils/types/object'
+import type { ObjectIndexResponse, ObjectStoreResponse, ObjectDestroyResponse, ObjectDestroyManyResponse } from '@/utils/types/object'
 
 // get '/?page&limit' 'index'
 // post 'store'
@@ -34,13 +34,13 @@ export const objectService = {
 		return response.data
 	},
 
-	destroy: async (id: string): Promise<any> => {
-		const { data } = await api.delete<any>(`/api/v1/storage/objects/${id}`)
+	destroy: async (id: string): Promise<ObjectDestroyResponse> => {
+		const { data } = await api.delete<ObjectDestroyResponse>(`/api/v1/storage/objects/${id}`)
 		return data
 	},
 
-	destroyMany: async (ids: string[]): Promise<any> => {
-		const { data } = await api.delete<any>('/api/v1/storage/objects', {
+	destroyMany: async (ids: string[]): Promise<ObjectDestroyManyResponse> => {
+		const { data } = await api.delete<ObjectDestroyManyResponse>('/api/v1/storage/objects', {
 			data: { ids },
 		})
 		return data
