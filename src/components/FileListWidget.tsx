@@ -25,8 +25,7 @@ import FileListTableBodyRow from "@/components/file-list/file-list-table-body-ro
 import {
   type FileListWidgetProps,
   type FileObject,
-  type PaginationMeta,
-  type ObjectIndexResponse,
+  type MetaPagination,
 } from "@/utils/types/object"
 import {
   Table,
@@ -49,88 +48,6 @@ import {
 import { TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
 
-function isFileObject(value: unknown): value is FileObject {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "name" in value &&
-    typeof (value as FileObject).name === "string"
-  )
-}
-
-function resolveFileList(payload: unknown): {
-  files: FileObject[]
-  meta: PaginationMeta | null
-} {
-  if (Array.isArray(payload)) {
-    return {
-      files: payload.filter(isFileObject),
-      meta: null,
-    }
-  }
-
-  if (!payload || typeof payload !== "object") {
-    return {
-      files: [],
-      meta: null,
-    }
-  }
-
-  const response = payload as ObjectIndexResponse & {
-    files?: unknown
-    results?: unknown
-    data?: unknown
-    objects?: unknown
-    meta?: PaginationMeta
-  }
-
-  const nestedCandidates = [
-    response.data,
-    response.objects,
-    response.files,
-    response.results,
-  ]
-  for (const candidate of nestedCandidates) {
-    if (Array.isArray(candidate)) {
-      return {
-        files: candidate.filter(isFileObject),
-        meta: response.meta ?? null,
-      }
-    }
-  }
-
-  for (const candidate of nestedCandidates) {
-    if (candidate && typeof candidate === "object") {
-      const nested = candidate as ObjectIndexResponse & {
-        files?: unknown
-        results?: unknown
-        data?: unknown
-        objects?: unknown
-        meta?: PaginationMeta
-      }
-      const nestedArrays = [
-        nested.data,
-        nested.objects,
-        nested.files,
-        nested.results,
-      ]
-      for (const nestedCandidate of nestedArrays) {
-        if (Array.isArray(nestedCandidate)) {
-          return {
-            files: nestedCandidate.filter(isFileObject),
-            meta: nested.meta ?? response.meta ?? null,
-          }
-        }
-      }
-    }
-  }
-
-  return {
-    files: [],
-    meta: response.meta ?? null,
-  }
-}
-
 export default function FileListWidget({
   mode = "full",
   showPagination = true,
@@ -147,32 +64,12 @@ export default function FileListWidget({
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(initialLimit)
-  const [meta, setMeta] = useState<PaginationMeta | null>(null)
+  const [meta, setMeta] = useState<MetaPagination | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    const loadFiles = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const response = await objectService.index(page, limit)
-        const resolved = resolveFileList(response)
-
-        setFiles(resolved.files)
-        setMeta(resolved.meta)
-      } catch (requestError) {
-        console.error("File list error:", requestError)
-        setError("Impossible to load the file list.")
-        setFiles([])
-        setMeta(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    void loadFiles()
+    void refreshFiles()
   }, [page, limit])
 
   useEffect(() => {
@@ -275,10 +172,8 @@ export default function FileListWidget({
 
     try {
       const response = await objectService.index(page, limit)
-      const resolved = resolveFileList(response)
-
-      setFiles(resolved.files)
-      setMeta(resolved.meta)
+      setFiles(response.objects.data)
+      setMeta(response.objects.meta)
     } catch (requestError) {
       console.error("File list error:", requestError)
       setError("Impossible to load the file list.")

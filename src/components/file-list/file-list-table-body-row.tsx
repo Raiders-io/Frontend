@@ -33,7 +33,7 @@ export default function FileListTableBodyRow({
 }: FileListTableBodyRowProps) {
   return (
     <TableRow
-      key={file.id ?? file.name}
+      key={file.name}
       className="border-b last:border-0 hover:bg-muted/30"
     >
       {columns.includes("Select") && (
