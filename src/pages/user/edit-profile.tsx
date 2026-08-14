@@ -4,10 +4,11 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button'
-import { UserX } from 'lucide-react'
+import { UserX, Loader2 } from 'lucide-react'
 import { authService } from '@/services/auth_service'
 import { router } from '@/utils/router'
 import { useAuthStore } from '@/utils/stores/auth_store'
+import { useState, useEffect } from 'react'
 
 export default function EditProfile() {
 	return (
@@ -52,6 +53,27 @@ export default function EditProfile() {
 
 export const DeleteAccountDialog = () => {
 	const { logout } = useAuthStore()
+	const [ isDisabled , setIsDisabled] = useState(true)
+	const [ countdown, setCountdown ] = useState(5)
+	const [ isOpen, setIsOpen ] = useState(false)
+
+	// Timer pour désactiver le bouton
+	useEffect(() => {
+		if (!isOpen || !isDisabled) return
+
+		const timer = setInterval(() => {
+			setCountdown(prev => {
+				if (prev <= 1) {
+					setIsDisabled(false)
+					clearInterval(timer)
+					return 0
+				}
+				return prev - 1
+			})
+		}, 1000)
+
+		return () => clearInterval(timer)
+	}, [isOpen, isDisabled])
 
 	const handleDeleteAccount = async () => {
 		try {
@@ -63,12 +85,19 @@ export const DeleteAccountDialog = () => {
 		}
 	}
 
+	const handleOpenChange = (open: boolean) => {
+		setIsOpen(open)
+		if (open) {
+			setIsDisabled(true)
+			setCountdown(5)
+		}
+	}
+
 	return (
-		<AlertDialog>
+		<AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
 			<AlertDialogTrigger asChild>
 				<Button
 					variant="destructive"
-					onSelect={(e) => e.preventDefault()}
 					className="cursor-pointer"
 				>
 					<UserX />
@@ -87,9 +116,22 @@ export const DeleteAccountDialog = () => {
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-					<AlertDialogAction variant="destructive" onClick={handleDeleteAccount}>
-					Delete Account
-					</AlertDialogAction>
+					<div className={isDisabled ? "cursor-not-allowed" : ""}>
+						<AlertDialogAction 
+							disabled={isDisabled} 
+							variant="destructive" 
+							onClick={handleDeleteAccount}
+						>
+							{isDisabled ? (
+								<div className="flex items-center gap-2">
+									<Loader2 className="animate-spin" size={16} />
+									<span>Please wait {countdown}s</span>
+								</div>
+							) : (
+								'Delete Account'
+							)}
+						</AlertDialogAction>
+					</div>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
