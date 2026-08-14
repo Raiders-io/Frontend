@@ -1,8 +1,3 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -26,6 +21,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { changePageChat, changePageEditProfile, changePageFileList, changePageFriends, changePageLessons, changePageProfile } from "@/utils/router/changePage"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
+import { UserAvatar } from "@/components/UserAvatar"
 
 export function AvatarDropdown() {
   const { user } = useAuthStore()
@@ -34,10 +30,7 @@ export function AvatarDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded">
-          <Avatar>
-            <AvatarImage src="https://github.com/iDarkAxe.png" alt={`Avatar Image of ${user?.fullName}`} />
-            <AvatarFallback>{`Avatar Image of ${user?.fullName}`}</AvatarFallback>
-          </Avatar>
+          <UserAvatar />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
@@ -72,6 +65,7 @@ export function AvatarDropdown() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem disabled>{user?.fullName}</DropdownMenuItem>
           <LogOutButton />
         </DropdownMenuGroup>
       </DropdownMenuContent>
