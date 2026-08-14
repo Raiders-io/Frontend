@@ -2,7 +2,7 @@ import type { FileObject } from "@/utils/types/object"
 import type { FileListTableColumn } from "@/components/file-list/file-list-table-head-row"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { CustomCheckbox } from "@/components/CustomCheckbox"
 import { DownloadIcon, TrashIcon } from "lucide-react"
 import { DeleteButton } from "../FileListWidget"
 
@@ -38,7 +38,7 @@ export default function FileListTableBodyRow({
     >
       {columns.includes("Select") && (
         <TableCell className="px-4 py-3">
-          <Checkbox
+          <CustomCheckbox
             checked={isSelected}
             onCheckedChange={() => onSelect(file.name)}
           />
