@@ -11,6 +11,7 @@ import { authService } from '@/services/auth_service'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { AuthLayout } from '@/pages/auth/auth_layout'
 import { changePageHome } from '@/utils/router/changePage'
+import { isThemeDark } from '@/components/theme-provider'
 
 const loginSchema = z.object({
 	email: z.string().email('Email invalide'),
@@ -43,6 +44,20 @@ export default function LoginPage() {
 			)
 		}
 	}
+	// const onOauthLogin = async (provider: string) => {
+	// 	try {
+	// 		const response = await authService.oauthLogin(provider)
+	// 		setAuth(response.data.user, response.data.token)
+	// 		changePageHome()
+	// 	} catch (error) {
+	// 		console.error('OAuth login error:', error)
+	// 		setFormError(
+	// 			isAxiosError(error) && error.response
+	// 				? 'Error while connecting with OAuth provider.'
+	// 				: 'The server is unreachable. Please try again later.',
+	// 		)
+	// 	}
+	// }
 
 	return (
 		<AuthLayout
@@ -102,6 +117,16 @@ export default function LoginPage() {
 
 				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Se connecter">
 					{isSubmitting ? 'Connexion…' : 'Se connecter'}
+				</Button>
+				<Button className="mt-2 h-11 w-full" /* onClick={() => onOauthLogin("github") }*/>
+					{isThemeDark() ? (
+						<img height="32" width="32" src="https://cdn.simpleicons.org/github/black" />
+					) : (
+						<img height="32" width="32" src="https://cdn.simpleicons.org/github/white" />
+					)}
+					<a href="https://localhost:4443/api/v1/auth/github/redirect">
+						Log In with GitHub
+					</a>
 				</Button>
 			</form>
 		</AuthLayout>
