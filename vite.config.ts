@@ -2,12 +2,15 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
+import { ViteImageOptimizer } from "vite-plugin-image-optimizer"
+import { default_config_image_opti } from "./vite-plugin-image-optimizer.config"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), ViteImageOptimizer(default_config_image_opti)],
   build: {
     sourcemap: false, // True if you want source maps for debugging
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         codeSplitting: {
