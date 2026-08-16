@@ -12,6 +12,7 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/auth_layout"
 import { changePageHome } from "@/utils/router/changePage"
 import { FieldGroup } from "@/components/ui/field"
+import { isThemeDark } from '@/components/theme-provider'
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -29,21 +30,35 @@ export default function LoginPage() {
   })
   const { errors, isSubmitting } = formState
 
-  const onSubmit = async (data: LoginForm) => {
-    setFormError(null)
-    try {
-      const response = await authService.login(data)
-      setAuth(response.data.user, response.data.token)
-      changePageHome()
-    } catch (error) {
-      console.error("Login error:", error)
-      setFormError(
-        isAxiosError(error) && error.response
-          ? "Email ou mot de passe incorrect."
-          : "Le serveur est injoignable. Réessaie dans un instant.",
-      )
-    }
-  }
+	const onSubmit = async (data: LoginForm) => {
+		setFormError(null)
+		try {
+			const response = await authService.login(data)
+			setAuth(response.data.user, response.data.token)
+			changePageHome()
+		} catch (error) {
+			console.error('Login error:', error)
+			setFormError(
+				isAxiosError(error) && error.response
+					? 'Email ou mot de passe incorrect.'
+					: 'Le serveur est injoignable. Réessaie dans un instant.',
+			)
+		}
+	}
+	// const onOauthLogin = async (provider: string) => {
+	// 	try {
+	// 		const response = await authService.oauthLogin(provider)
+	// 		setAuth(response.data.user, response.data.token)
+	// 		changePageHome()
+	// 	} catch (error) {
+	// 		console.error('OAuth login error:', error)
+	// 		setFormError(
+	// 			isAxiosError(error) && error.response
+	// 				? 'Error while connecting with OAuth provider.'
+	// 				: 'The server is unreachable. Please try again later.',
+	// 		)
+	// 	}
+	// }
 
   return (
     <AuthLayout
@@ -102,21 +117,27 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {formError && (
-            <div className="rounded-md border border-destructive/25 bg-destructive/5 px-3.5 py-3">
-              <p className="text-sm text-destructive">{formError}</p>
-            </div>
-          )}
-        </form>
+				{formError && (
+					<div className="rounded-md border border-destructive/25 bg-destructive/5 px-3.5 py-3">
+						<p className="text-sm text-destructive">{formError}</p>
+					</div>
+				)}
+
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Se connecter">
+					{isSubmitting ? 'Connexion…' : 'Se connecter'}
+				</Button>
+				<Button className="mt-2 h-11 w-full" /* onClick={() => onOauthLogin("github") }*/>
+					{isThemeDark() ? (
+						<img height="32" width="32" src="https://cdn.simpleicons.org/github/black" />
+					) : (
+						<img height="32" width="32" src="https://cdn.simpleicons.org/github/white" />
+					)}
+					<a href="https://localhost:4443/api/v1/auth/github/redirect">
+						Log In with GitHub
+					</a>
+				</Button>
+			</form>
       </FieldGroup>
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-2 h-11 w-full"
-        aria-label="Se connecter"
-      >
-        {isSubmitting ? "Connexion…" : "Se connecter"}
-      </Button>
-    </AuthLayout>
-  )
+		</AuthLayout>
+	)
 }
