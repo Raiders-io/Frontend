@@ -12,6 +12,7 @@ interface ChatState {
 	setActiveConversation: (conversationId: number | null) => void
 }
 
+// TODO: Might want to remove setConv and addConv if not used anywhere (replaced by cache)
 export const useChatStore = create<ChatState>((set) => ({
 	conversations: [],
 	messages: {},

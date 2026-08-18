@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MessagesSquare } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { useChat } from '@/utils/hooks/use_chat'
 import { useChatStore } from '@/utils/stores/chat_store'
 import { useAuthStore } from '@/utils/stores/auth_store'
@@ -14,13 +15,16 @@ import type { User } from '@/utils/types/auth'
 export default function ChatPage() {
 	const { sendMessage } = useChat()
 	const currentUserId = useAuthStore((s) => s.user?.id ?? '')
-	const conversations = useChatStore((s) => s.conversations)
 	const messages = useChatStore((s) => s.messages)
 	const activeConversationId = useChatStore((s) => s.activeConversationId)
-	const setConversations = useChatStore((s) => s.setConversations)
 	const setMessages = useChatStore((s) => s.setMessages)
 	const setActiveConversation = useChatStore((s) => s.setActiveConversation)
 	const [userMap, setUserMap] = useState<Record<string, string>>({})
+
+	const { data: conversations = [], isError } = useQuery({
+		queryKey: ['conversations'],
+		queryFn: chatService.fetchConversations,
+	})
 
 	useEffect(() => {
 		userService.fetchUsers()
@@ -41,12 +45,6 @@ export default function ChatPage() {
 			.catch(console.error)
 	}, [activeConversationId])
 
-	useEffect(() => {
-		chatService.fetchConversations()
-			.then(setConversations)
-			.catch(console.error)
-	}, [setConversations])
-
 	const conversationLabel = (participantIds: string[] = []): string => {
 		const names = participantIds
 			.filter((id) => id !== currentUserId)
@@ -58,8 +56,12 @@ export default function ChatPage() {
 	const activeLabel = conversationLabel(activeConversation?.participantIds ?? [])
 	const activeMessages = activeConversationId ? messages[activeConversationId] ?? [] : []
 
-	return (
-		<div className="flex h-[calc(100vh-3.5rem)] flex-col overflow-hidden">
+	return isError ? (
+		<div className="flex h-full items-center justify-center">
+			<p className="text-sm text-destructive">Erreur de chargement</p>
+		</div>
+	) : (
+		<div className="flex h-full flex-col">
 			<div className="flex min-h-0 flex-1">
 				<ConversationList
 					conversations={conversations}
@@ -67,7 +69,6 @@ export default function ChatPage() {
 					onSelect={setActiveConversation}
 					getLabel={conversationLabel}
 				/>
-
 				<main className="flex min-w-0 flex-1 flex-col">
 					{activeConversationId ? (
 						<>
