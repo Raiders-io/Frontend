@@ -6,6 +6,7 @@ import type {
   SearchSortValue,
 } from "@/utils/types/component"
 import { UserMenu } from "./user/UserMenu"
+import i18next from 'i18next'
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -28,7 +29,7 @@ const TopNavBar = () => {
         variant="ghost"
         className="h-10 shrink-0 cursor-pointer gap-2.5 rounded-full py-0 pr-4 pl-1.5 transition-colors"
         onClick={changePageHome}
-        aria-label="Raiders.io, go to home page"
+        aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
       >
         <img
           src="/favicon.png"

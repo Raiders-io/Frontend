@@ -25,6 +25,7 @@ import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { toast } from "sonner"
+import { useTranslation } from 'react-i18next'
 
 export default function Settings() {
   return (
@@ -54,7 +55,8 @@ export default function Settings() {
 }
 
 export const DeleteAccountDialog = () => {
-  const { logout } = useAuthStore()
+  const { t } = useTranslation();
+  const { logout, user } = useAuthStore()
   const [isDisabled, setIsDisabled] = useState(true)
   const [countdown, setCountdown] = useState(5)
   const [confirmationInput, setConfirmationInput] = useState("")
@@ -102,9 +104,13 @@ export const DeleteAccountDialog = () => {
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" aria-label="Delete Account">
+        <Button
+          variant="destructive"
+          className="cursor-pointer"
+          aria-label={t('deleteAccount', 'Delete Account')}
+        >
           <UserX />
-          Delete Account
+          {t('delete_account')}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -112,7 +118,7 @@ export const DeleteAccountDialog = () => {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <UserX />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete Account</AlertDialogTitle>
+          <AlertDialogTitle>{t('delete_account')}</AlertDialogTitle>
           <AlertDialogDescription>
             Your account will be permanently deleted and you will be logged out.
             This action cannot be undone.
@@ -125,6 +131,8 @@ export const DeleteAccountDialog = () => {
             >
               {REQUIRED_PHRASE}
             </strong>
+            {t('delete_account_confirmation')}
+            To confirm, please type your id: <strong>{user?.id}</strong>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="px-4 pb-4">
@@ -144,7 +152,7 @@ export const DeleteAccountDialog = () => {
           />
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{t('cancel')}</AlertDialogCancel>
           <AlertDialogAction
             disabled={isDisabled || !isConfirmed}
             variant="destructive"
@@ -153,12 +161,12 @@ export const DeleteAccountDialog = () => {
             {isConfirmed && isDisabled ? (
               <>
                 <Loader2 className="animate-spin" size={16} />
-                Please wait {countdown}s
+                {t('please_wait')} {countdown}s
               </>
             ) : (
               <>
                 <UserX />
-                Delete Account
+                {t('delete_account')}
               </>
             )}
           </AlertDialogAction>

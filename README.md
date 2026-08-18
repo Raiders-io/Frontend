@@ -11,7 +11,7 @@ This project is the frontend for the project [Transcendence](https://github.com/
 ## Features
 
 - Interface to interact with a lot of routes from the services
-- View Lessons through file preview directly in the browser 
+- View Lessons through file preview directly in the browser
 - In-browser chat application
 
 ## AI / LLM Usage
@@ -109,3 +109,24 @@ Zod is used to validate on user's browser forms before sending them to APIs. It'
 ### TanStack Query
 
 TanStack Query is used to manage cache, loading states, and synchronise the data with the APIs.
+gère le cache, les états de chargement, les erreurs, la synchronisation des données avec l'API
+
+### i18n
+
+Generate i18n types.
+
+```sh
+npx i18next-cli types
+```
+
+Find hard coded strings.
+
+```sh
+npx i18next-cli instrument
+```
+
+Extract hard coded strings into i18n translations files.
+
+```sh
+npx i18next-cli extract
+```
