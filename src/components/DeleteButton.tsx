@@ -11,10 +11,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { TrashIcon } from "lucide-react"
+import i18next from 'i18next'
 
 export const DeleteButton = ({
   title = "Delete",
-  description = "Are you sure you want to delete this ? This action cannot be undone.",
+  description = i18next.t('delete-cant-be-undone', 'Are you sure you want to delete this ? This action cannot be undone.'),
   action,
   children,
 }: {
@@ -37,9 +38,9 @@ export const DeleteButton = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{i18next.t('cancel', 'Cancel')}</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={action}>
-            Delete
+            {i18next.t('delete', 'Delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
