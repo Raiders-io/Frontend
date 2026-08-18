@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+	"@tanstack/react-query": "^5.62.0",
     "@fontsource-variable/geist": "^5.2.9",
     "@hookform/resolvers": "^5.4.0",
     "@tailwindcss/vite": "^4.3.0",
