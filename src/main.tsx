@@ -5,6 +5,7 @@ import '@/utils/style/index.css'
 import App from './App.tsx'
  
 const queryClient = new QueryClient()
+import "@/lib/i18n.ts"; // import i18n config
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

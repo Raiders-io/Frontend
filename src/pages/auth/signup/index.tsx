@@ -19,6 +19,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
+import { useTranslation } from 'react-i18next'
 
 const signupSchema = z
   .object({
@@ -36,6 +37,7 @@ type SignupForm = z.infer<typeof signupSchema>
 type CheckedState = boolean | "indeterminate"
 
 export default function SignupPage() {
+	const { t } = useTranslation()
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -76,24 +78,24 @@ export default function SignupPage() {
       console.error("Signup error:", error)
       setFormError(
         isAxiosError(error) && error.response?.status === 422
-          ? "Cet email est déjà utilisé."
-          : "La création du compte a échoué. Réessaie dans un instant.",
+          ? t('email-already-used', 'Cet email est déjà utilisé.')
+					: t('account-creation-failed', 'La création du compte a échoué. Réessaie dans un instant.'),
       )
     }
   }
 
   return (
     <AuthLayout
-      title="Créer un compte"
+      title={t('create-account')}
       subtitle="Quelques informations et tu peux commencer."
       footer={
         <>
-          Déjà un compte ?{" "}
+          {t('djUnCompte')}{' '}
           <Link
             to="/login"
             className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
           >
-            Se connecter
+            {t('seConnecter', 'Se connecter')}
           </Link>
         </>
       }
@@ -125,7 +127,7 @@ export default function SignupPage() {
               htmlFor="password"
               className="text-xs font-medium text-foreground"
             >
-              Mot de passe
+              {t('motDePasse')}
             </Label>
             <Input
               id="password"
