@@ -8,8 +8,8 @@ import { toast } from 'sonner'
 
 export function useChat() {
   const token = useAuthStore((s) => s.token)
+  const queryClient = useQueryClient()
   const addMessage = useChatStore((s) => s.addMessage)
-  const addConversation = useChatStore((s) => s.addConversation)
   const setActiveConversation = useChatStore((s) => s.setActiveConversation)
   const wasDisconnectedRef = useRef(false)
 
@@ -20,7 +20,7 @@ export function useChat() {
     socket.connect()
 
     const onCreated = ({ conversationId }: { conversationId: number }) => {
-      addConversation({ id: conversationId })
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
       setActiveConversation(conversationId)
     }
     const onReceived = (message: Message) => addMessage(message)
@@ -46,11 +46,11 @@ export function useChat() {
     socket.on('connect', onConnect)
 
     return () => {
-      socket.off("conversation:created", onCreated)
-      socket.off("message:received", onReceived)
-      socket.off("error", onError)
+      socket.off('conversation:created', onCreated)
+      socket.off('message:received', onReceived)
+      socket.off('error', onError)
     }
-  }, [token, addMessage, addConversation])
+  }, [token, addMessage, queryClient, setActiveConversation])
 
   const createConversation = useCallback(
     (participantIds: string[]) =>
