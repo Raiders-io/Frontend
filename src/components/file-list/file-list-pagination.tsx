@@ -1,6 +1,12 @@
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationPrevious, 
+  PaginationNext,
+ } from "@/components/ui/pagination"
 
 type FileListPaginationProps = {
   currentPage: number
@@ -43,24 +49,16 @@ export default function FileListPagination({
             className="w-28"
           />
         </div>
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onPreviousPage}
-            disabled={!hasPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onNextPage}
-            disabled={!hasNextPage}
-          >
-            Next
-          </Button>
-        </div>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={onPreviousPage} disabled={!hasPreviousPage}/>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext onClick={onNextPage} disabled={!hasNextPage} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   )

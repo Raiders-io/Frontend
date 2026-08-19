@@ -11,21 +11,20 @@
 - [ ] Message sur un hover d'un élément : [Tooltip](https://ui.shadcn.com/docs/components/base/tooltip)
 - [ ] When multiple buttons needs to be attached : [Button-Group](https://ui.shadcn.com/docs/components/base/button-group)
 - [ ] Any Search bar : [Input-group](https://ui.shadcn.com/docs/components/base/input-group)
-- [ ] Pagination : [Pagination](https://ui.shadcn.com/docs/components/base/pagination)
+- [x] Pagination : [Pagination](https://ui.shadcn.com/docs/components/base/pagination)
 - [ ] Replace default component when no element found : [Empty](https://ui.shadcn.com/docs/components/base/empty)
 - [ ] Loading Animation : [Skeleton](https://ui.shadcn.com/docs/components/base/skeleton)
 
 ### Auth/User
 
-- [ ] `Disconnect` + `deleteUser` : [Alert-Dialog](https://ui.shadcn.com/docs/components/base/alert-dialog)
-- [ ] `userLogin` : [Dialog](https://ui.shadcn.com/docs/components/base/dialog)
-- [ ] `displayAvatar` : [Avatar](https://ui.shadcn.com/docs/components/base/avatar)
+- [x] `Disconnect` + `deleteUser` : [Alert-Dialog](https://ui.shadcn.com/docs/components/base/alert-dialog)
+- [x] `displayAvatar` : [Avatar](https://ui.shadcn.com/docs/components/base/avatar)
 
 ### Object
 
 - [ ] `upload` : [Attachment](https://ui.shadcn.com/docs/components/base/attachment)
+- [x] replace FileList-table ? : [Table](https://ui.shadcn.com/docs/components/base/table)
 - [ ] replace FileList-table ? : [Data-table](https://ui.shadcn.com/docs/components/base/data-table)
-- [ ] replace FileList-table ? : [Table](https://ui.shadcn.com/docs/components/base/table)
 
 ### Message
 
