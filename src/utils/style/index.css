@@ -35,33 +35,33 @@
 }
 
 .dark {
-	--background: hsl(240 10% 4%);
+	--background: hsl(240 10% 14%);
 	--foreground: hsl(0 0% 98%);
 
-	--card: hsl(240 10% 6%);
+	--card: hsl(240 10% 26%);
 	--card-foreground: hsl(0 0% 98%);
 
-	--popover: hsl(240 10% 6%);
+	--popover: hsl(240 10% 26%);
 	--popover-foreground: hsl(0 0% 98%);
 
 	--primary: hsl(0 0% 98%);
-	--primary-foreground: hsl(240 6% 10%);
+	--primary-foreground: hsl(240 6% 30%);
 
-	--secondary: hsl(240 4% 16%);
+	--secondary: hsl(240 4% 36%);
 	--secondary-foreground: hsl(0 0% 98%);
 
-	--muted: hsl(240 4% 16%);
+	--muted: hsl(240 4% 36%);
 	--muted-foreground: hsl(240 5% 65%);
 
-	--accent: hsl(240 4% 16%);
+	--accent: hsl(240 4% 36%);
 	--accent-foreground: hsl(0 0% 98%);
 
-	--destructive: hsl(0 63% 41%);
+	--destructive: hsl(0, 100%, 40%);
 	--destructive-foreground: hsl(0 0% 98%);
 
-	--border: hsl(240 4% 16%);
-	--input: hsl(240 4% 16%);
-	--ring: hsl(240 5% 35%);
+	--border: hsl(240 4% 36%);
+	--input: hsl(240 4% 36%);
+	--ring: hsl(240 5% 45%);
 }
 
 @theme inline {
