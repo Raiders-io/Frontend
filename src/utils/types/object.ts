@@ -64,3 +64,17 @@ export type FileListWidgetProps = {
 	initialLimit?: number
 	maxHeight?: string
 }
+
+export type QuotaResponse = {
+  storageBytes: number,
+  storageBytesLimit: number,
+  objectCount: number,
+  objectCountLimit: number,
+  downloadCount: number,
+  downloadCountLimit: number,
+  uploadCount: number,
+  uploadCountLimit: number,
+  downloadCountResetAt: string,
+  uploadCountResetAt: string,
+  updatedAt: string
+}

@@ -4,6 +4,7 @@ import type {
   ObjectStoreResponse,
   ObjectDestroyResponse,
   ObjectDestroyManyResponse,
+  QuotaResponse,
 } from "@/utils/types/object"
 
 // get '/?page&limit' 'index'
@@ -73,6 +74,12 @@ export const objectService = {
     )
     return data
   },
+  
+  quotaRetrieve: async (): Promise<QuotaResponse> => {
+		const { data } = await api.get<QuotaResponse>('/api/v1/storage/quota')
+		return data
+	}
+
 }
 
 function getMimeTypeFromFilename(filename: string): string {
