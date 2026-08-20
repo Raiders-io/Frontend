@@ -14,6 +14,8 @@ import {
   changePageFriends,
   changePageProfile,
   changePageEditProfile,
+  changePageAbout,
+  changePageContact,
 } from "@/utils/router/changePage"
 import { Separator } from "@/components/ui/separator"
 
@@ -67,8 +69,8 @@ export const FooterComponent = () => {
           <NavButton label="Messages" onClick={changePageChat} />
           <Separator orientation="vertical" className="h-[80%] border-1" />
           <NavButton label="Settings" onClick={changePageEditProfile} />
-          <NavButton label="About" />
-          <NavButton label="Contact" />
+          <NavButton label="About" onClick={changePageAbout} />
+          <NavButton label="Contact" onClick={changePageContact} />
         </div>
         <div className="flex h-full w-50 shrink-0 flex-col items-center justify-between">
           <Button

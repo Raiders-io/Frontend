@@ -35,3 +35,11 @@ export const changePageEditProfile = () => {
 export const changePageChat = () => {
 	router.navigate('/chat')
 }
+
+export const changePageAbout = () => {
+	router.navigate('/about')
+}
+
+export const changePageContact = () => {
+	router.navigate('/contact')
+}
