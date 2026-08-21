@@ -40,9 +40,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/file/list',
 		element: (
-			<ProtectedRoute>
+			// <ProtectedRoute>
 				<FileListPage />
-			</ProtectedRoute>
+			// </ProtectedRoute>
 		),
 	},
 	{
