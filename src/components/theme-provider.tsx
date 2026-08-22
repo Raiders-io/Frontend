@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
-type Theme = "dark" | "light" | "system"
+export type Theme = "dark" | "light" | "system"
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -70,4 +70,13 @@ export const useTheme = () => {
     throw new Error("useTheme must be used within a ThemeProvider")
 
   return context
+}
+
+export const isThemeDark = () => {
+  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+    .matches
+    ? "dark"
+    : "light"
+  const { theme } = useTheme()
+  return theme === "dark" || (theme === "system" && systemTheme === "dark")
 }

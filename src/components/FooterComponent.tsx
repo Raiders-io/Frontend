@@ -23,6 +23,7 @@ import {
   changePageAbout,
   changePageContact,
 } from "@/utils/router/changePage"
+import { GithubLogoComponent } from "./GithubImg"
 
 export const FooterComponent = () => {
   const AccordionFooter = () => {
@@ -131,6 +132,10 @@ export const FooterComponent = () => {
             </Button>
           </div>
         </CardContent>
+        <Button variant="ghost" className="h-[30%] w-full" onClick={() => window.open("https://github.com/Raiders-io", "_blank")}>
+        <GithubLogoComponent />
+          See Project Informations directly on Github through our Organization (external link)
+        </Button>
       </Card>
     </footer>
   )
