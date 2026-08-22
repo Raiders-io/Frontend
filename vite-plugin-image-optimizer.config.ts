@@ -9,7 +9,7 @@ export const default_config_image_opti = {
     multipass: true,
     plugins: [
       {
-        name: 'preset-default',
+        name: "preset-default",
         params: {
           overrides: {
             cleanupNumericValues: false,
@@ -21,11 +21,11 @@ export const default_config_image_opti = {
           },
         },
       },
-      'sortAttrs',
+      "sortAttrs",
       {
-        name: 'addAttributesToSVGElement',
+        name: "addAttributesToSVGElement",
         params: {
-          attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
+          attributes: [{ xmlns: "http://www.w3.org/2000/svg" }],
         },
       },
     ],
@@ -59,4 +59,4 @@ export const default_config_image_opti = {
   },
   cache: false,
   cacheLocation: ".cache/vite-plugin-image-optimizer",
-};
+}

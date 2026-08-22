@@ -4,10 +4,17 @@ import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer"
 import { default_config_image_opti } from "./vite-plugin-image-optimizer.config"
+import removeConsole from "vite-plugin-remove-console"
+import { removeConsoleConfig } from "./removeConsole.config"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), ViteImageOptimizer(default_config_image_opti)],
+  plugins: [
+    react(),
+    tailwindcss(),
+    ViteImageOptimizer(default_config_image_opti),
+    removeConsole(removeConsoleConfig),
+  ],
   build: {
     sourcemap: false, // True if you want source maps for debugging
     cssCodeSplit: true,
