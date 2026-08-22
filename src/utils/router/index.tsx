@@ -10,6 +10,8 @@ const LessonPage = lazy(() => import('@/pages/lesson/lesson_page'))
 const FileListPage = lazy(() => import('@/pages/file/index'))
 const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
 const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
+const Profile = lazy(() => import('@/pages/user/profile'))
+const ProfileFrom = lazy(() => import('@/pages/user/profile-from'))
 const AboutPage = lazy(() => import('@/pages/about'))
 
 export const router = createBrowserRouter([
@@ -52,6 +54,14 @@ export const router = createBrowserRouter([
 				<ChatPage />
 			</ProtectedRoute>
 		),
+	},
+	{
+		path: '/profile',
+		element: <Profile />,
+	},
+	{
+		path: '/profile/:userid',
+		element: <ProfileFrom />,
 	},
 	{
 		path: '/edit-profile',
