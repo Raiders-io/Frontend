@@ -66,22 +66,46 @@ export function CustomResizablePanelGroup({
 
 export function CustomResizablePanelLeftZone({
   children,
+  defaultSize = "50%",
+  minSize = "25%",
 }: {
   children: ReactNode
+  defaultSize?: string | number
+  minSize?: string | number
 }) {
   const { LeftZoneVisible } = useResizableZones()
 
-  return <>{LeftZoneVisible && <ResizablePanel>{children}</ResizablePanel>}</>
+  return (
+    <>
+      {LeftZoneVisible && (
+        <ResizablePanel defaultSize={defaultSize} minSize={minSize}>
+          {children}
+        </ResizablePanel>
+      )}
+    </>
+  )
 }
 
 export function CustomResizablePanelRightZone({
   children,
+  defaultSize = "50%",
+  minSize = "25%",
 }: {
   children: ReactNode
+  defaultSize?: string | number
+  minSize?: string | number
 }) {
   const { RightZoneVisible } = useResizableZones()
 
-  return <>{RightZoneVisible && <ResizablePanel>{children}</ResizablePanel>}</>
+  return (
+    <>
+      {RightZoneVisible && (
+        <ResizablePanel defaultSize={defaultSize} minSize={minSize}>
+          {children}
+        </ResizablePanel>
+      )}
+    </>
+  )
 }
 
 export function CustomResizablePanelHandle() {
