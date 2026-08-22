@@ -5,7 +5,7 @@ export default function IndexPage() {
 	return(
 		<>
 			<FileListWidget mode="full" showPagination={true} showUpload={true} initialLimit={10} />
-			<QuotaTable />
+			<QuotaTable mode="full" />
 		</>
 	)
 }

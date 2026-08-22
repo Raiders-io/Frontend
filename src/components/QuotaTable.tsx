@@ -1,6 +1,7 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   // TableFooter,
@@ -31,7 +32,6 @@ export function QuotaTable({ mode = "full" }) {
       setQuota(response)
     } catch (requestError) {
       console.error("Quota error:", requestError)
-      // setError("Impossible to load the quota.")
       setError(true)
       setQuota(null)
       setTimeout(() => {
@@ -45,9 +45,114 @@ export function QuotaTable({ mode = "full" }) {
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
 
+  const quotaStorageLimits = () => {
+    const storageUsed = quota?.storageBytes || 0
+    const storageLimit = quota?.storageBytesLimit || 1
+    const storageRatio = () => {
+      let temp = ((storageUsed / storageLimit) * 100).toFixed(2)
+      return storageUsed != 0 && temp === "0.00" ? "<0.01" : temp
+    }
+
+    return (
+      <>
+        <div className="overflow-hidden rounded-lg border">
+          <Table
+            className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
+          >
+            <TableCaption className="text-lg underline font-semibold">
+              Quota storage limits
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Storage Used</TableHead>
+                <TableHead>Storage Limit</TableHead>
+                <TableHead>Storage Ratio</TableHead>
+                <TableHead>Total Files count</TableHead>
+                <TableHead>Files count limit</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>{formatFileSize(quota?.storageBytes)}</TableCell>
+                <TableCell>
+                  {formatFileSize(quota?.storageBytesLimit)}
+                </TableCell>
+                <TableCell>{storageRatio()}%</TableCell>
+                <TableCell>{quota?.objectCount} files</TableCell>
+                <TableCell>{quota?.objectCountLimit} files</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </>
+    )
+  }
+
+  const quotaRateLimit = () => {
+    return (
+      <>
+        <div className="overflow-hidden rounded-lg border">
+          <Table
+            className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
+          >
+            <TableCaption className="text-lg underline font-semibold">
+              Quota rate limiting
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Download Count Reset At</TableHead>
+                <TableHead>Upload Count Reset At</TableHead>
+                <TableHead>Updated At</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>{quota?.downloadCountResetAt}</TableCell>
+                <TableCell>{quota?.uploadCountResetAt}</TableCell>
+                <TableCell>{quota?.updatedAt}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </>
+    )
+  }
+
+  const quotaStorageCounter = () => {
+    return (
+      <>
+        <div className="overflow-hidden rounded-lg border">
+          <Table
+            className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
+          >
+            <TableCaption className="text-lg underline font-semibold">
+              Quota storage counter
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Total Upload count</TableHead>
+                <TableHead>Upload count limit</TableHead>
+                <TableHead>Total Download count</TableHead>
+                <TableHead>Download count limit</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>{quota?.uploadCount}</TableCell>
+                <TableCell>{quota?.uploadCountLimit}</TableCell>
+                <TableCell>{quota?.downloadCount}</TableCell>
+                <TableCell>{quota?.downloadCountLimit}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </>
+    )
+  }
+
   return (
-    <>
-      <Card className={containerClassName}>
+    <div className={`${containerClassName} gap-3`}>
+      <Card>
         <CardHeader>
           <CardTitle>Quota</CardTitle>
         </CardHeader>
@@ -62,57 +167,19 @@ export function QuotaTable({ mode = "full" }) {
             </p>
           ) : (
             <div>
-              <div className="overflow-hidden rounded-lg border">
-                <Table
-                  className={`w-full caption-bottom ${mode === "compact" ? "text-xs" : "text-sm"}`}
-                >
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Storage Used</TableHead>
-                      <TableHead>Storage Limit</TableHead>
-                      <TableHead>Storage Ratio</TableHead>
-                      <TableHead>Total Files count</TableHead>
-                      <TableHead>Files count limit</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>{formatFileSize(quota?.storageBytes)}</TableCell>
-                      <TableCell>{formatFileSize(quota?.storageBytesLimit)}</TableCell>
-                      <TableCell>{((quota?.storageBytes || 0) / (quota?.storageBytesLimit || 1) * 100 || 0).toFixed(2)}%</TableCell>
-                      <TableCell>{quota?.objectCount} files</TableCell>
-                      <TableCell>{quota?.objectCountLimit} files</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-              <h3 className="py-4 text-lg font-semibold">Quota rates:</h3>
-              <div className="overflow-hidden rounded-lg border">
-                <Table
-                  className={`w-full caption-bottom ${mode === "compact" ? "text-xs" : "text-sm"}`}
-                >
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Total Upload count</TableHead>
-                      <TableHead>Upload count limit</TableHead>
-                      <TableHead>Storage Used</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>{quota?.uploadCount}</TableCell>
-                      <TableCell>{quota?.uploadCountLimit}</TableCell>
-                      <TableCell>
-                        {formatFileSize(quota?.storageBytes)}/{formatFileSize(quota?.storageBytesLimit)}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+              {mode === "compact" ? (
+                quotaStorageLimits()
+              ) : (
+                <>
+                  {quotaStorageLimits()}
+                  {quotaStorageCounter()}
+                  {quotaRateLimit()}
+                </>
+              )}
             </div>
           )}
         </CardContent>
       </Card>
-    </>
+    </div>
   )
 }

@@ -382,7 +382,7 @@ export default function FileListWidget({
           ) : (
             <div className="overflow-hidden rounded-lg border">
               <Table
-                className={`w-full caption-bottom ${mode === "compact" ? "text-xs" : "text-sm"}`}
+                className={`w-full ${mode === "compact" ? "text-xs" : "text-sm"}`}
               >
                 <TableHeader>
                   <FileListTableHeadRow columns={visibleColumns} />
