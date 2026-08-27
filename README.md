@@ -1,5 +1,25 @@
 # Transcendance Frontend
 
+## Usage
+
+The following command builds the frontend and transpiles typescript into javascript into the `dist` folder. It copies all files from `public` and tries to optimize all pictures for size. It also generate the sitemap through a script.
+
+```sh
+make build
+```
+
+The following command just propagate the `make` command to it's parent project ([deployment](https://github.com/Raiders-io/deployment)). It auto builds and gives the files directly to nginx through a shared volume via docker compose.
+
+```sh
+make deploy
+```
+
+THe following command lint the code, ignoring files in the 'src/component/ui' folder as they are provided by Shadcn and shouldn't be modified.
+
+```sh
+make lint
+```
+
 ## Stack technique
 
 ### React TS
