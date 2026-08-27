@@ -18,6 +18,8 @@ import {
   type SetStateAction,
   type ReactNode,
 } from "react"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 interface ResizableZonesContextType {
   LeftZoneVisible: boolean
@@ -34,7 +36,7 @@ function useResizableZones(): ResizableZonesContextType {
   const ctx = useContext(ResizableZonesContext)
   if (!ctx) {
     throw new Error(
-      "CustomResizablePanelLeftZone/B/Handle doit être utilisé à l'intérieur de CustomResizablePanelGroup",
+      i18next.t('CustomResizablePanel-needs-CustomResizablePanelGroup', 'CustomResizablePanelLeftZone/B/Handle doit être utilisé à l\'intérieur de CustomResizablePanelGroup'),
     )
   }
   return ctx
@@ -114,6 +116,7 @@ export function CustomResizablePanelHandle() {
 }
 
 export function CustomResizablePanelLeftZoneToggle() {
+  const { t } = useTranslation()
   const { LeftZoneVisible, setLeftZoneVisible, RightZoneVisible } =
     useResizableZones()
 
@@ -121,7 +124,7 @@ export function CustomResizablePanelLeftZoneToggle() {
     <>
       {RightZoneVisible && (
         <Button
-          aria-label={LeftZoneVisible ? "Close Left Zone" : "Open Left Zone"}
+          aria-label={LeftZoneVisible ? t('closeLeftZone', 'Close Left Zone') : t('openLeftZone', 'Open Left Zone')}
           onClick={() => setLeftZoneVisible(!LeftZoneVisible)}
         >
           {LeftZoneVisible ? <PanelLeftClose /> : <PanelLeftOpen />}
@@ -132,6 +135,7 @@ export function CustomResizablePanelLeftZoneToggle() {
 }
 
 export function CustomResizablePanelRightZoneToggle() {
+  const { t } = useTranslation()
   const { LeftZoneVisible, setRightZoneVisible, RightZoneVisible } =
     useResizableZones()
 
@@ -139,7 +143,7 @@ export function CustomResizablePanelRightZoneToggle() {
     <>
       {LeftZoneVisible && (
         <Button
-          aria-label={RightZoneVisible ? "Close Right Zone" : "Open Right Zone"}
+          aria-label={RightZoneVisible ? t('closeRightZone', 'Close Right Zone') : t('openRightZone', 'Open Right Zone')}
           onClick={() => setRightZoneVisible(!RightZoneVisible)}
         >
           {RightZoneVisible ? <PanelRightClose /> : <PanelRightOpen />}

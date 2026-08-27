@@ -40,8 +40,11 @@ import {
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { UserAvatar } from "@/components/UserAvatar"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 export function AvatarDropdown() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
 
   return (
@@ -51,47 +54,47 @@ export function AvatarDropdown() {
           variant="ghost"
           size="icon"
           className="rounded"
-          aria-label="Open user menu"
+          aria-label={t('openUserMenu', 'Open user menu')}
         >
           <UserAvatar />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={changePageFileList} aria-label="My Files">
+          <DropdownMenuItem onClick={changePageFileList} aria-label={t('myFiles', 'My Files')}>
             <FileIcon />
-            My Files
+            {t('myFiles', 'My Files')}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={changePageLessons} aria-label="My Lessons">
+          <DropdownMenuItem onClick={changePageLessons} aria-label={t('myLessons', 'My Lessons')}>
             <BookIcon />
-            My Lessons
+            {t('myLessons', 'My Lessons')}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={changePageProfile} aria-label="Profile">
             <UserIcon />
-            Profile
+            {t('profile', 'Profile')}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={changePageFriends} aria-label="My Friends">
+          <DropdownMenuItem onClick={changePageFriends} aria-label={t('myFriends', 'My Friends')}>
             <UsersIcon />
-            My Friends
+            {t('myFriends', 'My Friends')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={changePageChat} aria-label="Messages">
             <MessageCircleIcon />
-            Messages
+            {t('messages', 'Messages')}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={changePageEditProfile}
-            aria-label="Edit Profile"
+            aria-label={t('editProfile', 'Edit Profile')}
           >
             <SettingsIcon />
-            Edit Profile
+            {t('editProfile', 'Edit Profile')}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem disabled aria-label="User Name">
+          <DropdownMenuItem disabled aria-label={t('userName', 'User Name')}>
             {user?.fullName}
           </DropdownMenuItem>
           <LogOutButton />
@@ -123,7 +126,7 @@ const LogOutButton = () => {
           className="cursor-pointer"
         >
           <LogOutIcon />
-          Log out
+          {i18next.t('logOut', 'Log out')}
         </DropdownMenuItem>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -131,21 +134,21 @@ const LogOutButton = () => {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <LogOutIcon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Log out</AlertDialogTitle>
+          <AlertDialogTitle>{i18next.t('logOut', 'Log out')}</AlertDialogTitle>
           <AlertDialogDescription>
-            You will get disconnected
+            {i18next.t('youWillGetDisconnected', 'You will get disconnected')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline" aria-label="Cancel">
-            Cancel
+          <AlertDialogCancel variant="outline" aria-label={i18next.t('cancel', 'Cancel')}>
+            {i18next.t('cancel', 'Cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={handleLogout}
-            aria-label="Log out"
+            aria-label={i18next.t('logOut', 'Log out')}
           >
-            Log out
+            {i18next.t('logOut', 'Log out')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

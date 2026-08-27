@@ -11,8 +11,10 @@ import { ConversationList } from './conversation_list'
 import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
 import type { User } from '@/utils/types/auth'
+import { useTranslation } from 'react-i18next'
 
 export default function ChatPage() {
+	const { t } = useTranslation()
 	const { sendMessage } = useChat()
 	const currentUserId = useAuthStore((s) => s.user?.id ?? '')
 	const conversations = useChatStore((s) => s.conversations)
@@ -84,15 +86,14 @@ export default function ChatPage() {
 									<p className="truncate text-sm font-medium text-foreground">
 										{activeLabel}
 									</p>
-									<p className="font-mono text-[11px] text-muted-foreground">
-										{activeMessages.length} message{activeMessages.length > 1 ? 's' : ''}
+									<p className="font-mono text-[11px] text-muted-foreground">{t('lengthMessage', '{{length}} message', { length: activeMessages.length })}{activeMessages.length > 1 ? 's' : ''}
 									</p>
 								</div>
 							</header>
 
 							<MessageThread messages={activeMessages} currentUserId={currentUserId} />
 							<MessageInput
-								placeholder={`Écrire à ${activeLabel}…`}
+								placeholder={t('crireActivelabel', 'Écrire à {{activeLabel}}…', { activeLabel })}
 								onSend={(content) => sendMessage(activeConversationId, content)}
 							/>
 						</>
@@ -103,11 +104,10 @@ export default function ChatPage() {
 								strokeWidth={1.25}
 							/>
 							<p className="text-sm font-medium text-foreground">
-								Aucune conversation ouverte
+								{t('no-conversation-opened', 'Aucune conversation ouverte')}
 							</p>
 							<p className="max-w-xs text-center text-sm text-muted-foreground">
-								Sélectionne une conversation à gauche, ou démarres-en une depuis
-								la liste des membres.
+								{t('select-conversation-or-start-one', 'Sélectionne une conversation à gauche, ou démarres-en une depuis\n\t\t\t\t\t\t\t\tla liste des membres.')}
 							</p>
 						</div>
 					)}

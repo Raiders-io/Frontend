@@ -11,6 +11,7 @@ import { authService } from '@/services/auth_service'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { AuthLayout } from '@/pages/auth/auth_layout'
 import { changePageHome } from '@/utils/router/changePage'
+import { useTranslation } from 'react-i18next'
 
 const signupSchema = z.object({
 	fullName: z.string().min(2, 'Nom trop court'),
@@ -25,6 +26,7 @@ const signupSchema = z.object({
 type SignupForm = z.infer<typeof signupSchema>
 
 export default function SignupPage() {
+	const { t } = useTranslation()
 	const { setAuth } = useAuthStore()
 	const [formError, setFormError] = useState<string | null>(null)
 
@@ -43,24 +45,24 @@ export default function SignupPage() {
 			console.error('Signup error:', error)
 			setFormError(
 				isAxiosError(error) && error.response?.status === 422
-					? 'Cet email est déjà utilisé.'
-					: 'La création du compte a échoué. Réessaie dans un instant.',
+					? t('email-already-used', 'Cet email est déjà utilisé.')
+					: t('account-creation-failed', 'La création du compte a échoué. Réessaie dans un instant.'),
 			)
 		}
 	}
 
 	return (
 		<AuthLayout
-			title="Créer un compte"
+			title={t('create-account', 'Créer un compte')}
 			subtitle="Quelques informations et tu peux commencer."
 			footer={
 				<>
-					Déjà un compte ?{' '}
+					{t('djUnCompte', 'Déjà un compte ?')}{' '}
 					<Link
 						to="/login"
 						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
 					>
-						Se connecter
+						{t('seConnecter', 'Se connecter')}
 					</Link>
 				</>
 			}
@@ -68,11 +70,11 @@ export default function SignupPage() {
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
 				<div className="space-y-1.5">
 					<Label htmlFor="fullName" className="text-xs font-medium text-foreground">
-						Nom
+						{t('nom', 'Nom')}
 					</Label>
 					<Input
 						id="fullName"
-						placeholder="Ada Lovelace"
+						placeholder={t('adaLovelace', 'Ada Lovelace')}
 						autoComplete="name"
 						className="h-11 bg-background"
 						{...register('fullName')}
@@ -84,7 +86,7 @@ export default function SignupPage() {
 
 				<div className="space-y-1.5">
 					<Label htmlFor="email" className="text-xs font-medium text-foreground">
-						Email
+						{'Email'}
 					</Label>
 					<Input
 						id="email"
@@ -101,7 +103,7 @@ export default function SignupPage() {
 
 				<div className="space-y-1.5">
 					<Label htmlFor="password" className="text-xs font-medium text-foreground">
-						Mot de passe
+						{t('motDePasse', 'Mot de passe')}
 					</Label>
 					<Input
 						id="password"
@@ -115,13 +117,13 @@ export default function SignupPage() {
 							errors.password ? 'text-destructive' : 'text-muted-foreground'
 						}`}
 					>
-						{errors.password?.message ?? '8 caractères minimum.'}
+						{errors.password?.message ?? t('password-requirements', '8 caractères minimum.')}
 					</p>
 				</div>
 
 				<div className="space-y-1.5">
 					<Label htmlFor="passwordConfirmation" className="text-xs font-medium text-foreground">
-						Confirmer le mot de passe
+						{t('confirm-password', 'Confirmer le mot de passe')}
 					</Label>
 					<Input
 						id="passwordConfirmation"
@@ -141,8 +143,8 @@ export default function SignupPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Créer un compte">
-					{isSubmitting ? 'Création…' : 'Créer un compte'}
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label={t('create-account', 'Créer un compte')}>
+					{isSubmitting ? 'Création…' : t('create-account', 'Créer un compte')}
 				</Button>
 			</form>
 		</AuthLayout>

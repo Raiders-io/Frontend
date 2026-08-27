@@ -45,3 +45,23 @@ State manager: to manage the overall state (logged-in user, notifications, etc.)
 ### TanStack Query (a voir)
 
 gère le cache, les états de chargement, les erreurs, la synchronisation des données avec l'API
+
+### i18n
+
+Generate i18n types.
+
+```sh
+npx i18next-cli types
+```
+
+Find hard coded strings.
+
+```sh
+npx i18next-cli instrument
+```
+
+Extract hard coded strings into i18n translations files.
+
+```sh
+npx i18next-cli extract
+```
