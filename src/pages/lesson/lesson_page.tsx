@@ -18,8 +18,10 @@ import { useState, useRef } from "react"
 import ReactMarkdown from "react-markdown"
 import { ReactMarkdownStyle } from "@/utils/style/ReactMarkdown"
 import remarkGfm from "remark-gfm"
+import { useTranslation } from 'react-i18next'
 
 export default function LessonPage() {
+  const { t } = useTranslation()
   const [fileData, setFileData] = useState<{
     url?: string
     text?: string
@@ -101,10 +103,10 @@ export default function LessonPage() {
         <Input
           ref={fileInputRef}
           type="search"
-          placeholder="File name (e.g., en.subject.pdf)"
+          placeholder={t('fileNameEgEnsubjectpdf', 'File name (e.g., en.subject.pdf)')}
         />
-        <Button onClick={handlePreview} aria-label="Preview File">
-          Preview
+        <Button onClick={handlePreview} aria-label={t('previewFile', 'Preview File')}>
+          {t('preview', 'Preview')}
         </Button>
       </Field>
       <CustomResizablePanelGroup>

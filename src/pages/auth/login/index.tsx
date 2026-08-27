@@ -11,6 +11,7 @@ import { authService } from '@/services/auth_service'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { AuthLayout } from '@/pages/auth/auth_layout'
 import { changePageHome } from '@/utils/router/changePage'
+import { useTranslation } from 'react-i18next'
 
 const loginSchema = z.object({
 	email: z.string().email('Email invalide'),
@@ -20,6 +21,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
+	const { t } = useTranslation()
 	const { setAuth } = useAuthStore()
 	const [formError, setFormError] = useState<string | null>(null)
 
@@ -38,8 +40,8 @@ export default function LoginPage() {
 			console.error('Login error:', error)
 			setFormError(
 				isAxiosError(error) && error.response
-					? 'Email ou mot de passe incorrect.'
-					: 'Le serveur est injoignable. Réessaie dans un instant.',
+					? t('email-or-password-incorrect', 'Email ou mot de passe incorrect.')
+					: t('internal-server-error-retry', 'Le serveur est injoignable. Réessaie dans un instant.'),
 			)
 		}
 	}
@@ -50,12 +52,12 @@ export default function LoginPage() {
 			subtitle="Entre tes identifiants pour accéder à ton compte."
 			footer={
 				<>
-					Pas encore de compte ?{' '}
+					{t('pasEncoreDeCompte', 'Pas encore de compte ?')}{' '}
 					<Link
 						to="/signup"
 						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
 					>
-						Créer un compte
+						{t('create-account', 'Créer un compte')}
 					</Link>
 				</>
 			}
@@ -63,7 +65,7 @@ export default function LoginPage() {
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
 				<div className="space-y-1.5">
 					<Label htmlFor="email" className="text-xs font-medium text-foreground">
-						Email
+						{t('email', 'Email')}
 					</Label>
 					<Input
 						id="email"
@@ -80,7 +82,7 @@ export default function LoginPage() {
 
 				<div className="space-y-1.5">
 					<Label htmlFor="password" className="text-xs font-medium text-foreground">
-						Mot de passe
+						{t('motDePasse', 'Mot de passe')}
 					</Label>
 					<Input
 						id="password"
@@ -100,7 +102,7 @@ export default function LoginPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Se connecter">
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label={t('seConnecter', 'Se connecter')}>
 					{isSubmitting ? 'Connexion…' : 'Se connecter'}
 				</Button>
 			</form>

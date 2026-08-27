@@ -1,4 +1,5 @@
 import { TableRow, TableHead } from "@/components/ui/table"
+import { useTranslation } from 'react-i18next'
 
 export type FileListTableColumn =
   | "Icon"
@@ -17,31 +18,32 @@ type FileListTableHeadRowProps = {
 export default function FileListTableHeadRow({
   columns,
 }: FileListTableHeadRowProps) {
+  const { t } = useTranslation()
   return (
     <TableRow>
       {columns.includes("Select") && (
-        <TableHead className="px-4 py-3 font-medium">Select</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('select', 'Select')}</TableHead>
       )}
       {columns.includes("Icon") && (
-        <TableHead className="px-4 py-3 font-medium">Icon</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('icon', 'Icon')}</TableHead>
       )}
       {columns.includes("Name") && (
         <TableHead className="px-4 py-3 font-medium">Name</TableHead>
       )}
       {columns.includes("Size") && (
-        <TableHead className="px-4 py-3 font-medium">Size</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('size', 'Size')}</TableHead>
       )}
       {columns.includes("Type") && (
         <TableHead className="px-4 py-3 font-medium">Type</TableHead>
       )}
       {columns.includes("Visibility") && (
-        <TableHead className="px-4 py-3 font-medium">Visibility</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('visibility', 'Visibility')}</TableHead>
       )}
       {columns.includes("Created at") && (
-        <TableHead className="px-4 py-3 font-medium">Created at</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('createdAt', 'Created at')}</TableHead>
       )}
       {columns.includes("Actions") && (
-        <TableHead className="px-4 py-3 font-medium">Actions</TableHead>
+        <TableHead className="px-4 py-3 font-medium">{t('actions', 'Actions')}</TableHead>
       )}
     </TableRow>
   )

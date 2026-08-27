@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, ArrowRight, BookOpen, Search } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 type SortOption = 'created_at' | 'updated_at' | 'title' | 'name'
 
@@ -19,6 +20,7 @@ const sortOptions: { label: string; value: SortOption; direction: 'asc' | 'desc'
 ]
 
 export default function LessonHomePage() {
+  const { t } = useTranslation()
   const location = useLocation()
   const [draftTitle, setDraftTitle] = useState('')
   const [appliedTitle, setAppliedTitle] = useState('')
@@ -134,8 +136,8 @@ export default function LessonHomePage() {
     <div className="min-h-screen bg-slate-50 p-6 md:p-12">
       <div className="mx-auto max-w-6xl space-y-8">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Lesson Workspace</h1>
-          <p className="text-slate-500">Search lessons by name or tag, then sort and page through the backend results.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t('lessonWorkspace', 'Lesson Workspace')}</h1>
+          <p className="text-slate-500">{t('search-lessons-differently', 'Search lessons by name or tag, then sort and page through the backend results.')}</p>
         </div>
 
         <Card className="border-slate-200 shadow-sm">
@@ -146,7 +148,7 @@ export default function LessonHomePage() {
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <Input
                     type="text"
-                    placeholder="Search by lesson name..."
+                    placeholder={t('searchByLessonName', 'Search by lesson name...')}
                     className="h-11 pl-9"
                     value={draftTitle}
                     onChange={(event) => setDraftTitle(event.target.value)}
@@ -154,20 +156,20 @@ export default function LessonHomePage() {
                 </div>
                 <div className="flex gap-3">
                   <Button type="submit" className="h-11 px-6">
-                    Search
+                    {t('search', 'Search')}
                   </Button>
                   <Button type="button" variant="outline" className="h-11 px-6" onClick={clearFilters}>
-                    Clear
+                    {t('clear', 'Clear')}
                   </Button>
                 </div>
               </div>
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Search order</Label>
+                  <Label>{t('searchOrder', 'Search order')}</Label>
                   <select
                     className="h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm shadow-sm outline-none transition focus:border-slate-400"
-                    value={`${sortBy}:${direction}`}
+                    value={t('sortbydirection', '{{sortBy}}:{{direction}}', { sortBy, direction })}
                     onChange={(event) => handleSortChange(event.target.value)}
                   >
                     {sortOptions.map((option) => (
@@ -179,19 +181,19 @@ export default function LessonHomePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Selected tags</Label>
+                  <Label>{t('selectedTags', 'Selected tags')}</Label>
                   <div className="text-sm text-slate-500">
-                    {selectedTags.length > 0 ? selectedTags.join(', ') : 'No tag filter applied'}
+                    {selectedTags.length > 0 ? selectedTags.join(', ') : t('noTagFilterApplied', 'No tag filter applied')}
                   </div>
                 </div>
               </div>
             </form>
 
             <div className="space-y-3">
-              <Label>Filter by tag</Label>
+              <Label>{t('filterByTag', 'Filter by tag')}</Label>
               <div className="flex flex-wrap gap-2">
                 {isTagsLoading ? (
-                  <span className="text-sm text-slate-500">Loading tags...</span>
+                  <span className="text-sm text-slate-500">{t('loadingTags', 'Loading tags...')}</span>
                 ) : availableTags.length > 0 ? (
                   availableTags.map((tag) => {
                     const isSelected = selectedTags.includes(tag.name)
@@ -212,7 +214,7 @@ export default function LessonHomePage() {
                     )
                   })
                 ) : (
-                  <span className="text-sm text-slate-500">No tags available.</span>
+                  <span className="text-sm text-slate-500">{t('noTagsAvailable', 'No tags available.')}</span>
                 )}
               </div>
             </div>
@@ -221,13 +223,13 @@ export default function LessonHomePage() {
 
         <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
-            <span className="font-medium text-slate-900">{pagination.total}</span> lessons found
+            <span className="font-medium text-slate-900">{pagination.total}</span> {t('lessonsFound', 'lessons found')}
             {appliedTitle.trim() ? (
-              <span> for “{appliedTitle.trim()}”</span>
+              <span> {t('for', 'for “')}{appliedTitle.trim()}”</span>
             ) : null}
-            {selectedTags.length > 0 ? <span> filtered by {selectedTags.join(', ')}</span> : null}
+            {selectedTags.length > 0 ? <span> {t('filteredBy', 'filtered by')} {selectedTags.join(', ')}</span> : null}
           </div>
-          <div>Sorted by {selectedSortLabel}</div>
+          <div>{t('sortedBySelectedsortlabel', 'Sorted by {{selectedSortLabel}}', { selectedSortLabel })}</div>
         </div>
 
         {error ? <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div> : null}
@@ -235,7 +237,7 @@ export default function LessonHomePage() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {isLoading ? (
             <div className="col-span-full rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center text-slate-500">
-              Loading lessons...
+              {t('loadingLessons', 'Loading lessons...')}
             </div>
           ) : lessons.length > 0 ? (
             lessons.map((lesson) => (
@@ -261,7 +263,7 @@ export default function LessonHomePage() {
             ))
           ) : (
             <div className="col-span-full rounded-xl border-2 border-dashed border-slate-200 bg-white py-16 text-center text-slate-500">
-              No lessons found. Try adjusting your filters.
+              {t('no-lesson-found-try-without-filter', 'No lessons found. Try adjusting your filters.')}
             </div>
           )}
         </div>
@@ -269,19 +271,17 @@ export default function LessonHomePage() {
         <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <Button variant="outline" onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))} disabled={isLoading || pagination.currentPage <= 1}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Previous
+            {t('previous', 'Previous')}
           </Button>
 
-          <div className="text-sm text-slate-600">
-            Page {pagination.currentPage} of {pagination.lastPage}
-          </div>
+          <div className="text-sm text-slate-600">{t('pageCurrentpageOfLastpage', 'Page {{currentPage}} of {{lastPage}}', { currentPage: pagination.currentPage, lastPage: pagination.lastPage })}</div>
 
           <Button
             variant="outline"
             onClick={() => setPage((currentPage) => Math.min(pagination.lastPage, currentPage + 1))}
             disabled={isLoading || pagination.currentPage >= pagination.lastPage}
           >
-            Next
+            {t('next', 'Next')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

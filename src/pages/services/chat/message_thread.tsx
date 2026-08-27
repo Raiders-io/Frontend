@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Message } from '@/utils/types/chat'
+import { useTranslation } from 'react-i18next'
 
 interface MessageThreadProps {
 	messages: Message[]
@@ -24,6 +25,7 @@ function formatDay(iso: string): string {
 }
 
 export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
+	const { t } = useTranslation()
 	const bottomRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
@@ -34,7 +36,7 @@ export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
 		return (
 			<div className="flex flex-1 items-center justify-center px-6">
 				<p className="text-sm text-muted-foreground">
-					Aucun message. Écris le premier.
+					{t('no-message-write-first', 'Aucun message. Écris le premier.')}
 				</p>
 			</div>
 		)

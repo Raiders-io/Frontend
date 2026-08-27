@@ -7,6 +7,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination"
+import { useTranslation } from 'react-i18next'
 
 type FileListPaginationProps = {
   currentPage: number
@@ -29,17 +30,16 @@ export default function FileListPagination({
   onNextPage,
   onLimitChange,
 }: FileListPaginationProps) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-end md:justify-between">
       <div className="space-y-1">
-        <p className="text-sm font-medium">Pagination</p>
-        <p className="text-sm text-muted-foreground">
-          Page {currentPage} sur {lastPage}
-        </p>
+        <p className="text-sm font-medium">{t('pagination', 'Pagination')}</p>
+        <p className="text-sm text-muted-foreground">{t('pageCurrentpageSurLastpage', 'Page {{currentPage}} sur {{lastPage}}', { currentPage, lastPage })}</p>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="space-y-2">
-          <Label htmlFor="limit">Files per page</Label>
+          <Label htmlFor="limit">{t('filesPerPage', 'Files per page')}</Label>
           <Input
             id="limit"
             type="number"
