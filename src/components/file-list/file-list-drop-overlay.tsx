@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 type FileListDropOverlayProps = {
   visible: boolean
 }
 
 export default function FileListDropOverlay({ visible }: FileListDropOverlayProps) {
+  const { t } = useTranslation()
   if (!visible) {
     return null
   }
@@ -10,12 +12,12 @@ export default function FileListDropOverlay({ visible }: FileListDropOverlayProp
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
       <div className="max-w-md rounded-2xl border border-dashed border-primary bg-background p-8 text-center shadow-xl">
-        <p className="text-lg font-semibold">Drop your files here</p>
+        <p className="text-lg font-semibold">{t('dropYourFilesHere', 'Drop your files here')}</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Multiple file types are supported, upload will start automatically.
+          {t('files-supported-upload-message', 'Multiple file types are supported, upload will start automatically.')}
         </p>
         <p className="mt-3 text-sm text-muted-foreground">
-          Formats: txt, pdf, md, tex.
+          {t('formatsTxtPdfMdTex', 'Formats: txt, pdf, md, tex.')}
         </p>
       </div>
     </div>

@@ -1,81 +1,68 @@
-import { ThemeDropDown } from "@/components/themeDropDown"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { UserX, Loader2 } from "lucide-react"
-import { authService } from "@/services/auth_service"
-import { router } from "@/utils/router"
-import { useAuthStore } from "@/utils/stores/auth_store"
-import { useState, useEffect } from "react"
+import { ThemeDropDown } from '@/components/themeDropDown'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Button } from '@/components/ui/button'
+import { UserX, Loader2 } from 'lucide-react'
+import { authService } from '@/services/auth_service'
+import { router } from '@/utils/router'
+import { useAuthStore } from '@/utils/stores/auth_store'
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 export default function EditProfile() {
+  const { t } = useTranslation();
+
   return (
-    <>
-      <Card>
+  <>
+  <Card>
+    <CardHeader>
+      <h1>{t('edit_profile_page')}</h1>
+    </CardHeader>
+    <CardContent>
+      <Card className="w-full max-w-md p-4">
         <CardHeader>
-          <h1>Edit Profile Page</h1>
+          <h2>{t('edit_profile')}</h2>
         </CardHeader>
         <CardContent>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Edit Profile</h2>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                placeholder="Edit your profile information 1 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-              <Textarea
-                placeholder="Edit your profile information 2 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-              <Textarea
-                placeholder="Edit your profile information 3 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-            </CardContent>
-          </Card>
-          <Separator className="my-4" />
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Here you can edit your preferences.</h2>
-            </CardHeader>
-            <CardContent>
-              <ThemeDropDown />
-            </CardContent>
-          </Card>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Account Data</h2>
-            </CardHeader>
-            <CardContent>
-              <DeleteAccountDialog />
-            </CardContent>
-          </Card>
+          <Textarea placeholder={t('edit_profile_info_1')} className="w-full h-12 p-2 border rounded" />
+          <Textarea placeholder={t('edit_profile_info_2')} className="w-full h-12 p-2 border rounded" />
+          <Textarea placeholder={t('edit_profile_info_3')} className="w-full h-12 p-2 border rounded" />
         </CardContent>
       </Card>
-    </>
+      <Separator className="my-4" />
+      <Card className="w-full max-w-md p-4">
+        <CardHeader>
+          <h2>{t('edit_preferences')}</h2>
+        </CardHeader>				
+        <CardContent className="flex flex-col gap-4">
+          <ThemeDropDown />
+          <LanguageSwitcher />
+        </CardContent>
+      </Card>
+      <Card className="w-full max-w-md p-4">
+        <CardHeader>
+          <h2>{t('account_data')}</h2>
+        </CardHeader>				
+        <CardContent>
+          <DeleteAccountDialog />
+        </CardContent>
+      </Card>
+    </CardContent>
+  </Card>
+  </>
   )
 }
 
 export const DeleteAccountDialog = () => {
+  const { t } = useTranslation();
   const { logout } = useAuthStore()
-  const [isDisabled, setIsDisabled] = useState(true)
-  const [countdown, setCountdown] = useState(5)
-  const [isOpen, setIsOpen] = useState(false)
+  const [ isDisabled , setIsDisabled] = useState(true)
+  const [ countdown, setCountdown ] = useState(5)
+  const [ isOpen, setIsOpen ] = useState(false)
 
   // Timer pour désactiver le bouton
   useEffect(() => {
@@ -99,9 +86,9 @@ export const DeleteAccountDialog = () => {
     try {
       await authService.deleteAccount()
       logout()
-      router.navigate("/login")
+      router.navigate('/login')
     } catch (error) {
-      console.error("Error deleting account:", error)
+      console.error('Error deleting account:', error)
     }
   }
 
@@ -119,10 +106,10 @@ export const DeleteAccountDialog = () => {
         <Button
           variant="destructive"
           className="cursor-pointer"
-          aria-label="Delete Account"
+          aria-label={t('deleteAccount', 'Delete Account')}
         >
           <UserX />
-          Delete Account
+          {t('delete_account')}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -130,14 +117,13 @@ export const DeleteAccountDialog = () => {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <UserX />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete Account</AlertDialogTitle>
+          <AlertDialogTitle>{t('delete_account')}</AlertDialogTitle>
           <AlertDialogDescription>
-            Your account will be permanently deleted and you will be logged out.
-            This action cannot be undone.
+            {t('delete_account_confirmation')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{t('cancel')}</AlertDialogCancel>
           <AlertDialogAction
             disabled={isDisabled}
             variant="destructive"
@@ -146,12 +132,12 @@ export const DeleteAccountDialog = () => {
             {isDisabled ? (
               <>
                 <Loader2 className="animate-spin" size={16} />
-                Please wait {countdown}s
+                {t('please_wait')} {countdown}s
               </>
             ) : (
               <>
                 <UserX />
-                Delete Account
+                {t('delete_account')}
               </>
             )}
           </AlertDialogAction>
