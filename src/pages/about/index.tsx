@@ -2,8 +2,10 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { useState, useEffect } from "react"
 import { ReactMarkdownStyle } from "@/utils/style/ReactMarkdown"
+import { useTranslation } from 'react-i18next'
 
 export default function AboutPage() {
+	const { t } = useTranslation()
 	const [markdownOrga, setMarkdownOrga] = useState<string>("")
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -24,7 +26,7 @@ export default function AboutPage() {
 	return (
 		<div className="mx-auto max-w-2xl px-6 py-16">
 			<p className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-				À propos
+			{t('about', 'About')}
 			</p>
 			<h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
 				Description

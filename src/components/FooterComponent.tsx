@@ -13,6 +13,7 @@ import {
 	changePagePrivacy,
 } from "@/utils/router/changePage"
 import { GithubLogo } from "@/components/GithubLogo"
+import i18next from 'i18next'
 import { Button } from "@/components/ui/button"
 
 const NAV_COLUMNS = [
@@ -72,7 +73,8 @@ export const FooterComponent = () => {
 							</span>
 						</Button>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-							Apprends, publie tes cours et teste tes connaissances.
+              {i18next.t('apprends')}
+              {i18next.t('apprends-part2')}
 						</p>
 					</div>
 					{NAV_COLUMNS.map((column) => (

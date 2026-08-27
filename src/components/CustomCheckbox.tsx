@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/utils/lib/shadcn"
+import i18next from 'i18next'
 
 // Custom Checkbox component that extends the default checkbox functionality to include keyboard navigation for table rows.
 // It includes handling for Enter key to toggle the checkbox and arrow keys to navigate between checkboxes in a table.
@@ -29,10 +30,10 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       }
 
       if (
-        event.key === "ArrowUp" ||
-        event.key === "ArrowDown" ||
-        event.key === "ArrowLeft" ||
-        event.key === "ArrowRight"
+        event.key === i18next.t('arrowup', 'ArrowUp') ||
+        event.key === i18next.t('arrowdown', 'ArrowDown') ||
+        event.key === i18next.t('arrowleft', 'ArrowLeft') ||
+        event.key === i18next.t('arrowright', 'ArrowRight')
       ) {
         const table = event.currentTarget.closest("table")
         const checkboxes = Array.from(
@@ -41,7 +42,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         ).filter((checkbox) => !checkbox.disabled)
         const currentIndex = checkboxes.indexOf(event.currentTarget)
         const nextIndex =
-          event.key === "ArrowUp" || event.key === "ArrowLeft"
+          event.key === i18next.t('arrowup', 'ArrowUp') || event.key === i18next.t('arrowleft', 'ArrowLeft')
             ? currentIndex - 1
             : currentIndex + 1
 
