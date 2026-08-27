@@ -9,6 +9,7 @@ import type {
   SearchResourceOption,
   SearchSortValue,
 } from "@/utils/types/component"
+import i18next from 'i18next'
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -35,23 +36,21 @@ const TopNavBar = () => {
             size="icon"
             className="rounded-full"
             onClick={changePageHome}
-            aria-label="Go to Home Page"
+            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
           >
-            <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
+            <img src="/favicon.png" alt={i18next.t('logo', 'Logo')} className="h-8 w-8" />
           </Button>
           <Button
             variant="ghost"
             className="text-lg font-semibold"
             onClick={changePageHome}
-            aria-label="Go to Home Page"
+            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
           >
             Raiders.io
           </Button>
         </ButtonGroup>
       </div>
       <CustomSearchBar resources={resources} sortOptions={sortOptions} className="max-w-2/3"/>
-
-
       <div className="flex items-center">
         {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}
       </div>

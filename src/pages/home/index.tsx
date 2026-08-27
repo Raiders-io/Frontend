@@ -5,8 +5,10 @@ import { avatarColor, initials } from '@/utils/lib/avatar'
 import { Button } from '@/components/ui/button'
 import type { User } from '@/utils/types/auth'
 import { changePageChat } from '@/utils/router/changePage'
+import { useTranslation } from 'react-i18next'
 
 export default function UsersList() {
+	const { t } = useTranslation()
 	const { createConversation } = useChat()
 	const [members, setMembers] = useState<User[]>([])
 	const [isLoading, setIsLoading] = useState(true)
@@ -28,10 +30,10 @@ export default function UsersList() {
 			<main className="flex-1 overflow-y-auto">
 				<div className="mx-auto max-w-2xl px-6 py-14">
 					<h1 className="text-[26px] font-semibold tracking-tight text-foreground">
-						Membres
+						{t('membres', 'Membres')}
 					</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
-						Choisis quelqu'un pour démarrer une conversation.
+						{t('choose-someone-to-contact', 'Choisis quelqu\'un pour démarrer une conversation.')}
 					</p>
 
 					<div className="mt-9">
@@ -50,10 +52,10 @@ export default function UsersList() {
 						) : members.length === 0 ? (
 							<div className="rounded-lg border border-dashed px-6 py-14 text-center">
 								<p className="text-sm font-medium text-foreground">
-									Personne d'autre pour l'instant
+									{t('no-one-now', 'Personne d\'autre pour l\'instant')}
 								</p>
 								<p className="mt-1.5 text-sm text-muted-foreground">
-									Les nouveaux comptes apparaîtront ici.
+									{t('new-accounts-message', 'Les nouveaux comptes apparaîtront ici.')}
 								</p>
 							</div>
 						) : (
@@ -84,7 +86,7 @@ export default function UsersList() {
 											onClick={() => startConversation(member.id)}
 											className="shrink-0"
 										>
-											Écrire
+											{t('crire', 'Écrire')}
 										</Button>
 									</li>
 								))}
