@@ -4,6 +4,8 @@ import { z } from 'zod'
 import { ArrowUp } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 const schema = z.object({
 	content: z.string().trim().min(1),
@@ -16,7 +18,8 @@ interface MessageInputProps {
 	placeholder?: string
 }
 
-export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: MessageInputProps) {
+export function MessageInput({ onSend, placeholder = i18next.t('crireUnMessage', 'Écrire un message…') }: MessageInputProps) {
+	const { t } = useTranslation()
 	const { register, handleSubmit, reset, watch } = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: { content: '' },
@@ -45,7 +48,7 @@ export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: 
 					className="size-11 shrink-0 rounded-full transition-opacity disabled:opacity-30"
 				>
 					<ArrowUp className="size-4" strokeWidth={2.5} />
-					<span className="sr-only">Envoyer</span>
+					<span className="sr-only">{t('envoyer', 'Envoyer')}</span>
 				</Button>
 			</div>
 		</form>

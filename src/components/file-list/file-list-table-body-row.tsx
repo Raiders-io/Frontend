@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { CustomCheckbox } from "@/components/CustomCheckbox"
 import { DownloadIcon, Globe, GlobeOff, TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
+import { useTranslation } from "react-i18next"
 
 type FileListTableBodyRowProps = {
   file: FileObject
@@ -47,6 +48,8 @@ export default function FileListTableBodyRow({
     showVisibilityButton = true,
     showDeleteButton = true,
   } = actionSettings
+
+  const { t } = useTranslation()
 
   return (
     <TableRow
@@ -97,8 +100,12 @@ export default function FileListTableBodyRow({
                 variant="outline"
                 size="sm"
                 onClick={() => onDownload(file.name)}
-                title={`Download ${file.name}`}
-                aria-label={`Download ${file.name}`}
+                title={t("downloadName", "Download {{name}}", {
+                  name: file.name,
+                })}
+                aria-label={t("downloadName", "Download {{name}}", {
+                  name: file.name,
+                })}
               >
                 <DownloadIcon className="h-4 w-4" />
               </Button>
