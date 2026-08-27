@@ -38,10 +38,21 @@ const TopNavBar = () => {
     <nav className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-3">
         <ButtonGroup>
-          <Button variant="ghost" size="icon" className="rounded-full" onClick={changePageHome}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+            onClick={changePageHome}
+            aria-label="Go to Home Page"
+          >
             <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
           </Button>
-          <Button variant="ghost" className="text-lg font-semibold" onClick={changePageHome}>
+          <Button
+            variant="ghost"
+            className="text-lg font-semibold"
+            onClick={changePageHome}
+            aria-label="Go to Home Page"
+          >
             Raiders.io
           </Button>
         </ButtonGroup>

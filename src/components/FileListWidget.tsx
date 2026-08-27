@@ -339,6 +339,7 @@ export default function FileListWidget({
                   type="button"
                   onClick={openFilePicker}
                   disabled={uploading}
+                  aria-label="Upload Files"
                 >
                   {uploading ? "Upload in progress..." : "Upload Files"}
                 </Button>
@@ -356,6 +357,7 @@ export default function FileListWidget({
                 size="sm"
                 onClick={openFilePicker}
                 disabled={uploading}
+                aria-label="Upload Files"
               >
                 {uploading ? "Upload..." : "Upload"}
               </Button>
@@ -430,7 +432,7 @@ export default function FileListWidget({
                         <div className="flex items-center gap-2">
                           {selectedFiles.size > 0 && (
                             <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
-                              <Button variant="destructive" size="sm">
+                              <Button variant="destructive" size="sm" aria-label="Delete Selected Files">
                                 <TrashIcon />
                                 Delete Selected
                               </Button>

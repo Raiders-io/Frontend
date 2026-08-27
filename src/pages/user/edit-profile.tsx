@@ -99,6 +99,7 @@ export const DeleteAccountDialog = () => {
 				<Button
 					variant="destructive"
 					className="cursor-pointer"
+					aria-label="Delete Account"
 				>
 					<UserX />
 					Delete Account

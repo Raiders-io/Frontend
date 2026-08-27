@@ -79,11 +79,22 @@ export default function FileListTableBodyRow({
               variant="outline"
               size="sm"
               onClick={() => onDownload(file.name)}
+              title={`Download ${file.name}`}
+              aria-label={`Download ${file.name}`}
             >
               <DownloadIcon className="h-4 w-4" />
             </Button>
-            <DeleteButton action={() => onDelete(file.name)} title={`Delete ${file.name}`} description="This action cannot be undone.">
-              <Button variant="destructive" size="sm">
+            <DeleteButton
+              action={() => onDelete(file.name)}
+              title={`Delete ${file.name}`}
+              description="This action cannot be undone."
+            >
+              <Button
+                variant="destructive"
+                size="sm"
+                title={`Delete ${file.name}`}
+                aria-label={`Delete ${file.name}`}
+              >
                 <TrashIcon className="h-4 w-4" />
               </Button>
             </DeleteButton>

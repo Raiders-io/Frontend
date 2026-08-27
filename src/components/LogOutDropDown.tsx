@@ -1,8 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -17,19 +13,27 @@ export function LogOutDropDown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded"
+          aria-label="Open unauthenticated user menu"
+        >
           <Avatar>
-            <AvatarImage src="default-avatar.jpg" alt={"Default Avatar Image"} />
+            <AvatarImage
+              src="default-avatar.jpg"
+              alt={"Default Avatar Image"}
+            />
             <AvatarFallback>{"Default Avatar Image"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={changePageLogin}>
+          <DropdownMenuItem onClick={changePageLogin} aria-label="Login">
             Login
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={changePageSignup}>
+          <DropdownMenuItem onClick={changePageSignup} aria-label="Sign Up">
             Sign Up
           </DropdownMenuItem>
         </DropdownMenuGroup>

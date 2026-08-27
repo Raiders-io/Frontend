@@ -141,7 +141,7 @@ export default function SignupPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full">
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Créer un compte">
 					{isSubmitting ? 'Création…' : 'Créer un compte'}
 				</Button>
 			</form>

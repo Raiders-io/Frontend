@@ -100,7 +100,7 @@ export default function LoginPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full">
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Se connecter">
 					{isSubmitting ? 'Connexion…' : 'Se connecter'}
 				</Button>
 			</form>

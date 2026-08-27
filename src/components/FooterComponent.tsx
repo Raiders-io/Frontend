@@ -60,7 +60,12 @@ export const FooterComponent = () => {
       onClick?: () => void
     }) => {
       return (
-        <Button variant="ghost" className="h-[30%] w-full" onClick={onClick}>
+        <Button
+          variant="ghost"
+          className="h-[30%] w-full"
+          onClick={onClick}
+          aria-label={label}
+        >
           {label}
         </Button>
       )
@@ -120,6 +125,7 @@ export const FooterComponent = () => {
               variant="ghost"
               className="flex flex-col items-center justify-center gap-2 rounded-lg border p-2 text-lg font-semibold md:h-[80%] md:w-[80%] sm:h-[400px] sm:w-[400px] h-[400px] w-[400px]"
               onClick={changePageHome}
+              aria-label="Go to Home Page"
             >
               <img
                 src="/favicon.png"
@@ -132,9 +138,15 @@ export const FooterComponent = () => {
             </Button>
           </div>
         </CardContent>
-        <Button variant="ghost" className="h-[30%] w-full" onClick={() => window.open("https://github.com/Raiders-io", "_blank")}>
-        <GithubLogoComponent />
-          See Project Informations directly on Github through our Organization (external link)
+        <Button
+          variant="ghost"
+          className="h-[30%] w-full"
+          onClick={() => window.open("https://github.com/Raiders-io", "_blank")}
+          aria-label="View Project on GitHub"
+        >
+          <GithubLogoComponent />
+          See Project Informations directly on Github through our Organization
+          (external link)
         </Button>
       </Card>
     </footer>

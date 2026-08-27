@@ -120,7 +120,10 @@ export function CustomResizablePanelLeftZoneToggle() {
   return (
     <>
       {RightZoneVisible && (
-        <Button onClick={() => setLeftZoneVisible(!LeftZoneVisible)}>
+        <Button
+          aria-label={LeftZoneVisible ? "Close Left Zone" : "Open Left Zone"}
+          onClick={() => setLeftZoneVisible(!LeftZoneVisible)}
+        >
           {LeftZoneVisible ? <PanelLeftClose /> : <PanelLeftOpen />}
         </Button>
       )}
@@ -135,7 +138,10 @@ export function CustomResizablePanelRightZoneToggle() {
   return (
     <>
       {LeftZoneVisible && (
-        <Button onClick={() => setRightZoneVisible(!RightZoneVisible)}>
+        <Button
+          aria-label={RightZoneVisible ? "Close Right Zone" : "Open Right Zone"}
+          onClick={() => setRightZoneVisible(!RightZoneVisible)}
+        >
           {RightZoneVisible ? <PanelRightClose /> : <PanelRightOpen />}
         </Button>
       )}

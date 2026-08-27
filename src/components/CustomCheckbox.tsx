@@ -4,7 +4,10 @@ import { cn } from "@/utils/lib/shadcn"
 // Custom Checkbox component that extends the default checkbox functionality to include keyboard navigation for table rows.
 // It includes handling for Enter key to toggle the checkbox and arrow keys to navigate between checkboxes in a table.
 
-type CheckboxProps = Omit<React.ComponentPropsWithoutRef<"input">, "type" | "checked" | "defaultChecked" | "onChange"> & {
+type CheckboxProps = Omit<
+  React.ComponentPropsWithoutRef<"input">,
+  "type" | "checked" | "defaultChecked" | "onChange"
+> & {
   checked?: boolean
   onCheckedChange?: (checked: boolean) => void
   className?: string
@@ -33,7 +36,8 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       ) {
         const table = event.currentTarget.closest("table")
         const checkboxes = Array.from(
-          table?.querySelectorAll<HTMLInputElement>('input[type="checkbox"]') ?? []
+          table?.querySelectorAll<HTMLInputElement>('input[type="checkbox"]') ??
+            [],
         ).filter((checkbox) => !checkbox.disabled)
         const currentIndex = checkboxes.indexOf(event.currentTarget)
         const nextIndex =
@@ -55,11 +59,14 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         onChange={(e) => onCheckedChange?.(e.target.checked)}
         onKeyDown={handleKeyDown}
         ref={ref}
-        className={cn("h-4 w-4 rounded border border-primary text-primary focus:ring-primary", className)}
+        className={cn(
+          "h-4 w-4 rounded border border-primary text-primary focus:ring-primary",
+          className,
+        )}
         {...props}
       />
     )
-  }
+  },
 )
 
 Checkbox.displayName = "Checkbox"

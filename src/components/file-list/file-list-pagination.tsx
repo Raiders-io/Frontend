@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationPrevious, 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
   PaginationNext,
- } from "@/components/ui/pagination"
+} from "@/components/ui/pagination"
 
 type FileListPaginationProps = {
   currentPage: number
@@ -52,7 +52,10 @@ export default function FileListPagination({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious onClick={onPreviousPage} disabled={!hasPreviousPage}/>
+              <PaginationPrevious
+                onClick={onPreviousPage}
+                disabled={!hasPreviousPage}
+              />
             </PaginationItem>
             <PaginationItem>
               <PaginationNext onClick={onNextPage} disabled={!hasNextPage} />

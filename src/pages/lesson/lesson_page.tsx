@@ -103,7 +103,9 @@ export default function LessonPage() {
           type="search"
           placeholder="File name (e.g., en.subject.pdf)"
         />
-        <Button onClick={handlePreview}>Preview</Button>
+        <Button onClick={handlePreview} aria-label="Preview File">
+          Preview
+        </Button>
       </Field>
       <CustomResizablePanelGroup>
         <CustomResizablePanelLeftZoneToggle />
