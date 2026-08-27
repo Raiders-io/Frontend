@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { avatarColor, initials } from '@/utils/lib/avatar'
+import { useTranslation } from 'react-i18next'
 
 const NAV_ITEMS = [
 	{ to: '/', label: 'Membres', end: true },
@@ -9,6 +10,7 @@ const NAV_ITEMS = [
 ]
 
 export function AppHeader() {
+	const { t } = useTranslation()
 	const { user, logout } = useAuthStore()
 
 	const handleLogout = () => {
@@ -60,7 +62,7 @@ export function AppHeader() {
 					className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
 				>
 					<LogOut className="size-4" />
-					<span className="sr-only">Se déconnecter</span>
+					<span className="sr-only">{t('seDconnecter', 'Se déconnecter')}</span>
 				</button>
 			</div>
 		</header>

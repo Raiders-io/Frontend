@@ -1,5 +1,6 @@
 import type { Conversation } from '@/utils/types/chat'
 import { avatarColor, initials } from '@/utils/lib/avatar'
+import { useTranslation } from 'react-i18next'
 
 interface ConversationListProps {
 	conversations: Conversation[]
@@ -9,10 +10,11 @@ interface ConversationListProps {
 }
 
 export function ConversationList({ conversations, activeId, onSelect, getLabel }: ConversationListProps) {
+	const { t } = useTranslation()
 	return (
 		<aside className="flex w-72 shrink-0 flex-col border-r">
 			<div className="flex h-14 shrink-0 items-center justify-between border-b px-5">
-				<h2 className="text-sm font-medium text-foreground">Conversations</h2>
+				<h2 className="text-sm font-medium text-foreground">{t('conversations', 'Conversations')}</h2>
 				<span className="font-mono text-[11px] text-muted-foreground">
 					{conversations.length}
 				</span>
@@ -21,7 +23,7 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel }
 			<div className="flex-1 overflow-y-auto p-2">
 				{conversations.length === 0 ? (
 					<p className="px-3 py-8 text-center text-sm text-muted-foreground">
-						Aucune conversation.
+						{t('no-conversation', 'Aucune conversation.')}
 					</p>
 				) : (
 					<ul className="space-y-px">

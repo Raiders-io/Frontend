@@ -13,8 +13,10 @@ import type { QuotaResponse } from "@/utils/types/object"
 import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { formatFileSize } from "@/utils/utils/object"
+import { useTranslation } from 'react-i18next'
 
 export function QuotaTable({ mode = "full" }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [quota, setQuota] = useState<QuotaResponse | null>(null)
@@ -43,7 +45,7 @@ export function QuotaTable({ mode = "full" }) {
   }
 
   const containerClassName =
-    mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
+    mode === "compact" ? "w-full p-4" : t('style-padding-files', 'mx-auto w-full max-w-6xl p-6')
 
   const quotaStorageLimits = () => {
     const storageUsed = quota?.storageBytes || 0
@@ -60,15 +62,15 @@ export function QuotaTable({ mode = "full" }) {
             className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
           >
             <TableCaption className="text-lg underline font-semibold">
-              Quota storage limits
+              {t('quota_storage_limits')}
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Storage Used</TableHead>
-                <TableHead>Storage Limit</TableHead>
-                <TableHead>Storage Ratio</TableHead>
-                <TableHead>Total Files count</TableHead>
-                <TableHead>Files count limit</TableHead>
+                <TableHead>{t('storage_used')}</TableHead>
+                <TableHead>{t('storage_limit')}</TableHead>
+                <TableHead>{t('storage_ratio')}</TableHead>
+                <TableHead>{t('total_files_count')}</TableHead>
+                <TableHead>{t('files_count_limit')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,13 +98,13 @@ export function QuotaTable({ mode = "full" }) {
             className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
           >
             <TableCaption className="text-lg underline font-semibold">
-              Quota rate limiting
+              {t('quota_rate_limiting')}
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Download Count Reset At</TableHead>
-                <TableHead>Upload Count Reset At</TableHead>
-                <TableHead>Updated At</TableHead>
+                <TableHead>{t('download_count_reset_at')}</TableHead>
+                <TableHead>{t('upload_count_reset_at')}</TableHead>
+                <TableHead>{t('updated_at')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,14 +128,14 @@ export function QuotaTable({ mode = "full" }) {
             className={`w-full caption-top ${mode === "compact" ? "text-xs" : "text-sm"}`}
           >
             <TableCaption className="text-lg underline font-semibold">
-              Quota storage counter
+              {t('quota_storage_counter')}
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Total Upload count</TableHead>
-                <TableHead>Upload count limit</TableHead>
-                <TableHead>Total Download count</TableHead>
-                <TableHead>Download count limit</TableHead>
+                <TableHead>{t('total_upload_count')}</TableHead>
+                <TableHead>{t('upload_count_limit')}</TableHead>
+                <TableHead>{t('total_download_count')}</TableHead>
+                <TableHead>{t('download_count_limit')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -154,16 +156,16 @@ export function QuotaTable({ mode = "full" }) {
     <div className={`${containerClassName} gap-3`}>
       <Card>
         <CardHeader>
-          <CardTitle>Quota</CardTitle>
+          <CardTitle>{t('quota')}</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
             <p className="py-8 text-sm text-muted-foreground">
-              Loading Quota...
+              {t('loading_quota')}
             </p>
           ) : error ? (
             <p className="py-8 text-sm text-destructive">
-              Impossible to load the quota.
+              {t('impossible_to_load_quota')}
             </p>
           ) : (
             <div>

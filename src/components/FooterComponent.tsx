@@ -24,6 +24,7 @@ import {
   changePageContact,
 } from "@/utils/router/changePage"
 import { GithubLogoComponent } from "./GithubImg"
+import i18next from 'i18next'
 
 export const FooterComponent = () => {
   const AccordionFooter = () => {
@@ -31,20 +32,20 @@ export const FooterComponent = () => {
       <div className="min-w-0 flex-1 overflow-hidden">
         <Accordion type="single" collapsible className="h-full p-4">
           <AccordionItem value="item-1">
-            <AccordionTrigger>Quick info 1</AccordionTrigger>
-            <AccordionContent>Content of the first item.</AccordionContent>
+            <AccordionTrigger>{i18next.t('quickInfo1', 'Quick info 1')}</AccordionTrigger>
+            <AccordionContent>{i18next.t('contentOfTheFirstItem', 'Content of the first item.')}</AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>Quick info 2</AccordionTrigger>
-            <AccordionContent>Content of the second item.</AccordionContent>
+            <AccordionTrigger>{i18next.t('quickInfo2', 'Quick info 2')}</AccordionTrigger>
+            <AccordionContent>{i18next.t('contentOfTheSecondItem', 'Content of the second item.')}</AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>Quick info 3</AccordionTrigger>
-            <AccordionContent>Content of the third item.</AccordionContent>
+            <AccordionTrigger>{i18next.t('quickInfo3', 'Quick info 3')}</AccordionTrigger>
+            <AccordionContent>{i18next.t('contentOfTheThirdItem', 'Content of the third item.')}</AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
-            <AccordionTrigger>Quick info 4</AccordionTrigger>
-            <AccordionContent>Content of the fourth item.</AccordionContent>
+            <AccordionTrigger>{i18next.t('quickInfo4', 'Quick info 4')}</AccordionTrigger>
+            <AccordionContent>{i18next.t('contentOfTheFourthItem', 'Content of the fourth item.')}</AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
@@ -96,7 +97,7 @@ export const FooterComponent = () => {
           <CustomSeparator />
           <div className="min-w-0 flex flex-col items-center gap-2 justify-center">
             <NavButton label="Settings" onClick={changePageEditProfile} />
-            <NavButton label="About" onClick={changePageAbout} />
+            <NavButton label={i18next.t('about', 'About')} onClick={changePageAbout} />
             <NavButton label="Contact" onClick={changePageContact} />
           </div>
         </div>
@@ -109,10 +110,10 @@ export const FooterComponent = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-center m-0 p-0 gap-0">
-            Project Transcendence
+            {i18next.t('projectTranscendence', 'Project Transcendence')}
           </CardTitle>
           <CardDescription className="text-sm text-center m-0 p-0 gap-0">
-            A project by Raiders.io
+            {i18next.t('project-info', 'A project by Raiders.io')}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row gap-4 overflow-hidden p-4 sm:min-h-64 sm:max-h-100 w-full">
@@ -125,11 +126,11 @@ export const FooterComponent = () => {
               variant="ghost"
               className="flex flex-col items-center justify-center gap-2 rounded-lg border p-2 text-lg font-semibold md:h-[80%] md:w-[80%] sm:h-[400px] sm:w-[400px] h-[400px] w-[400px]"
               onClick={changePageHome}
-              aria-label="Go to Home Page"
+              aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
             >
               <img
                 src="/favicon.png"
-                alt="Logo"
+                alt={i18next.t('logo', 'Logo')}
                 className="h-[50%] w-full rounded-lg object-contain"
               />
               <span className="h-[20%] w-full px-2 text-lg font-semibold truncate">
@@ -142,11 +143,10 @@ export const FooterComponent = () => {
           variant="ghost"
           className="h-[30%] w-full"
           onClick={() => window.open("https://github.com/Raiders-io", "_blank")}
-          aria-label="View Project on GitHub"
+          aria-label={i18next.t('viewProjectOnGithub', 'View Project on GitHub')}
         >
           <GithubLogoComponent />
-          See Project Informations directly on Github through our Organization
-          (external link)
+          {i18next.t('see-project-on-github', 'See Project Informations directly on Github through our Organization\n          (external link)')}
         </Button>
       </Card>
     </footer>

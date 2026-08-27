@@ -3,8 +3,10 @@ import remarkGfm from "remark-gfm"
 import { useState, useEffect } from "react"
 import { ReactMarkdownStyle } from "@/utils/style/ReactMarkdown"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { useTranslation } from 'react-i18next'
 
 export default function AboutPage() {
+  const { t } = useTranslation()
   const [markdownOrga, setMarkdownOrga] = useState<string>("")
   const [markdownProjet, setMarkdownProjet] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -35,14 +37,14 @@ export default function AboutPage() {
 
   if (loading) return <div className="p-4 text-center">Chargement...</div>
   if (error)
-    return <div className="p-4 text-red-500 text-center">Erreur : {error}</div>
+    return <div className="p-4 text-red-500 text-center">{t('erreurError', 'Erreur : {{error}}', { error })}</div>
 
   return (
     <>
       <div className="prose dark:prose-invert max-w-none">
         <Card>
           <CardHeader>
-            <h1 className="text-3xl font-bold">À propos</h1>
+            <h1 className="text-3xl font-bold">{t('about', 'À about')}</h1>
           </CardHeader>
           <CardContent>
             <ReactMarkdown
@@ -55,7 +57,7 @@ export default function AboutPage() {
         </Card>
         <Card>
           <CardHeader>
-            <h1 className="text-3xl font-bold">Project</h1>
+            <h1 className="text-3xl font-bold">{t('project', 'Project')}</h1>
           </CardHeader>
           <CardContent>
             <ReactMarkdown

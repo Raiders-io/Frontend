@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { CustomCheckbox } from "@/components/CustomCheckbox"
 import { DownloadIcon, TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
+import { useTranslation } from 'react-i18next'
 
 type FileListTableBodyRowProps = {
   file: FileObject
@@ -31,6 +32,7 @@ export default function FileListTableBodyRow({
   onDelete,
   isSelected,
 }: FileListTableBodyRowProps) {
+  const { t } = useTranslation()
   return (
     <TableRow
       key={file.name}
@@ -79,21 +81,21 @@ export default function FileListTableBodyRow({
               variant="outline"
               size="sm"
               onClick={() => onDownload(file.name)}
-              title={`Download ${file.name}`}
-              aria-label={`Download ${file.name}`}
+              title={t('downloadName', 'Download {{name}}', { name: file.name })}
+              aria-label={t('downloadName', 'Download {{name}}', { name: file.name })}
             >
               <DownloadIcon className="h-4 w-4" />
             </Button>
             <DeleteButton
               action={() => onDelete(file.name)}
-              title={`Delete ${file.name}`}
-              description="This action cannot be undone."
+              title={t('deleteName', 'Delete {{name}}', { name: file.name })}
+              description={t('thisActionCannotBeUndone', 'This action cannot be undone.')}
             >
               <Button
                 variant="destructive"
                 size="sm"
-                title={`Delete ${file.name}`}
-                aria-label={`Delete ${file.name}`}
+                title={t('deleteName', 'Delete {{name}}', { name: file.name })}
+                aria-label={t('deleteName', 'Delete {{name}}', { name: file.name })}
               >
                 <TrashIcon className="h-4 w-4" />
               </Button>
