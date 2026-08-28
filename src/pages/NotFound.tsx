@@ -27,8 +27,8 @@ const NotFound = () => {
             </Card>
           </p>
         </CardContent>
-        <CardFooter>
-          <Button onClick={changePageHome}>Retour à l'accueil</Button>
+        <CardFooter className="flex justify-center">
+          <Button onClick={changePageHome} aria-label="Retour à l'accueil">Retour à l'accueil</Button>
         </CardFooter>
       </Card>
     </div>
