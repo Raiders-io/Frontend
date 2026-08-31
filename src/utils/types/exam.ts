@@ -1,4 +1,4 @@
-export type QuestionType = 
+export type Question = 
 {
   id: string
   text: string
@@ -11,5 +11,5 @@ export type ExamType =
 {
   name: string
   description?: string
-  questions: QuestionType[]
+  questions: Question[]
 }
