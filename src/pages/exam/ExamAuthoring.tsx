@@ -1,6 +1,6 @@
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { CreateQuestion } from "./Question"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { CreateQuestion } from '@/pages/exam/Question'
 
 export default function ExamAuthoring()
 {
@@ -8,7 +8,7 @@ export default function ExamAuthoring()
     <>
     <h1>Exam Authoring</h1>
     {createExam()}
-    {CreateQuestion()}
+    <CreateQuestion />
     </>
     )
 }
