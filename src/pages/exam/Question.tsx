@@ -1,24 +1,73 @@
+import { useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import type { Question } from '@/utils/types/exam'
 
-export default function Question() 
+type CreateQuestionProps = 
 {
-    return (<CreateQuestion />)
+    onAdd?: (question: Question) => void
 }
 
-export function CreateQuestion() {
-    return (
-        <div className="flex flex-col gap-4">
-            <Input placeholder="Question" />
+export default function Question({ onAdd }: CreateQuestionProps) 
+{
+    return <CreateQuestion onAdd={onAdd} />
+}
 
-            <select className="border rounded-md p-2">
-                <option value="multiple_choice">QCM</option>
-                <option value="exact_answer">Réponse exacte</option>
-            </select>
+export function CreateQuestion({ onAdd }: CreateQuestionProps) 
+{
+    const [text, setText] = useState('')
+    const [type, setType] = useState<Question['type']>('multiple_choice')
+    const [answer, setAnswer] = useState('')
 
-            <Input placeholder="Answer" />
+    function handleSubmit(event: FormEvent<HTMLFormElement>) 
+    {
+        event.preventDefault()
 
-            <Button>Submit</Button>
-        </div>
-    )
+        if (!text.trim()) 
+        {
+            return
+        }
+
+        const newQuestion: Question =
+        {
+            id: Date.now().toString(),
+            text: text.trim(),
+            type,
+            answer: answer.trim() || undefined,
+        }
+
+        onAdd?.(newQuestion)
+        setText('')
+        setType('multiple_choice')
+        setAnswer('')
+    }
+    switch (type)
+    {
+        case 'multiple_choice':
+            return (
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    <Input value={text} onChange={(event) => setText(event.target.value)} placeholder="Question" />
+
+                    <select className="border rounded-md p-2" value={type} onChange={(event) => setType(event.target.value as Question['type'])}>
+                        <option value="multiple_choice">Choix</option>
+                        <option value="exact_answer">Réponses possibles</option>
+                    </select>
+                    <Button type="submit">Submit</Button>
+                </form>
+            )
+        case 'exact_answer':
+            return (
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    <Input value={text} onChange={(event) => setText(event.target.value)} placeholder="Question" />
+
+                    <select className="border rounded-md p-2" value={type} onChange={(event) => setType(event.target.value as Question['type'])}>
+                        <option value="multiple_choice">Choix</option>
+                        <option value="exact_answer">Réponse</option>
+                    </select>
+
+                    <Input value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Réponse" />
+                    <Button type="submit">Submit</Button>
+                </form>
+            )
+    }
 }
