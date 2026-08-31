@@ -8,11 +8,33 @@ export default function ExamAuthoring()
 {
     const [questions, setQuestions] = useState<Question[]>([])
 
+    function handleAddQuestion(question: Question) 
+    {
+        setQuestions((previousQuestions) => [...previousQuestions, question])
+    }
+
     return (
     <>
     <h1>Exam Authoring</h1>
     {createExam()}
-    <CreateQuestion />
+    <p>
+        Questions ajoutées : {questions.length}
+        <br />
+        {questions.map((question) => (
+            <div key={question.id}>
+                <strong>Question:</strong> {question.text}
+                <br />
+                <strong>Type:</strong> {question.type}
+                <br />
+                {question.type === 'exact_answer' && (
+                    <>
+                        <strong>Réponse:</strong> {question.answer}
+                    </>
+                )}
+            </div>
+        ))}
+    </p>
+    <CreateQuestion onAdd={handleAddQuestion} />
     </>
     )
 }
