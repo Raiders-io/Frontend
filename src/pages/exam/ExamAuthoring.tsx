@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CreateQuestion } from '@/pages/exam/Question'
+import type { Question } from '@/utils/types/exam'
 
 export default function ExamAuthoring()
 {
+    const [questions, setQuestions] = useState<Question[]>([])
+
     return (
     <>
     <h1>Exam Authoring</h1>
