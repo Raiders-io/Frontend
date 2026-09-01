@@ -28,7 +28,12 @@ export default function ExamAuthoring()
                 <br />
                 {question.type === 'exact_answer' && (
                     <>
-                        <strong>Réponse:</strong> {question.answer}
+                        <strong>Réponses acceptées:</strong>
+                        <ul className="ml-4 list-disc">
+                            {question.answers?.map((ans, index) => (
+                                <li key={index}>{ans}</li>
+                            ))}
+                        </ul>
                     </>
                 )}
             </div>
