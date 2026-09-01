@@ -4,6 +4,7 @@ export type Question =
   text: string
   type: 'multiple_choice' | 'exact_answer'
   answer?: string
+  answers?: string[]
   choices?: QuestionChoice[]
 }
 
