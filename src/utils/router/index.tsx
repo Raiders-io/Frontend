@@ -12,6 +12,7 @@ const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
 const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
 const AboutPage = lazy(() => import('@/pages/about'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const ExamAuthoring = lazy(() => import('@/pages/exam/ExamAuthoring'))
 
 export const router = createBrowserRouter([
 	{
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
 	{
 		path: '/about',
 		element: <AboutPage />,
+	},
+	{
+		path: '/exam/authoring',
+		element: <ExamAuthoring />,
 	},
 	{
 		path: '*',
