@@ -21,11 +21,13 @@ const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
 const SearchPage = lazy(() => import("@/pages/search"))
+import { Toaster } from "@/components/ui/sonner"
 
 export function RootLayout() {
   return (
     <div>
       <TopNavBar />
+      <Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
       <main>
         <Outlet /> {/* Child routes render here */}
       </main>
