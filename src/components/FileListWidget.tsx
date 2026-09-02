@@ -59,6 +59,7 @@ import { TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
 import { formatFileSize, formatDate } from "@/utils/utils/object"
 import { type ObjectSuccess } from "@/utils/types/object"
+import { toast } from "sonner"
 
 export default function FileListWidget({
   mode = "full",
@@ -153,12 +154,14 @@ export default function FileListWidget({
     if (hasPreviousPage) {
       setPage(currentPage - 1)
     }
+    toast.info("Going to the previous page.")
   }
 
   const goNextPage = () => {
     if (hasNextPage) {
       setPage(currentPage + 1)
     }
+    toast.info("Going to the next page.")
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
