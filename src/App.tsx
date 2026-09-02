@@ -4,12 +4,14 @@ import { router } from '@/utils/router'
 import TopNavBar from '@/components/TopNavBar'
 import { ThemeProvider } from "@/components/theme-provider"
 import { FooterComponent } from '@/components/FooterComponent'
+import { Toaster } from "@/components/ui/sonner"
 
 export default function App() {
 	return(
 		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 			<Suspense fallback={null}>
 				<TopNavBar />
+				<Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
 				<RouterProvider router={router} />
         	    <FooterComponent />
 			</Suspense>
