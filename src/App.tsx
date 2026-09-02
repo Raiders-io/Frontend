@@ -4,6 +4,7 @@ import { router } from '@/utils/router'
 import TopNavBar from '@/components/TopNavBar'
 import { ThemeProvider } from "@/components/theme-provider"
 import { FooterComponent } from '@/components/FooterComponent'
+import { Toaster } from "@/components/ui/sonner"
 
 export default function App() {
 	return (
@@ -11,6 +12,7 @@ export default function App() {
 			<Suspense fallback={null}>
 				<div className="flex min-h-screen flex-col">
 					<TopNavBar />
+					<Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
 					<div className="flex-1">
 						<RouterProvider router={router} />
 					</div>
