@@ -9,7 +9,7 @@ export const chatService = {
 
 	fetchMessages: async (conversationId: number): Promise<Message[]> => {
 		const { data } = await api.get<{ data: Message[] }>(
-			`/messaging/conversations/${conversationId}/messages`,
+			`/api/messaging/conversations/${conversationId}/messages`,
 		)
 		return data.data
 	},
