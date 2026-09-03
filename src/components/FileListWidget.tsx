@@ -68,10 +68,11 @@ export default function FileListWidget({
   const [meta, setMeta] = useState<MetaPagination | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(false)
 
   useEffect(() => {
     void refreshFiles()
-  }, [page, limit])
+  }, [page, limit, refreshTrigger])
 
   useEffect(() => {
     const resetDragging = () => {
@@ -283,6 +284,7 @@ export default function FileListWidget({
       if (files.length === 1 && page > 1) {
         setPage(page - 1)
       }
+      setRefreshTrigger((prev) => !prev)
     } catch (error) {
       console.error('Delete error:', error)
     }
@@ -296,6 +298,7 @@ export default function FileListWidget({
       if (filesToDeleteCount === files.length && page > 1) {
         setPage(page - 1)
       }
+      setRefreshTrigger((prev) => !prev)
     } catch (error) {
       console.error('Bulk delete error:', error)
     }
