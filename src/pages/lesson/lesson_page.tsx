@@ -103,7 +103,7 @@ export default function LessonPage() {
         <Input
           ref={fileInputRef}
           type="search"
-          placeholder={t('fileNameEgEnsubjectpdf', 'File name (e.g., en.subject.pdf)')}
+          placeholder={t('fileNameEg', 'File name (e.g., en.subject.pdf)')}
         />
         <Button onClick={handlePreview} aria-label={t('previewFile', 'Preview File')}>
           {t('preview', 'Preview')}
