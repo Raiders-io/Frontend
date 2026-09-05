@@ -159,7 +159,7 @@ export default function FileListWidget({
       })
     } catch (requestError) {
       console.error("File list error:", requestError)
-      setError("Impossible to load the file list.")
+      setError(t("impossible-to-load-file-list", "Impossible to load the file list."))
       setFiles([])
       setMeta(null)
     } finally {
