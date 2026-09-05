@@ -57,12 +57,12 @@ export default function SignupPage() {
 			subtitle="Quelques informations et tu peux commencer."
 			footer={
 				<>
-					{t('djUnCompte', 'Déjà un compte ?')}{' '}
+					{t('already-account', 'Déjà un compte ?')}{' '}
 					<Link
 						to="/login"
 						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
 					>
-						{t('seConnecter', 'Se connecter')}
+						{t('log-in', 'Se connecter')}
 					</Link>
 				</>
 			}
