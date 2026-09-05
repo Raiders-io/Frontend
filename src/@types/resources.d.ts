@@ -180,8 +180,8 @@ export default interface Resources {
     "viewProjectOnGithub": "View Project on GitHub",
     "visibility": "Visibility",
     "write": "Write",
+    "write-Message": "Écrire un message…",
     "writeActivelabel": "Write to {{activeLabel}}…",
-    "writeUnMessage": "Write a message…",
     "youWillGetDisconnected": "You will get disconnected"
   }
 }
