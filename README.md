@@ -1,5 +1,7 @@
 # Transcendance Frontend
 
+<img src="https://img.shields.io/badge/dynamic/json.svg?style=plastic&color=2096F3&label=locize&query=%24.translatedPercentage&url=https://api.lite.locize.app/badgedata/3f48acab-3b26-4486-bac3-78a0758b8abd&suffix=%+translated&link=https://www.locize.com" alt="Percentage of Translated strings"/>
+
 ## Usage
 
 The following command builds the frontend and transpiles typescript into javascript into the `dist` folder. It copies all files from `public` and tries to optimize all pictures for size. It also generate the sitemap through a script.
