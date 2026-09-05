@@ -89,7 +89,7 @@ export default function UsersList() {
 											onClick={() => startConversation(member.id)}
 											className="shrink-0"
 										>
-											{t('crire', 'Écrire')}
+											{t('write', 'Éwrite')}
 										</Button>
 									</li>
 								))}

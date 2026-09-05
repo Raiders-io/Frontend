@@ -62,7 +62,7 @@ export function AppHeader() {
 					className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
 				>
 					<LogOut className="size-4" />
-					<span className="sr-only">{t('seDconnecter', 'Se déconnecter')}</span>
+					<span className="sr-only">{t('log-off', 'Se déconnecter')}</span>
 				</button>
 			</div>
 		</header>
