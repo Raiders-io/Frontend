@@ -34,13 +34,13 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
 
 				<dl className="grid grid-cols-3 gap-6 border-t border-zinc-800 pt-8 font-mono text-xs">
 					<div>
-						{t('suivezLesCoursDeLaCommunaut', 'Suivez les cours de la communauté')}
+						{t('follow-community-courses', 'Suivez les cours de la communauté')}
 					</div>
 					<div>
 						{t('publish-your-courses', 'Publiez vos propres cours')}
 					</div>
 					<div>
-						{t('testezVosConnaissances', 'Testez vos connaissances')}
+						{t('check-knowledge', 'Testez vos connaissances')}
 					</div>
 				</dl>
 			</aside>
