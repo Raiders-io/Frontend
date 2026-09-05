@@ -93,7 +93,7 @@ export default function ChatPage() {
 
 							<MessageThread messages={activeMessages} currentUserId={currentUserId} />
 							<MessageInput
-								placeholder={t('crireActivelabel', 'Écrire à {{activeLabel}}…', { activeLabel })}
+								placeholder={t('writeActivelabel', 'Éwrite à {{activeLabel}}…', { activeLabel })}
 								onSend={(content) => sendMessage(activeConversationId, content)}
 							/>
 						</>
