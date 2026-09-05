@@ -6,6 +6,8 @@ _This project has been created as part of the 42 curriculum by halnuma, ppontet,
 
 ## Introduction
 
+<img src="https://img.shields.io/badge/dynamic/json.svg?style=plastic&color=2096F3&label=locize&query=%24.translatedPercentage&url=https://api.lite.locize.app/badgedata/3f48acab-3b26-4486-bac3-78a0758b8abd&suffix=%+translated&link=https://www.locize.com" alt="Percentage of Translated strings"/>
+
 This project is the frontend for the project [Transcendence](https://github.com/Raiders-io/Transcendence). It regroups all the pages, components, style and API calls for all the services. It ouputs files that are given to the web server (nginx), to be shown to users.
 
 ## Features
