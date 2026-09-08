@@ -20,6 +20,7 @@ import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { useState, useEffect } from "react"
+import { toast } from 'sonner'
 
 export default function EditProfile() {
   return (
@@ -72,10 +73,11 @@ export default function EditProfile() {
 }
 
 export const DeleteAccountDialog = () => {
-  const { logout } = useAuthStore()
-  const [isDisabled, setIsDisabled] = useState(true)
-  const [countdown, setCountdown] = useState(5)
-  const [isOpen, setIsOpen] = useState(false)
+	const { logout } = useAuthStore()
+	const [ isDisabled , setIsDisabled] = useState(true)
+	const [ countdown, setCountdown ] = useState(5)
+	const [ isOpen, setIsOpen ] = useState(false)
+	let toastId: string | number
 
   // Timer pour désactiver le bouton
   useEffect(() => {
@@ -95,23 +97,25 @@ export const DeleteAccountDialog = () => {
     return () => clearInterval(timer)
   }, [isOpen, isDisabled])
 
-  const handleDeleteAccount = async () => {
-    try {
-      await authService.deleteAccount()
-      logout()
-      router.navigate("/login")
-    } catch (error) {
-      console.error("Error deleting account:", error)
-    }
-  }
+	const handleDeleteAccount = async () => {
+		try {
+			toast.success("Account deleted successfully.", { id: toastId })
+			await authService.deleteAccount()
+			logout()
+			router.navigate('/login')
+		} catch (error) {
+			console.error('Error deleting account:', error)
+		}
+	}
 
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open)
-    if (open) {
-      setIsDisabled(true)
-      setCountdown(5)
-    }
-  }
+	const handleOpenChange = (open: boolean) => {
+		setIsOpen(open)
+		toastId = toast.warning("Are you sure you want to delete your account? This action cannot be undone.", { duration: 5000 })
+		if (open) {
+			setIsDisabled(true)
+			setCountdown(5)
+		}
+	}
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
