@@ -9,7 +9,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en', // Default language if the detected language is not available
-    supportedLngs: ['en', 'fr'], // Supported Languages
+    supportedLngs: ['en', 'fr', 'de', 'es'], // Supported Languages
     ns: ['translation'], // Namespace by default
     defaultNS: 'translation', // Namespace by default
     debug: import.meta.env.DEV, // Print logs in development mode
