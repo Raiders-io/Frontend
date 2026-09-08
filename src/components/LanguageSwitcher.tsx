@@ -15,6 +15,8 @@ export const LanguageSwitcher = () => {
   const languages = [
     { code: 'en', name: i18next.t('english', 'English') },
     { code: 'fr', name: i18next.t('french', 'Français') },
+    { code: 'de', name: i18next.t('german', 'Deutsch') },
+    { code: 'es', name: i18next.t('spanish', 'Español') },
   ];
 
   const currentLangName = languages.find(lang => lang.code === currentLanguage)?.name || 'Language';
