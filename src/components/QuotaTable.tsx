@@ -13,6 +13,8 @@ import type { QuotaResponse } from "@/utils/types/object"
 import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { formatFileSize } from "@/utils/utils/object"
+import { toast } from "sonner"
+import { withTimeout } from "@/utils/utils/timeout"
 
 export function QuotaTable({ mode = "full" }) {
   const [loading, setLoading] = useState(true)
@@ -27,19 +29,21 @@ export function QuotaTable({ mode = "full" }) {
     setLoading(true)
     setError(false)
 
-    try {
-      const response = await objectService.quotaRetrieve()
-      setQuota(response)
-    } catch (requestError) {
-      console.error("Quota error:", requestError)
-      setError(true)
-      setQuota(null)
-      setTimeout(() => {
-        refreshQuota()
-      }, 5000)
-    } finally {
-      setLoading(false)
-    }
+    const toastId = toast.info("Loading quota...")
+    withTimeout(objectService.quotaRetrieve(), 10000)
+      .then(setQuota)
+      .then(() => toast.success("Quota loaded successfully.", { id: toastId }))
+      .finally(() => setLoading(false))
+      .catch((e) => {
+        // throw e
+        console.error("Quota error:", e)
+        toast.error("Impossible to load the quota.", { id: toastId })
+        setError(true)
+        setQuota(null)
+        setTimeout(() => {
+          refreshQuota()
+        }, 5000)
+      })
   }
 
   const containerClassName =
