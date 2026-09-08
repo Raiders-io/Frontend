@@ -70,6 +70,7 @@ export default interface Resources {
     "for": "for “",
     "formatsTxtPdfMdTex": "Formats: txt, pdf, md, tex.",
     "french": "Français",
+    "german": "German",
     "githubLogo": "GitHub Logo",
     "goToHomePage": "Go to Home Page",
     "goToNextPage": "Go to next page",
@@ -155,6 +156,7 @@ export default interface Resources {
     "size": "Size",
     "sortbydirection": "{{sortBy}}:{{direction}}",
     "sortedBySelectedsortlabel": "Sorted by {{selectedSortLabel}}",
+    "spanish": "Spanish",
     "storage_limit": "Storage limit",
     "storage_ratio": "Storage ratio",
     "storage_used": "Storage used",
@@ -180,7 +182,7 @@ export default interface Resources {
     "viewProjectOnGithub": "View Project on GitHub",
     "visibility": "Visibility",
     "write": "Write",
-    "write-Message": "Écrire un message…",
+    "write-Message": "Write a message…",
     "writeActivelabel": "Write to {{activeLabel}}…",
     "youWillGetDisconnected": "You will get disconnected"
   }
