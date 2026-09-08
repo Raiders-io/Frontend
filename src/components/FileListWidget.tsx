@@ -62,6 +62,7 @@ import { DeleteButton } from "@/components/DeleteButton"
 import { formatFileSize, formatDate } from "@/utils/utils/object"
 import { type ObjectSuccess } from "@/utils/types/object"
 import { toast } from "sonner"
+import { withTimeout } from "@/utils/utils/timeout"
 
 export default function FileListWidget({
   mode = "full",
@@ -90,34 +91,37 @@ export default function FileListWidget({
   const [refreshTrigger, setRefreshTrigger] = useState(false)
   
   const actionSettings = useActionSettingsStore()
-
-  const refreshFiles = useCallback(async () => {
+    
+  const refreshFiles = async () => {
     setLoading(true)
     setError(null)
 
-    try {
-      const response = await objectService.index(page, limit)
-      setFiles(response.objects.data)
-      setMeta(response.objects.meta)
-      setSelectedFiles((prev) => {
-        const newSet = new Set(prev)
-        const currentFileNames = new Set(response.objects.data.map((f) => f.name))
-        for (const fileName of prev) {
-          if (!currentFileNames.has(fileName)) {
-            newSet.delete(fileName)
+    const toastId = toast.info("Loading files...")
+    withTimeout(objectService.index(page, limit), 10000)
+      .then((res) => {
+        setFiles(res.objects.data)
+        setMeta(res.objects.meta)
+        setSelectedFiles((prev) => {
+          const newSet = new Set(prev)
+          const currentFileNames = new Set(res.objects.data.map((f) => f.name))
+          for (const fileName of prev) {
+            if (!currentFileNames.has(fileName)) {
+              newSet.delete(fileName)
+            }
           }
-        }
-        return newSet
+          return newSet
+        })
       })
-    } catch (requestError) {
-      console.error("File list error:", requestError)
-      setError("Impossible to load the file list.")
-      setFiles([])
-      setMeta(null)
-    } finally {
-      setLoading(false)
-    }
-  }, [page, limit])
+      .then(() => toast.success("Files loaded successfully.", { id: toastId }))
+      .catch((e) => {
+        console.error("File list error:", e)
+        setError("Impossible to load the file list.")
+        toast.error("Impossible to load the file list.", { id: toastId })
+        setFiles([])
+        setMeta(null)
+      })
+      .finally(() => setLoading(false))
+  }
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
