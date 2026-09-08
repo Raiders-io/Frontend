@@ -9,6 +9,7 @@ import { authService } from '@/services/auth_service'
 import { router } from '@/utils/router'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 export default function EditProfile() {
 	return (
@@ -56,6 +57,7 @@ export const DeleteAccountDialog = () => {
 	const [ isDisabled , setIsDisabled] = useState(true)
 	const [ countdown, setCountdown ] = useState(5)
 	const [ isOpen, setIsOpen ] = useState(false)
+	let toastId: string | number
 
 	// Timer pour désactiver le bouton
 	useEffect(() => {
@@ -77,6 +79,7 @@ export const DeleteAccountDialog = () => {
 
 	const handleDeleteAccount = async () => {
 		try {
+			toast.success("Account deleted successfully.", { id: toastId })
 			await authService.deleteAccount()
 			logout()
 			router.navigate('/login')
@@ -87,6 +90,7 @@ export const DeleteAccountDialog = () => {
 
 	const handleOpenChange = (open: boolean) => {
 		setIsOpen(open)
+		toastId = toast.warning("Are you sure you want to delete your account? This action cannot be undone.", { duration: 5000 })
 		if (open) {
 			setIsDisabled(true)
 			setCountdown(5)
