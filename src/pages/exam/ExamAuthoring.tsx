@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CreateQuestion } from '@/pages/exam/Question'
-import type { Question } from '@/utils/types/exam'
+import type { ExamType, Question } from '@/utils/types/exam'
 
 export default function ExamAuthoring()
 {
