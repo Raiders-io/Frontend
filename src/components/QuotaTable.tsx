@@ -35,14 +35,10 @@ export function QuotaTable({ mode = "full" }) {
       .then(() => toast.success("Quota loaded successfully.", { id: toastId }))
       .finally(() => setLoading(false))
       .catch((e) => {
-        // throw e
         console.error("Quota error:", e)
         toast.error("Impossible to load the quota.", { id: toastId })
         setError(true)
         setQuota(null)
-        setTimeout(() => {
-          refreshQuota()
-        }, 5000)
       })
   }
 
