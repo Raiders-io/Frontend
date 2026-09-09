@@ -18,6 +18,7 @@ const TermsOfService = lazy(() => import('@/pages/legal/terms'))
 const CookiesPage = lazy(() => import('@/pages/legal/cookies'))
 const DataRequestPage = lazy(() => import('@/pages/legal/gdpr'))
 const ExamAuthoring = lazy(() => import('@/pages/exam/ExamAuthoring'))
+const ExamPaper = lazy(() => import('@/pages/exam/ExamPaper'))
 
 export const router = createBrowserRouter([
 	{
@@ -95,6 +96,10 @@ export const router = createBrowserRouter([
 	{
 		path: '/exam/authoring',
 		element: <ExamAuthoring />,
+	},
+	{
+		path: '/exam/paper',
+		element: <ExamPaper />,
 	},
 	{
 		path: '*',
