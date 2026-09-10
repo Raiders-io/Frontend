@@ -107,8 +107,8 @@ export function QuotaTable({ mode = "full" }) {
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>{quota?.downloadCountResetAt}</TableCell>
-                <TableCell>{quota?.uploadCountResetAt}</TableCell>
+                <TableCell>{quota?.downloadCountResetAt == undefined ? "Not available" : quota?.downloadCountResetAt}</TableCell>
+                <TableCell>{quota?.uploadCountResetAt == undefined ? "Not available" : quota?.uploadCountResetAt}</TableCell>
                 <TableCell>{quota?.updatedAt}</TableCell>
               </TableRow>
             </TableBody>
