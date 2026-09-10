@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ExamType } from '@/utils/types/exam'
+import CodeEditor from './CodeEditor'
 
 const exam: ExamType = {
     name: 'feur',
@@ -20,6 +21,12 @@ const exam: ExamType = {
             text: 'Combien y a t-il de vers dans l\'Iliade ?',
             type: 'exact_answer',
             answers: ['15693', '15693 vers', '15 693'],
+        },
+        {
+            id: 'question-3',
+            text: 'En C, écrivez un programme affichant tous les chiffres impairs.',
+            type: 'code',
+            answers: [],
         },
     ],
 }
@@ -83,15 +90,20 @@ export default function ExamPaper()
                                 type="text"
                                 value={answers[question.id] ?? ''}
                                 onChange={(event) => handleAnswerChange(question.id, event.target.value)}
-                                placeholder="Votre réponse"
+                                placeholder="Answer..."
                             />
                         )}
+                        {question.type === 'code' &&
+                            <CodeEditor
+                            value={answers[question.id] ?? ''}
+                            onChange={(value) => handleAnswerChange(question.id, value)}
+                             />}
                     </li>
                 ))}
                 </ol>
 
                 <button className="rounded-md border px-4 py-2" type="submit">
-                    Envoyer mes réponses
+                    Submit
                 </button>
             </form>
 
