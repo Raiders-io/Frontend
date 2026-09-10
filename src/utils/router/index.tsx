@@ -14,6 +14,7 @@ const AboutPage = lazy(() => import('@/pages/about'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 const ExamAuthoring = lazy(() => import('@/pages/exam/ExamAuthoring'))
 const ExamPaper = lazy(() => import('@/pages/exam/ExamPaper'))
+const Editor = lazy(() => import('@/pages/exam/CodeEditor'))
 
 export const router = createBrowserRouter([
 	{

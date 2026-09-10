@@ -2,7 +2,7 @@ export type Question =
 {
   id: string
   text: string
-  type: 'multiple_choice' | 'exact_answer'
+  type: 'multiple_choice' | 'exact_answer' | 'code'
   answer?: string
   answers?: string[]
   choices?: QuestionChoice[]
