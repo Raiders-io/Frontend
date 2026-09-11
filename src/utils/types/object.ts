@@ -13,6 +13,12 @@ export type ObjectStoreResponse = {
 	objects: (ObjectError | ObjectSuccess)[]
 }
 
+export type ObjectUpdateResponse = ObjectSuccess | ObjectError
+
+export type ObjectUpdateManyResponse = {
+	objects: (ObjectError | ObjectSuccess)[]
+}
+
 export type ObjectDestroyResponse = {
 	data: ObjectError | ObjectSuccess | { __response: ObjectError | ObjectSuccess; }
 }

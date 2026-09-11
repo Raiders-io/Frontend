@@ -2,6 +2,8 @@ import api from "@/utils/lib/axios"
 import type {
   ObjectIndexResponse,
   ObjectStoreResponse,
+  ObjectUpdateResponse,
+  ObjectUpdateManyResponse,
   ObjectDestroyResponse,
   ObjectDestroyManyResponse,
   QuotaResponse,
@@ -29,6 +31,22 @@ export const objectService = {
 
   store: async (formData: FormData): Promise<ObjectStoreResponse> => {
     const { data } = await api.post<ObjectStoreResponse>(
+      "/api/v1/storage/objects",
+      formData,
+    )
+    return data
+  },
+
+  update: async (fileName: string, formData: FormData): Promise<ObjectUpdateResponse> => {
+    const { data } = await api.put<ObjectUpdateResponse>(
+      `/api/v1/storage/objects/${encodeURIComponent(fileName)}`,
+      formData,
+    )
+    return data
+  },
+
+  updateMany: async (formData: FormData): Promise<ObjectUpdateManyResponse> => {
+    const { data } = await api.put<ObjectUpdateManyResponse>(
       "/api/v1/storage/objects",
       formData,
     )
