@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { initExam } from '@/components/exam/InitExam'
 import { CreateQuestion } from '@/pages/exam/Question'
-import type { ExamType, Question } from '@/utils/types/exam'
+import { DisplayQuestion } from '@/components/exam/DisplayQuestion'
+import type { Question } from '@/utils/types/exam'
+import { useState } from 'react'
+
 
 export default function ExamAuthoring()
 {
@@ -16,53 +17,23 @@ export default function ExamAuthoring()
     return (
     <>
     <h1>Exam Authoring</h1>
-    {createExam()}
+    {initExam()}
     <p>
         Questions ajoutées : {questions.length}
         <br />
         {questions.map((question) => (
             <div key={question.id}>
-                <strong>Question:</strong> {question.text}
+                <br />
+                <strong>Question {question.pos}:</strong> {question.text}
                 <br />
                 <strong>Type:</strong> {question.type}
                 <br />
-                {question.type === 'multiple_choice' && (
-                    <>
-                        <strong>Choix:</strong>
-                        <ul className="ml-4 list-disc">
-                            {question.choices?.map((choice) => (
-                                <li key={choice.id}>
-                                    {choice.text} {choice.isCorrect ? '✅' : '❌'}
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
-                {question.type === 'exact_answer' && (
-                    <>
-                        <strong>Réponses acceptées:</strong>
-                        <ul className="ml-4 list-disc">
-                            {question.answers?.map((ans, index) => (
-                                <li key={index}>{ans}</li>
-                            ))}
-                        </ul>
-                    </>
-                )}
+                <DisplayQuestion question={question} />
+                <br />
             </div>
         ))}
     </p>
     <CreateQuestion onAdd={handleAddQuestion} />
     </>
-    )
-}
-
-export function createExam()
-{
-    return (
-        <div className="flex flex-col gap-4">
-            <Input placeholder="Exam Name" />
-            <Input placeholder="Exam Description" />
-            <Button>Submit</Button>
-        </div>
     )
 }
