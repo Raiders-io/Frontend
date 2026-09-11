@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ExamType } from '@/utils/types/exam'
-import CodeEditor from './CodeEditor'
+import CodeEditor from '@/components/exam/CodeEditor'
 
 const exam: ExamType = {
     name: 'feur',
@@ -8,6 +8,7 @@ const exam: ExamType = {
     questions: [
         {
             id: 'question-1',
+            pos: 1,
             text: 'Quelle est la capitale de la République du Feuristan ?',
             type: 'multiple_choice',
             choices: [
@@ -18,12 +19,14 @@ const exam: ExamType = {
         },
         {
             id: 'question-2',
+            pos: 2,
             text: 'Combien y a t-il de vers dans l\'Iliade ?',
             type: 'exact_answer',
             answers: ['15693', '15693 vers', '15 693'],
         },
         {
             id: 'question-3',
+            pos: 3,
             text: 'En C, écrivez un programme affichant tous les chiffres impairs.',
             type: 'code',
             answers: [],

@@ -17,6 +17,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
 {
     const [text, setText] = useState('')
     const [type, setType] = useState<Question['type']>('multiple_choice')
+    const [pos, setPos] = useState(1)
     const [answer, setAnswer] = useState('')
     const [answers, setAnswers] = useState<string[]>([])
     const [currentAnswer, setCurrentAnswer] = useState('')
@@ -26,6 +27,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
     function resetForm() 
     {
         setText('')
+        setPos((prevPos) => prevPos + 1)
         setType('multiple_choice')
         setAnswer('')
         setAnswers([])
@@ -74,6 +76,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
         const newQuestion: Question =
         {
             id: Date.now().toString(),
+            pos: pos,
             text: text.trim(),
             type,
             answer: answer.trim() || undefined,
