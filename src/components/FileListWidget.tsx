@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -26,7 +27,16 @@ import {
   type FileListWidgetProps,
   type FileObject,
   type MetaPagination,
+  type ObjectError,
 } from "@/utils/types/object"
+import {
+  FileConflictDialog,
+} from "@/components/FileConflictDialog"
+import {
+  getConflictingFiles,
+  hasFileConflicts,
+  isFileConflictError,
+} from "@/utils/helpers/fileConflicts"
 import {
   Table,
   TableBody,
@@ -48,6 +58,7 @@ import {
 import { TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
 import { formatFileSize, formatDate } from "@/utils/utils/object"
+import { type ObjectSuccess } from "@/utils/types/object"
 
 export default function FileListWidget({
   mode = "full",
@@ -67,12 +78,45 @@ export default function FileListWidget({
   const [limit, setLimit] = useState(initialLimit)
   const [meta, setMeta] = useState<MetaPagination | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
+  const [conflictDialog, setConflictDialog] = useState<{
+    conflicts: ObjectError[]
+    originalFiles: File[]
+  } | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(false)
 
+  const refreshFiles = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await objectService.index(page, limit)
+      setFiles(response.objects.data)
+      setMeta(response.objects.meta)
+      setSelectedFiles((prev) => {
+        const newSet = new Set(prev)
+        const currentFileNames = new Set(response.objects.data.map((f) => f.name))
+        for (const fileName of prev) {
+          if (!currentFileNames.has(fileName)) {
+            newSet.delete(fileName)
+          }
+        }
+        return newSet
+      })
+    } catch (requestError) {
+      console.error("File list error:", requestError)
+      setError("Impossible to load the file list.")
+      setFiles([])
+      setMeta(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [page, limit])
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void refreshFiles()
-  }, [page, limit, refreshTrigger])
+  }, [page, limit, refreshTrigger, refreshFiles])
 
   useEffect(() => {
     const resetDragging = () => {
@@ -118,7 +162,7 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
+    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
 
     if (label.includes("image")) 
       return <FileImageIcon className="h-4 w-4" />
@@ -135,34 +179,6 @@ export default function FileListWidget({
     if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
       return <FileText className="h-4 w-4" />
     return <Type className="h-4 w-4" />
-  }
-
-  const refreshFiles = async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const response = await objectService.index(page, limit)
-      setFiles(response.objects.data)
-      setMeta(response.objects.meta)
-      setSelectedFiles((prev) => {
-        const newSet = new Set(prev)
-        const currentFileNames = new Set(response.objects.data.map((f) => f.name))
-        for (const fileName of prev) {
-          if (!currentFileNames.has(fileName)) {
-            newSet.delete(fileName)
-          }
-        }
-        return newSet
-      })
-    } catch (requestError) {
-      console.error("File list error:", requestError)
-      setError("Impossible to load the file list.")
-      setFiles([])
-      setMeta(null)
-    } finally {
-      setLoading(false)
-    }
   }
 
   const uploadFiles = async (
@@ -185,11 +201,54 @@ export default function FileListWidget({
         formData.append("files[]", file)
       }
 
-      await objectService.store(formData)
-      setUploadSuccess(`${filesToUpload.length} file(s) uploaded successfully.`)
+      const filesStatus = await objectService.store(formData)
+
+      // Check if there are any file conflicts
+      if (hasFileConflicts(filesStatus)) {
+        const conflicts = getConflictingFiles(filesStatus, filesToUpload)
+        if (conflicts.length > 0) {
+          setConflictDialog({
+            conflicts,
+            originalFiles: filesToUpload,
+          })
+          // Don't show success message yet, wait for conflict resolution
+          return
+        }
+      }
+
+      // If no conflicts or user handled them, show success
+      const successfulUploads = filesStatus.objects.filter(
+        (item): item is ObjectSuccess => !("error" in item),
+      ).length
+      if (successfulUploads > 0) {
+        setUploadSuccess(`${successfulUploads} file(s) uploaded successfully.`)
+      }
       await refreshFiles()
     } catch (requestError) {
       console.error("Upload error:", requestError)
+      
+      // Handle HTTP error responses (e.g., 409 Conflict with plain text body)
+      // Check if the error is a file conflict error
+      if (requestError instanceof Error || typeof requestError === "string") {
+        const errorMessage = typeof requestError === "string" 
+          ? requestError 
+          : requestError.message
+        
+        if (isFileConflictError(errorMessage)) {
+          // Create conflict entries for all files
+          const conflicts = filesToUpload.map((f) => ({
+            key: f.name,
+            error: errorMessage,
+          }))
+          
+          setConflictDialog({
+            conflicts,
+            originalFiles: filesToUpload,
+          })
+          return
+        }
+      }
+      
       setUploadError("The upload failed.")
     } finally {
       setUploading(false)
@@ -373,6 +432,25 @@ export default function FileListWidget({
             uploadError={uploadError}
             uploadSuccess={uploadSuccess}
           />
+          {conflictDialog && (
+            <FileConflictDialog
+              conflicts={conflictDialog.conflicts}
+              originalFiles={conflictDialog.originalFiles}
+              onComplete={async () => {
+                setConflictDialog(null)
+                setUploadSuccess(
+                  `${conflictDialog.originalFiles.length} file(s) replaced successfully.`,
+                )
+                await refreshFiles()
+              }}
+              onCancel={() => {
+                setConflictDialog(null)
+                setUploadSuccess(
+                  `${conflictDialog.originalFiles.length - conflictDialog.conflicts.length} file(s) uploaded successfully. ${conflictDialog.conflicts.length} file(s) skipped.`,
+                )
+              }}
+            />
+          )}
 
           {showPagination && mode === "full" && (
             <FileListPagination
