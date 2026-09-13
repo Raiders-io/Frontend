@@ -4,7 +4,7 @@ export interface file {
 }
 
 export interface Tag {
-  id: string
+  id: number
   name: string
 }
 
@@ -13,7 +13,9 @@ export interface Lesson {
   UUID: string
   slug: string
   authorId: number
+  author: string
   isPrivate: boolean
+  description: string
   tags: Tag[]
   files: file[]
 }
