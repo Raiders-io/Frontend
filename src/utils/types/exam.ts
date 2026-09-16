@@ -1,6 +1,7 @@
 export type Question = 
 {
   id: string
+  pos: number
   text: string
   type: 'multiple_choice' | 'exact_answer' | 'code'
   answer?: string
