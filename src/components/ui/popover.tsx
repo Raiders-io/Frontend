@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "cn"
+import { cn } from "@/utils/lib/shadcn"
 import { Popover as PopoverPrimitive } from "radix-ui"
 
 function Popover({
