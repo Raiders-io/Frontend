@@ -6,12 +6,17 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { FooterComponent } from '@/components/FooterComponent'
 
 export default function App() {
-	return(
+	return (
 		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 			<Suspense fallback={null}>
-				<TopNavBar />
-				<RouterProvider router={router} />
-        	    <FooterComponent />
+				<div className="flex min-h-screen flex-col">
+					<TopNavBar />
+					<div className="flex-1">
+						<RouterProvider router={router} />
+					</div>
+					<FooterComponent />
+				</div>
 			</Suspense>
 		</ThemeProvider>
-)}
+	)
+}

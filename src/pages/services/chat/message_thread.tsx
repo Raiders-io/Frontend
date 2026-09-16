@@ -24,10 +24,12 @@ function formatDay(iso: string): string {
 }
 
 export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
-	const bottomRef = useRef<HTMLDivElement>(null)
+	const containerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
-		bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+		const container = containerRef.current
+		if (container)
+			container.scrollTop = container.scrollHeight
 	}, [messages])
 
 	if (messages.length === 0) {
@@ -41,7 +43,7 @@ export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
 	}
 
 	return (
-		<div className="flex-1 overflow-y-auto px-6 py-5">
+		<div ref={containerRef} className="flex-1 overflow-y-auto px-6 py-5">
 			{messages.map((message, index) => {
 				const isOwn = message.senderId === currentUserId
 				const previous = messages[index - 1]
@@ -90,7 +92,7 @@ export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
 					</div>
 				)
 			})}
-			<div ref={bottomRef} className="h-2" />
+			<div className="h-2" />
 		</div>
 	)
 }
