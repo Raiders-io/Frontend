@@ -18,36 +18,82 @@
 //   { label: 'Updated first', value: 'updated_at', direction: 'desc' },
 // ]
 
-import LessonTab from '@/components/lesson/LessonTab'
-import type { Lesson } from '@/utils/types/lesson'
+import LessonSearchBar from "@/components/lesson/LessonSearchBar"
+import LessonTab from "@/components/lesson/LessonTab"
+import type { Lesson } from "@/utils/types/lesson"
+import { useState } from "react"
 
 const lesson: Lesson = {
   title: "Hello La team !",
   slug: "World",
   author: "Damien",
-  tags: [{ id: 1, name: "tag1" }, { id: 2, name: "tag2" }],
-  description: "This is a test lesson Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !",
+  tags: [
+    { id: 1, name: "tag1" },
+    { id: 2, name: "tag2" },
+  ],
+  description:
+    "This is a test lesson Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !",
   UUID: "1234567890",
   authorId: 1,
   isPrivate: false,
-  files: [{ name: "file1.txt", id: "1" }, { name: "file2.txt", id: "2" }]
+  files: [
+    { name: "file1.txt", id: "1" },
+    { name: "file2.txt", id: "2" },
+  ],
 }
 
 const lesson2: Lesson = {
-  title: "Hello 2 team !",
+  title: "Hello La team !",
   slug: "World",
   author: "Damien",
-  tags: [{ id: 1, name: "tag1" }, { id: 2, name: "tag2" }],
-  description: "This is a test lesson Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !Hello La team !",
+  tags: [
+    { id: 1, name: "tag1" },
+    { id: 2, name: "tag2" },
+  ],
+  description: "This is a test !",
   UUID: "1234567890",
   authorId: 1,
   isPrivate: false,
-  files: [{ name: "file1.txt", id: "1" }, { name: "file2.txt", id: "2" }]
+  files: [
+    { name: "file1.txt", id: "1" },
+    { name: "file2.txt", id: "2" },
+  ],
+}
+
+const lesson3: Lesson = {
+  title: "Hello La team !",
+  slug: "World",
+  author: "Damien",
+  tags: [
+    { id: 1, name: "tag1" },
+    { id: 2, name: "tag2" },
+  ],
+  UUID: "1234567890",
+  authorId: 1,
+  isPrivate: false,
+  files: [
+    { name: "file1.txt", id: "1" },
+    { name: "file2.txt", id: "2" },
+  ],
 }
 
 export default function LessonHomePage() {
+  const [page, setPage] = useState(1)
   // return <LessonCard Lesson={lesson} maxLen={200} className='w-full max-w-sm'/>
-  return <LessonTab Lessons={[lesson, lesson2]}/>
+  return (
+    <div>
+    <LessonSearchBar/>
+    <LessonTab
+      loading={false}
+      limit={12}
+      currentPage={page}
+      onPageChange={(page) => setPage(page)}
+      totalPages={10}
+      Lessons={[lesson, lesson2, lesson3, lesson, lesson, lesson]}
+      className="gap-4 p-4"
+    />
+    </div>
+  )
 }
 
 // export default function LessonHomePage() {
