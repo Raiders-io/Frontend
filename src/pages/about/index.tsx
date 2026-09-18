@@ -29,18 +29,16 @@ export default function AboutPage() {
 			{t('about', 'About')}
 			</p>
 			<h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
-				Description
+				{t('description', 'Description')}
 			</h1>
 			<p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-				Raiders.io est une plateforme de cours en ligne. On peut y lire des cours,
-				publier les siens, et tester ses connaissances. Ce projet a été réalisé
-				dans le cadre du projet final du tronc commun de l'École 42 : ft_transcendence.
+				{t('raiders-io-description')}
 			</p>
 			<div className="mt-12 border-t pt-10">
 				{loading ? (
-					<p className="text-sm text-muted-foreground">Chargement…</p>
+					<p className="text-sm text-muted-foreground">{t('chargement', 'Chargement…')}</p>
 				) : error ? (
-					<p className="text-sm text-destructive">Erreur : {error}</p>
+					<p className="text-sm text-destructive">{t('erreurError', 'Erreur : {{error}}', { error })}</p>
 				) : (
 					<div className="prose prose-sm dark:prose-invert max-w-none">
 						<ReactMarkdown
