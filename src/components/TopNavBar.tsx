@@ -12,9 +12,10 @@ import {
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
-import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const TopNavBar = () => {
+	const { t } = useTranslation()
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -44,15 +45,15 @@ const TopNavBar = () => {
             size="icon"
             className="rounded-full"
             onClick={changePageHome}
-            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
+            aria-label={t('goToHomePage', 'Go to Home Page')}
           >
-            <img src="/favicon.png" alt={i18next.t('logo', 'Logo')} className="h-8 w-8" />
+            <img src="/favicon.png" alt={t('logo', 'Logo')} className="h-8 w-8" />
           </Button>
           <Button
             variant="ghost"
             className="text-lg font-semibold"
             onClick={changePageHome}
-            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
+            aria-label={t('goToHomePage', 'Go to Home Page')}
           >
             Raiders.io
           </Button>
@@ -68,13 +69,13 @@ const TopNavBar = () => {
               </InputGroupAddon>
               <InputGroupInput
                 type="search"
-                placeholder={i18next.t('searchLesson', 'Search lesson...')}
+                placeholder={t('searchLesson')}
                 className="w-full pl-10"
                 ref={searchInputRef}
               />
               <InputGroupAddon align="inline-end">
                 <KbdGroup>
-                  <Kbd>{i18next.t('ctrl', 'Ctrl')}</Kbd>
+                  <Kbd>{t('ctrl', 'Ctrl')}</Kbd>
                   <Kbd>K</Kbd>
                 </KbdGroup>
               </InputGroupAddon>
