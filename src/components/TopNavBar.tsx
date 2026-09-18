@@ -7,6 +7,7 @@ import type {
 } from "@/utils/types/component"
 import { UserMenu } from "./user/UserMenu"
 import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
