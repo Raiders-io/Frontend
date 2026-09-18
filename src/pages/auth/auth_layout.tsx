@@ -11,12 +11,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
 	return (
 		<div className="grid min-h-screen lg:grid-cols-[1fr_1.1fr]">
 			<aside className="relative hidden flex-col justify-between bg-zinc-950 p-12 text-zinc-50 lg:flex">
-				<div className="flex items-center gap-2.5">
-					<span className="size-2 rounded-full bg-emerald-400" />
-					<span className="font-mono text-xs uppercase tracking-[0.3em] text-zinc-400">
-						Raiders.io
-					</span>
-				</div>
+				<div />
 
 				<div className="max-w-md">
 					<p className="text-3xl font-medium leading-snug tracking-tight text-zinc-100">

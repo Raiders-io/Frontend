@@ -6,7 +6,6 @@ import { useAuthStore } from '@/utils/stores/auth_store'
 import { chatService } from '@/services/chat_service'
 import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
-import { AppHeader } from '@/components/app_header'
 import { ConversationList } from './conversation_list'
 import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
@@ -61,8 +60,6 @@ export default function ChatPage() {
 
 	return (
 		<div className="flex h-[calc(100vh-3.5rem)] flex-col overflow-hidden">
-			<AppHeader />
-
 			<div className="flex min-h-0 flex-1">
 				<ConversationList
 					conversations={conversations}
