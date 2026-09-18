@@ -9,7 +9,8 @@ import type {
   SearchResourceOption,
   SearchSortValue,
 } from "@/utils/types/component"
-import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
+import { useEffect, useRef } from "react"
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -26,6 +27,26 @@ const sortOptions: { label: string; value: SearchSortValue }[] = [
 ]
 
 const TopNavBar = () => {
+	const { t } = useTranslation()
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
+
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault()
+  }
 
   return (
     <nav className="flex items-center justify-between p-4 border-b">
@@ -36,15 +57,15 @@ const TopNavBar = () => {
             size="icon"
             className="rounded-full"
             onClick={changePageHome}
-            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
+            aria-label={t('goToHomePage', 'Go to Home Page')}
           >
-            <img src="/favicon.png" alt={i18next.t('logo', 'Logo')} className="h-8 w-8" />
+            <img src="/favicon.png" alt={t('logo', 'Logo')} className="h-8 w-8" />
           </Button>
           <Button
             variant="ghost"
             className="text-lg font-semibold"
             onClick={changePageHome}
-            aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
+            aria-label={t('goToHomePage', 'Go to Home Page')}
           >
             Raiders.io
           </Button>

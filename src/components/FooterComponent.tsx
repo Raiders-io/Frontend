@@ -13,7 +13,7 @@ import {
 	changePagePrivacy,
 } from "@/utils/router/changePage"
 import { GithubLogo } from "@/components/GithubLogo"
-import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { Button } from "@/components/ui/button"
 
 const NAV_COLUMNS = [
@@ -52,6 +52,7 @@ const NAV_COLUMNS = [
 ]
 
 export const FooterComponent = () => {
+	const { t } = useTranslation()
 	return (
 		<footer className="w-full border-t bg-background">
 			<div className="mx-auto max-w-6xl px-6 py-12">
@@ -60,8 +61,7 @@ export const FooterComponent = () => {
 						<Button
 							onClick={changePageHome}
 							className="flex items-center gap-2.5"
-							variant="link"
-							aria-label="Go to Home Page"
+							aria-label={t('goToHomePage', 'Go to Home Page')}
 						>
 							<img
 								src="/favicon.png"
@@ -73,8 +73,8 @@ export const FooterComponent = () => {
 							</span>
 						</Button>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              {i18next.t('apprends')}
-              {i18next.t('apprends-part2')}
+              {t('apprends')}
+              {t('apprends-part2')}
 						</p>
 					</div>
 					{NAV_COLUMNS.map((column) => (
@@ -101,16 +101,16 @@ export const FooterComponent = () => {
 				</div>
 				<div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
 					<p className="text-xs text-muted-foreground">
-						© {new Date().getFullYear()} Raiders.io - Project Transcendence
+						© {new Date().getFullYear()} {t('raidersioProjectTranscendence', 'Raiders.io — Project Transcendence')}
 					</p>
 					<Button
 						onClick={() => window.open("https://github.com/Raiders-io", "_blank")}
-						aria-label="View Project on GitHub"
+						aria-label={t('viewProjectOnGithub', 'View Project on GitHub')}
 						className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
 						variant="link"
 					>
 						<GithubLogo />
-						GitHub
+						{t('github', 'GitHub')}
 					</Button>
 				</div>
 			</div>
