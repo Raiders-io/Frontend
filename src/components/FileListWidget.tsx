@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -121,7 +120,7 @@ export default function FileListWidget({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void refreshFiles()
-  }, [page, limit, refreshTrigger, refreshFiles])
+  }, [page, limit, refreshTrigger])
 
   useEffect(() => {
     const resetDragging = () => {
