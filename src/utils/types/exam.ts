@@ -3,7 +3,7 @@ export type Question =
   id: string
   pos: number
   text: string
-  type: 'multiple_choice' | 'exact_answer' | 'code'
+  type: 'multiple_choice' | 'exact_answer' | 'c_code'
   answer?: string
   answers?: string[]
   choices?: QuestionChoice[]

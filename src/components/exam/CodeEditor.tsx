@@ -12,7 +12,7 @@ type CodeEditorProps =
 function CodeEditor({
     value,
     onChange,
-    language = "c",
+    language,
     height = "500px",
     theme = "vs-dark",
 }: CodeEditorProps) {
