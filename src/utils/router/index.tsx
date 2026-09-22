@@ -19,7 +19,6 @@ const CookiesPage = lazy(() => import('@/pages/legal/cookies'))
 const DataRequestPage = lazy(() => import('@/pages/legal/gdpr'))
 const ExamAuthoring = lazy(() => import('@/pages/exam/ExamAuthoring'))
 const ExamPaper = lazy(() => import('@/pages/exam/ExamPaper'))
-const Editor = lazy(() => import('@/components/exam/CodeEditor'))
 
 export const router = createBrowserRouter([
 	{

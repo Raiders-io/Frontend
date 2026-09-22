@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { ExamType } from '@/utils/types/exam'
 import { ExamQuestion } from '@/components/exam/ExamQuestion'
 
-const exam: ExamType = {
+const exam: ExamType = 
+{
     name: 'feur',
     description: 'et coubeh en même temps c\'est ça qui est fou',
     questions: [
