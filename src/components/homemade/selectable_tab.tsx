@@ -1,13 +1,15 @@
 import {
   Popover,
   PopoverContent,
-  PopoverDescription,
   PopoverHeader,
-  PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import CheckBoxTab from "./checkbox_tab"
+import React, { createContext, useContext, useState } from "react"
+import { create } from "axios"
+import { Search } from "lucide-react"
+import SearchBar, { SearchBarInput } from "./search_bar"
 
 type Key = string | number
 
@@ -32,15 +34,36 @@ export default function SelectableTab<T, K extends Key>({
   className,
   children,
 }: SelectableTabProps<T, K>) {
+  // return (
+  //   <SelectableTabContext.Provider
+  //     value={{
+  //       data,
+  //       getKey,
+  //       getLabel,
+  //       selected,
+  //       onSelectionChanged,
+  //       className,
+  //       children,
+  //     }}
+  //   >
+  //     <Popover>{children}</Popover>
+  //   </SelectableTabContext.Provider>
+  // )
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline">{children}</Button>
       </PopoverTrigger>
+
       <PopoverContent>
         <PopoverHeader>
-          <PopoverTitle></PopoverTitle>
-          <PopoverDescription></PopoverDescription>
+          <SearchBar search="" onSearch={console.log("shearch")}>
+            <SearchBarInput
+              onClick={(e) => {
+                e.preventDefault()
+              }}
+            />
+          </SearchBar>
         </PopoverHeader>
         <CheckBoxTab
           data={data}
