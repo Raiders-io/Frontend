@@ -12,6 +12,7 @@ import {
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
+import LessonSearchBar from "./lesson/LessonSearchBar"
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -58,7 +59,8 @@ const TopNavBar = () => {
         </ButtonGroup>
       </div>
 
-      <div className="flex-1 mx-8">
+      <LessonSearchBar className="flex-1 mx-8" />
+      {/* <div className="flex-1 mx-8">
         <form onSubmit={handleSearch}>
           <div className="relative">
             <InputGroup>
@@ -80,7 +82,7 @@ const TopNavBar = () => {
             </InputGroup>
           </div>
         </form>
-      </div>
+      </div> */}
 
       <div className="flex items-center">
         {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}
