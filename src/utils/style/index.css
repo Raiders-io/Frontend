@@ -115,3 +115,23 @@
 		-webkit-font-smoothing: antialiased;
 	}
 }
+
+p {
+  @apply mt-4 text-sm leading-relaxed text-muted-foreground;
+}
+
+h1#privacy {
+  @apply text-4xl font-bold tracking-tight text-foreground sm:text-5xl;
+}
+
+h2#privacy {
+  @apply text-3xl font-bold tracking-tight text-foreground sm:text-4xl;
+}
+
+h3#privacy {
+  @apply text-2xl font-bold tracking-tight text-foreground sm:text-3xl;
+}
+
+h4#privacy {
+  @apply text-xl font-bold tracking-tight text-foreground sm:text-2xl;
+}
