@@ -13,6 +13,8 @@ const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
 const AboutPage = lazy(() => import('@/pages/about'))
 const ContactPage = lazy(() => import('@/pages/contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const PrivacyPolicy = lazy(() => import('@/pages/privacy/'))
+const TermsOfService = lazy(() => import('@/pages/terms/'))
 
 export const router = createBrowserRouter([
 	{
@@ -70,6 +72,14 @@ export const router = createBrowserRouter([
 	{
 		path: '/contact',
 		element: <ContactPage />,
+	},
+	{
+		path: '/privacy',
+		element: <PrivacyPolicy />,
+	},
+	{
+		path: '/terms',
+		element: <TermsOfService />,
 	},
 	{
 		path: '*',
