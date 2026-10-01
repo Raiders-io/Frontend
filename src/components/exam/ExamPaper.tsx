@@ -1,46 +1,77 @@
-import { useState } from 'react'
-import type { ExamType } from '@/utils/types/exam'
-import { ExamQuestion } from '@/components/exam/ExamQuestion'
+import { Button } from '@/components/ui/button'
+import CodeEditor from '@/components/exam/CodeEditor'
+import { toQuestion, type ExamPaper as ExamPaperData } from '@/utils/lib/exam_api'
 
-export default function ExamPaper()
+type ExamPaperProps = {
+    paper: ExamPaperData
+    answers: Record<number, string>
+    onAnswerChange: (answerId: number, value: string) => void
+    onSubmit: React.FormEventHandler<HTMLFormElement>
+}
+
+function selectedChoices(value: string | undefined): string[]
 {
-    const [answers, setAnswers] = useState<Record<string, string>>({})
-    const [submittedAnswers, setSubmittedAnswers] = useState<Record<string, string> | null>(null)
-
-    function handleAnswerChange(questionId: string, answer: string)
-    {
-        setAnswers((currentAnswers) => ({ ...currentAnswers, [questionId]: answer }))
+    if (!value) return []
+    try {
+        const parsed = JSON.parse(value)
+        return Array.isArray(parsed) ? parsed : [value]
+    } catch {
+        return [value]
     }
+}
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>)
-    {
-        event.preventDefault()
-        setSubmittedAnswers(answers)
-    }
-
+export default function ExamPaper({ paper, answers, onAnswerChange, onSubmit }: ExamPaperProps)
+{
     return (
-        <main className="flex flex-col gap-6 p-6">
-            <div>
-                <h1 className="text-3xl font-bold">{exam.name}</h1>
-                {exam.description && <p className="mt-2">{exam.description}</p>}
-            </div>
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-                <ol className="flex flex-col gap-4">
-                    {exam.questions.map((question, index) => (
-                        <ExamQuestion
-                            key={question.id}
-                            question={question}
-                            number={index + 1}
-                            answer={answers[question.id] ?? ''}
-                            onAnswerChange={(answer) => handleAnswerChange(question.id, answer)}
-                        />
-                    ))}
-                </ol>
-                <button className="rounded-md border px-4 py-2" type="submit">Submit</button>
-            </form>
-            {submittedAnswers && (
-                <pre className="rounded-md border p-4">{JSON.stringify(submittedAnswers, null, 2)}</pre>
-            )}
-        </main>
+        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+            <h2 className="text-2xl font-semibold">{paper.exam?.title}</h2>
+            {paper.answers.map((answer, index) => {
+                const backendQuestion = answer.examsQuestion?.question
+                if (!backendQuestion) return null
+
+                const question = toQuestion(backendQuestion, index + 1)
+                const currentAnswer = answers[answer.id] ?? ''
+
+                return (
+                    <fieldset className="flex flex-col gap-2" key={answer.id}>
+                        <legend className="font-semibold">{index + 1}. {question.text}</legend>
+                        {question.type === 'multiple_choice' && question.choices?.map((choice) => (
+                            <label className="flex items-center gap-2" key={choice.id}>
+                                <input
+                                    type="checkbox"
+                                    name={`answer-${answer.id}`}
+                                    value={choice.text}
+                                    checked={selectedChoices(currentAnswer).includes(choice.text)}
+                                    onChange={(event) => {
+                                        const currentChoices = selectedChoices(currentAnswer)
+                                        const nextChoices = event.target.checked
+                                            ? [...currentChoices, choice.text]
+                                            : currentChoices.filter((selectedChoice) => selectedChoice !== choice.text)
+                                        onAnswerChange(answer.id, JSON.stringify(nextChoices))
+                                    }}
+                                />
+                                <span>{choice.text}</span>
+                            </label>
+                        ))}
+                        {question.type === 'exact_answer' && (
+                            <input
+                                className="rounded-md border p-2"
+                                type="text"
+                                value={currentAnswer}
+                                onChange={(event) => onAnswerChange(answer.id, event.target.value)}
+                            />
+                        )}
+                        {question.type === 'c_code' && (
+                            <CodeEditor
+                                language="c"
+                                value={currentAnswer}
+                                onChange={(value) => onAnswerChange(answer.id, value)}
+                            />
+                        )}
+                    </fieldset>
+                )
+            })}
+            <Button type="submit">Envoyer les réponses</Button>
+        </form>
     )
 }
