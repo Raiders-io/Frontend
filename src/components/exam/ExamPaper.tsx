@@ -2,39 +2,6 @@ import { useState } from 'react'
 import type { ExamType } from '@/utils/types/exam'
 import { ExamQuestion } from '@/components/exam/ExamQuestion'
 
-const exam: ExamType = 
-{
-    name: 'feur',
-    description: 'et coubeh en même temps c\'est ça qui est fou',
-    questions: [
-        {
-            id: 'question-1',
-            pos: 1,
-            text: 'Quelle est la capitale de la République du Feuristan ?',
-            type: 'multiple_choice',
-            choices: [
-                { id: 'choice-1', text: 'Feurs', isCorrect: true },
-                { id: 'choice-2', text: 'Coubeh', isCorrect: false },
-                { id: 'choice-3', text: 'Charbonnières-Lès-Bains', isCorrect: false },
-            ],
-        },
-        {
-            id: 'question-2',
-            pos: 2,
-            text: 'Combien y a t-il de vers dans l\'Iliade ?',
-            type: 'exact_answer',
-            answers: ['15693', '15693 vers', '15 693'],
-        },
-        {
-            id: 'question-3',
-            pos: 3,
-            text: 'En C, écrivez un programme affichant tous les chiffres impairs.',
-            type: 'c_code',
-            answers: [],
-        },
-    ],
-}
-
 export default function ExamPaper()
 {
     const [answers, setAnswers] = useState<Record<string, string>>({})
