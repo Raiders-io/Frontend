@@ -1,78 +1,76 @@
-import { useState } from 'react'
-import type { ExamType } from '@/utils/types/exam'
-import { ExamQuestion } from '@/components/exam/ExamQuestion'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { examApi, toQuestion, type ExamPaper as ExamPaperData } from '@/utils/lib/exam_api'
+import type { Question } from '@/utils/types/exam'
 
-const exam: ExamType = {
-    name: 'feur',
-    description: 'et coubeh en même temps c\'est ça qui est fou',
-    questions: [
-        {
-            id: 'question-1',
-            pos: 1,
-            text: 'Quelle est la capitale de la République du Feuristan ?',
-            type: 'multiple_choice',
-            choices: [
-                { id: 'choice-1', text: 'Feurs', isCorrect: true },
-                { id: 'choice-2', text: 'Coubeh', isCorrect: false },
-                { id: 'choice-3', text: 'Charbonnières-Lès-Bains', isCorrect: false },
-            ],
-        },
-        {
-            id: 'question-2',
-            pos: 2,
-            text: 'Combien y a t-il de vers dans l\'Iliade ?',
-            type: 'exact_answer',
-            answers: ['15693', '15693 vers', '15 693'],
-        },
-        {
-            id: 'question-3',
-            pos: 3,
-            text: 'En C, écrivez un programme affichant tous les chiffres impairs.',
-            type: 'c_code',
-            answers: [],
-        },
-    ],
-}
+type ExamOption = { id: number; title: string | null }
 
 export default function ExamPaper()
 {
-    const [answers, setAnswers] = useState<Record<string, string>>({})
-    const [submittedAnswers, setSubmittedAnswers] = useState<Record<string, string> | null>(null)
+    const [exams, setExams] = useState<ExamOption[]>([])
+    const [selectedExam, setSelectedExam] = useState('')
+    const [paper, setPaper] = useState<ExamPaperData | null>(null)
+    const [answers, setAnswers] = useState<Record<number, string>>({})
+    const [message, setMessage] = useState('')
 
-    function handleAnswerChange(questionId: string, answer: string)
+    useEffect(() => {
+        examApi.listExams()
+            .then(({ data }) => setExams(data))
+            .catch(() => setMessage('Impossible de charger les examens.'))
+    }, [])
+
+    async function startExam()
     {
-        setAnswers((currentAnswers) => ({ ...currentAnswers, [questionId]: answer }))
+        if (!selectedExam) return
+        try {
+            const { data } = await examApi.startPaper(Number(selectedExam))
+            const paperResponse = await examApi.getPaper(data.id)
+            setPaper(paperResponse.data)
+            setMessage('')
+        } catch {
+            setMessage('Impossible de démarrer l\'examen. Vérifiez votre authentification.')
+        }
     }
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>)
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>)
     {
         event.preventDefault()
-        setSubmittedAnswers(answers)
+        if (!paper) return
+        try {
+            await examApi.updatePaper(paper.id, paper.answers.map((answer) => ({
+                id: answer.id,
+                answer: answers[answer.id] ?? '',
+            })))
+            setMessage('Réponses envoyées.')
+        } catch {
+            setMessage('L’envoi des réponses a échoué.')
+        }
     }
 
     return (
         <main className="flex flex-col gap-6 p-6">
-            <div>
-                <h1 className="text-3xl font-bold">{exam.name}</h1>
-                {exam.description && <p className="mt-2">{exam.description}</p>}
-            </div>
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-                <ol className="flex flex-col gap-4">
-                    {exam.questions.map((question, index) => (
-                        <ExamQuestion
-                            key={question.id}
-                            question={question}
-                            number={index + 1}
-                            answer={answers[question.id] ?? ''}
-                            onAnswerChange={(answer) => handleAnswerChange(question.id, answer)}
-                        />
-                    ))}
-                </ol>
-                <button className="rounded-md border px-4 py-2" type="submit">Submit</button>
-            </form>
-            {submittedAnswers && (
-                <pre className="rounded-md border p-4">{JSON.stringify(submittedAnswers, null, 2)}</pre>
-            )}
+            <h1 className="text-3xl font-bold">Exam Paper</h1>
+            {!paper && <div className="flex gap-3">
+                <select className="rounded-md border p-2" value={selectedExam} onChange={(event) => setSelectedExam(event.target.value)}>
+                    <option value="">Choisir un examen</option>
+                    {exams.map((exam) => <option key={exam.id} value={exam.id}>{exam.title}</option>)}
+                </select>
+                <Button type="button" onClick={startExam} disabled={!selectedExam}>Démarrer</Button>
+            </div>}
+            {paper && <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                <h2 className="text-2xl font-semibold">{paper.exam?.title}</h2>
+                {paper.answers.map((answer, index) => {
+                    const backendQuestion = answer.examsQuestion?.question
+                    if (!backendQuestion) return null
+                    const question: Question = toQuestion(backendQuestion, index + 1)
+                    return <label className="flex flex-col gap-2" key={answer.id}>
+                        <span className="font-semibold">{index + 1}. {question.text}</span>
+                        <input className="rounded-md border p-2" value={answers[answer.id] ?? ''} onChange={(event) => setAnswers((current) => ({ ...current, [answer.id]: event.target.value }))} />
+                    </label>
+                })}
+                <Button type="submit">Envoyer les réponses</Button>
+            </form>}
+            {message && <p role="status">{message}</p>}
         </main>
     )
 }
