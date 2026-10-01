@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ExactAnswerEditor } from '@/components/exam/ExactAnswerEditor'
 import { MultipleChoiceEditor } from '@/components/exam/MultipleChoiceEditor'
@@ -53,7 +54,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
         if (!text.trim()) return
         if (type === 'multiple_choice') {
             if (choices.length < 2 || !choices.some((choice) => choice.isCorrect)) return
-        } else if (answers.length === 0) {
+        } else if (type === 'exact_answer' && answers.length === 0) {
             return
         }
         onAdd?.({
@@ -119,7 +120,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
                             onRemoveAnswer={(index) => setAnswers((previousAnswers) => previousAnswers.filter((_, itemIndex) => itemIndex !== index))}
                         />
                     case 'c_code':
-                        return null
+                        return <Button type="submit">Ajouter la question</Button>
                 }
             })()}
         </form>
