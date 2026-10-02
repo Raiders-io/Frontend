@@ -36,6 +36,14 @@ const NAV_COLUMNS = [
 			{ label: "Contact", onClick: changePageContact },
 		],
 	},
+	{
+		heading: "Legal",
+		links: [
+			{ label: "Cookies Policy", onClick: changePageCookies },
+			{ label: "Terms Of Service", onClick: changePageTerms },
+			{ label: "Privacy Policy", onClick: changePagePrivacy },
+		],
+	},
 ]
 
 export const FooterComponent = () => {
@@ -85,7 +93,7 @@ export const FooterComponent = () => {
 				</div>
 				<div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
 					<p className="text-xs text-muted-foreground">
-						© {new Date().getFullYear()} Raiders.io — Project Transcendence
+						© {new Date().getFullYear()} Raiders.io - Project Transcendence
 					</p>
 					<button
 						onClick={() => window.open("https://github.com/Raiders-io", "_blank")}

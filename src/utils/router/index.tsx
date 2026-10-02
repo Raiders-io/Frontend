@@ -16,6 +16,7 @@ const NotFound = lazy(() => import('@/pages/NotFound'))
 const PrivacyPolicy = lazy(() => import('@/pages/legal/privacy'))
 const TermsOfService = lazy(() => import('@/pages/legal/terms'))
 const CookiesPage = lazy(() => import('@/pages/legal/cookies'))
+const DataRequestPage = lazy(() => import('@/pages/legal/gdpr'))
 
 export const router = createBrowserRouter([
 	{
@@ -85,6 +86,10 @@ export const router = createBrowserRouter([
 	{
 		path: '/cookies',
 		element: <CookiesPage />,
+	},
+	{
+		path: '/data-request',
+		element: <DataRequestPage />
 	},
 	{
 		path: '*',
