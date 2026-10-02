@@ -34,13 +34,14 @@ export default function LoginPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [isAgeChecked, setIsAgeChecked] = useState(true)
   const [isTermsChecked, setIsTermsChecked] = useState(true)
+  const [isTermsProhibitedActivitiesChecked, setIsTermsProhibitedActivitiesChecked] = useState(true)
 
   const { register, handleSubmit, formState } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   })
   const { errors, isSubmitting } = formState
 
-  const areCheckboxesValid = isAgeChecked && isTermsChecked
+  const areCheckboxesValid = isAgeChecked && isTermsChecked && isTermsProhibitedActivitiesChecked
 
   const handleAgeChange = (checked: CheckedState) => {
     setIsAgeChecked(checked === true)
@@ -48,6 +49,10 @@ export default function LoginPage() {
 
   const handleTermsChange = (checked: CheckedState) => {
     setIsTermsChecked(checked === true)
+  }
+
+  const handleTermsProhibitedActivitiesChange = (checked: CheckedState) => {
+    setIsTermsProhibitedActivitiesChecked(checked === true)
   }
 
   const onSubmit = async (data: LoginForm) => {
@@ -157,8 +162,23 @@ export default function LoginPage() {
                 I agree to the terms and conditions
               </FieldLabel>
               <FieldDescription>
-                By clicking this checkbox, you agree to the terms and
-                conditions.
+                By clicking this checkbox, you agree to the Terms of Service.
+              </FieldDescription>
+            </FieldContent>
+          </Field>
+          <Field orientation="horizontal">
+            <Checkbox
+              id="terms-prohibited-activities-checkbox-desc"
+              name="terms-prohibited-activities-checkbox-desc"
+              checked={isTermsProhibitedActivitiesChecked}
+              onCheckedChange={handleTermsProhibitedActivitiesChange}
+            />
+            <FieldContent>
+              <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
+                I will not use this service for prohibited activities
+              </FieldLabel>
+              <FieldDescription>
+                By clicking this checkbox, you agree not to use this service for any prohibited activities (listed in the Terms of Service).
               </FieldDescription>
             </FieldContent>
           </Field>
