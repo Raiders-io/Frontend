@@ -43,3 +43,15 @@ export const changePageAbout = () => {
 export const changePageContact = () => {
 	router.navigate('/contact')
 }
+
+export const changePageTerms = () => {
+	router.navigate('/terms')
+}
+
+export const changePagePrivacy = () => {
+	router.navigate('/privacy')
+}
+
+export const changePageCookies = () => {
+	router.navigate('/cookies')
+}
