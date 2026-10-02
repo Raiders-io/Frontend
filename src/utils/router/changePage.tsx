@@ -55,3 +55,15 @@ export const changePagePrivacy = () => {
 export const changePageCookies = () => {
 	router.navigate('/cookies')
 }
+
+export const changePageTerms = () => {
+	router.navigate('/terms')
+}
+
+export const changePagePrivacy = () => {
+	router.navigate('/privacy')
+}
+
+export const changePageCookies = () => {
+	router.navigate('/cookies')
+}
