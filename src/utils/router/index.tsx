@@ -13,8 +13,9 @@ const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
 const AboutPage = lazy(() => import('@/pages/about'))
 const ContactPage = lazy(() => import('@/pages/contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
-const PrivacyPolicy = lazy(() => import('@/pages/privacy/'))
-const TermsOfService = lazy(() => import('@/pages/terms/'))
+const PrivacyPolicy = lazy(() => import('@/pages/legal/privacy'))
+const TermsOfService = lazy(() => import('@/pages/legal/terms'))
+const CookiesPage = lazy(() => import('@/pages/legal/cookies'))
 
 export const router = createBrowserRouter([
 	{
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
 	{
 		path: '/terms',
 		element: <TermsOfService />,
+	},
+	{
+		path: '/cookies',
+		element: <CookiesPage />,
 	},
 	{
 		path: '*',
