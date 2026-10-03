@@ -39,7 +39,7 @@ export function MultipleChoiceEditor({
       </div>
 
       {choices.length > 0 && (
-        <div className="border rounded-md p-2 bg-gray-50">
+        <div className="border rounded-md p-2 bg-gray-0">
           <p className="font-semibold text-sm mb-2">Choix disponibles:</p>
           {choices.map((choice) => (
             <div
