@@ -1,10 +1,9 @@
 import { CreateQuestion } from '@/pages/exam/Question'
 import { DisplayQuestion } from '@/components/exam/DisplayQuestion'
+import { DeleteQuestion } from '@/components/exam/DeleteQuestion'
 import type { Question } from '@/utils/types/exam'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { examApi, toQuestion } from '@/utils/lib/exam_api'
-import { GripVertical, Trash2 } from 'lucide-react'
+import { GripVertical } from 'lucide-react'
 import { useState } from 'react'
 import { InitExam } from '@/components/exam/InitExam'
 
@@ -33,6 +32,20 @@ export default function ExamAuthoring()
         }
     }
 
+    async function handleRemoveQuestion(question: Question)
+    {
+        try {
+            await examApi.deleteQuestion(Number(question.id))
+            setQuestions((previousQuestions) => previousQuestions
+                .filter((currentQuestion) => currentQuestion.id !== question.id)
+                .map((currentQuestion, index) => ({ ...currentQuestion, pos: index + 1 })))
+            setMessage('Deleted question.')
+        } catch {
+            setMessage('Failed to delete question.')
+        }
+    }
+
+
     function handleDropQuestion(targetIndex: number)
     {
         setQuestions((previousQuestions) => {
@@ -44,19 +57,6 @@ export default function ExamAuthoring()
             return reorderedQuestions.map((question, questionIndex) => ({ ...question, pos: questionIndex + 1 }))
         })
         setDraggedQuestionIndex(null)
-    }
-
-    async function handleRemoveQuestion(question: Question)
-    {
-        try {
-            await examApi.deleteQuestion(Number(question.id))
-            setQuestions((previousQuestions) => previousQuestions
-                .filter((currentQuestion) => currentQuestion.id !== question.id)
-                .map((currentQuestion, index) => ({ ...currentQuestion, pos: index + 1 })))
-            setMessage('Question supprimée.')
-        } catch {
-            setMessage('La suppression de la question a échoué.')
-        }
     }
 
     async function handleCreateExam(event: React.FormEvent<HTMLFormElement>)
@@ -83,41 +83,41 @@ export default function ExamAuthoring()
                 setTitle={setTitle}
                 handleCreateExam={handleCreateExam}
             />
-            <section>
-                <p>Questions ajoutées : {questions.length}</p>
-                {questions.map((question, index) => (
-                    <div
-                        key={question.id}
-                        draggable
-                        onDragStart={() => setDraggedQuestionIndex(index)}
-                        onDragOver={(event) => event.preventDefault()}
-                        onDrop={() => handleDropQuestion(index)}
-                        onDragEnd={() => setDraggedQuestionIndex(null)}
-                        className="cursor-grab active:cursor-grabbing"
-                        aria-label={`Question ${question.pos}, glisser pour déplacer`}
-                    >
-                        <div className="flex items-center gap-2">
-                            <GripVertical aria-hidden="true" className="text-muted-foreground" />
-                            <strong>Question {question.pos}:</strong> {question.text}
-                        </div>
-                        <br />
-                        <strong>Type:</strong> {question.type}
-                        <DisplayQuestion question={question} />
-                        <div className="flex gap-2 py-2">
-                            <Button
-                                type="button"
-                                variant="destructive"
-                                size="icon"
-                                aria-label="Supprimer la question"
-                                title="Supprimer la question"
-                                onClick={() => void handleRemoveQuestion(question)}
-                            >
-                                <Trash2 />
-                            </Button>
-                        </div>
-                    </div>
-                ))}
-            </section>
+<section>
+    <p>Questions ajoutées : {questions.length}</p>
+    {questions.map((question, index) => 
+        <div
+        key={question.id}
+        draggable
+        onDragStart={() => setDraggedQuestionIndex(index)}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={() => handleDropQuestion(index)}
+        onDragEnd={() => setDraggedQuestionIndex(null)}
+        className="flex items-start gap-2 cursor-grab active:cursor-grabbing"
+    >
+    <GripVertical
+    className="text-muted-foreground mt-1 shrink-0"
+    aria-hidden="true"
+    />
+
+    <div className="flex-1">
+        <div className="flex items-center justify-between">
+            <div>
+                <strong>Question {question.pos}:</strong>{' '}
+                {question.text}
+            </div>
+
+    <DeleteQuestion
+        question={question}
+        onDelete={handleRemoveQuestion}
+        />
+        </div>
+
+    <DisplayQuestion question={question} />
+        </div>
+    </div>
+    )}
+</section>
             <CreateQuestion onAdd={handleAddQuestion} />
             {message && <p role="status">{message}</p>}
         </main>
