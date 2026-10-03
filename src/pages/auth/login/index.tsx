@@ -11,14 +11,7 @@ import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/auth_layout"
 import { changePageHome } from "@/utils/router/changePage"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Checkbox } from "@/components/ui/checkbox"
+import { FieldGroup } from "@/components/ui/field"
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -27,33 +20,14 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>
 
-type CheckedState = boolean | "indeterminate"
-
 export default function LoginPage() {
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
-  const [isAgeChecked, setIsAgeChecked] = useState(true)
-  const [isTermsChecked, setIsTermsChecked] = useState(true)
-  const [isTermsProhibitedActivitiesChecked, setIsTermsProhibitedActivitiesChecked] = useState(true)
 
   const { register, handleSubmit, formState } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   })
   const { errors, isSubmitting } = formState
-
-  const areCheckboxesValid = isAgeChecked && isTermsChecked && isTermsProhibitedActivitiesChecked
-
-  const handleAgeChange = (checked: CheckedState) => {
-    setIsAgeChecked(checked === true)
-  }
-
-  const handleTermsChange = (checked: CheckedState) => {
-    setIsTermsChecked(checked === true)
-  }
-
-  const handleTermsProhibitedActivitiesChange = (checked: CheckedState) => {
-    setIsTermsProhibitedActivitiesChecked(checked === true)
-  }
 
   const onSubmit = async (data: LoginForm) => {
     setFormError(null)
@@ -133,60 +107,11 @@ export default function LoginPage() {
               <p className="text-sm text-destructive">{formError}</p>
             </div>
           )}
-          <Field orientation="horizontal">
-            <Checkbox
-              id="age-confirmation"
-              name="age-confirmation"
-              checked={isAgeChecked}
-              onCheckedChange={handleAgeChange}
-            />
-            <FieldContent>
-              <FieldLabel htmlFor="age-confirmation">
-                I am at least 18 years old
-              </FieldLabel>
-              <FieldDescription>
-                By clicking this checkbox, you confirm that you are at least 18
-                years old.
-              </FieldDescription>
-            </FieldContent>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox
-              id="terms-checkbox-desc"
-              name="terms-checkbox-desc"
-              checked={isTermsChecked}
-              onCheckedChange={handleTermsChange}
-            />
-            <FieldContent>
-              <FieldLabel htmlFor="terms-checkbox-desc">
-                I agree to the terms and conditions
-              </FieldLabel>
-              <FieldDescription>
-                By clicking this checkbox, you agree to the Terms of Service.
-              </FieldDescription>
-            </FieldContent>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox
-              id="terms-prohibited-activities-checkbox-desc"
-              name="terms-prohibited-activities-checkbox-desc"
-              checked={isTermsProhibitedActivitiesChecked}
-              onCheckedChange={handleTermsProhibitedActivitiesChange}
-            />
-            <FieldContent>
-              <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
-                I will not use this service for prohibited activities
-              </FieldLabel>
-              <FieldDescription>
-                By clicking this checkbox, you agree not to use this service for any prohibited activities (listed in the Terms of Service).
-              </FieldDescription>
-            </FieldContent>
-          </Field>
         </form>
       </FieldGroup>
       <Button
         type="submit"
-        disabled={isSubmitting || !areCheckboxesValid}
+        disabled={isSubmitting}
         className="mt-2 h-11 w-full"
         aria-label="Se connecter"
       >
