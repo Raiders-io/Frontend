@@ -18,6 +18,7 @@
 //   { label: 'Updated first', value: 'updated_at', direction: 'desc' },
 // ]
 
+import CustomSearchBar from "@/components/lesson/LessonSearchBar"
 import LessonSearchBar from "@/components/lesson/LessonSearchBar"
 import LessonTab from "@/components/lesson/LessonTab"
 import type { Lesson } from "@/utils/types/lesson"
@@ -82,7 +83,7 @@ export default function LessonHomePage() {
   // return <LessonCard Lesson={lesson} maxLen={200} className='w-full max-w-sm'/>
   return (
     <div>
-    <LessonSearchBar/>
+      <CustomSearchBar/>
     <LessonTab
       loading={false}
       limit={12}

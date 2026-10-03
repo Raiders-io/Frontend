@@ -11,53 +11,45 @@ interface serializeItem<T> {
 
 interface PaginatedGripProps<T> {
   items: serializeItem<T>[]
-  renderItem: (item:serializeItem<T>) => React.ReactNode
-  getKey: (item:serializeItem<T>) => React.Key 
+  renderItem: (item: serializeItem<T>) => React.ReactNode
+  getKey: (item: serializeItem<T>) => React.Key
   className: string
   loading: boolean
   limit: number
 }
 
-export default function PaginatedGrip<T>({
-  items,
-  renderItem,
-  getKey,
-  loading,
-  limit,
-  className
-}: PaginatedGripProps<T>) {
-    return (
-      <div className={className}>
-        <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(280px,_1fr))] items-stretch">
-          {loading ? (
-            Array.from({ length: limit }).map((_, index) => (
-              <SkeletonCard key={index} className="" />
-            ))
-          ) : items && items.length > 0 ? (
-            items.map((item, index) => {
-              const key = getKey ?
-              getKey(item) : index
-              return (
-                <React.Fragment key={key}>
-                  {renderItem(item)}
-                </React.Fragment>
-              )
-            })
-          ) : (
-            <div className="text-center font-bold text-2xl p-6">
-              <h1>No items found</h1>
-            </div>
-          )}
-
-        </div>
-      </div>
-    )
-}
+// export default function PaginatedGrip<T>({
+//   items,
+//   renderItem,
+//   getKey,
+//   loading,
+//   limit,
+//   className,
+// }: PaginatedGripProps<T>) {
+//   return (
+//     <div className={className}>
+//       <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(280px,_1fr))] items-stretch">
+//         {loading ? (
+//           Array.from({ length: limit }).map((_, index) => (
+//             <SkeletonCard key={index} className="" />
+//           ))
+//         ) : items && items.length > 0 ? (
+//           items.map((item, index) => {
+//             const key = getKey ? getKey(item) : index
+//             return <React.Fragment key={key}>{renderItem(item)}</React.Fragment>
+//           })
+//         ) : (
+//           <div className="text-center font-bold text-2xl p-6">
+//             <h1>No items found</h1>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   )
+// }
 
 export function SearchResultTab() {
-  return (
-    <></>
-  )
+  return <></>
 }
 interface LessonTabProps {
   Lessons: Lesson[]
@@ -70,7 +62,7 @@ interface LessonTabProps {
 }
 
 //Change of design between skeleton and real
-export function LessonTab({
+export default function LessonTab({
   Lessons,
   loading,
   currentPage,

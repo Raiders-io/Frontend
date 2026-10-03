@@ -12,7 +12,7 @@ import {
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
-import LessonSearchBar from "./lesson/LessonSearchBar"
+import CustomSearchBar from "./lesson/LessonSearchBar"
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -58,31 +58,8 @@ const TopNavBar = () => {
           </Button>
         </ButtonGroup>
       </div>
+      <CustomSearchBar className="flex-1 mx-8" />
 
-      <LessonSearchBar className="flex-1 mx-8" />
-      {/* <div className="flex-1 mx-8">
-        <form onSubmit={handleSearch}>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <SearchIcon />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                placeholder="Search lesson..."
-                className="w-full pl-10"
-                ref={searchInputRef}
-              />
-              <InputGroupAddon align="inline-end">
-                <KbdGroup>
-                  <Kbd>Ctrl</Kbd>
-                  <Kbd>K</Kbd>
-                </KbdGroup>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </form>
-      </div> */}
 
       <div className="flex items-center">
         {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}

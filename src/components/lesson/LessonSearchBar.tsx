@@ -1,5 +1,5 @@
 import type { Tag } from "@/utils/types/lesson"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import SearchBar, {
   SearchBarAddons,
   SearchBarInput,
@@ -7,13 +7,13 @@ import SearchBar, {
 } from "@/components/homemade/search_bar"
 import TagsSelector from "./TagsSelector"
 import { SearchIcon } from "lucide-react"
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
 
-interface LessonSearchBarProps {
+interface CustomSearchBarProps {
   search: string
   onSearchChange: (value: string) => void
   sort: string
   onSortChange: (value: string) => void
-  variant?: "compact" | "extended"
   className?: string
 }
 
@@ -39,69 +39,89 @@ const Resource = [
   { label: "Video", value: "video" },
 ]
 
-export default function LessonSearchBar({
+export default function CustomSearchBar({
   search,
   onSearchChange,
   sort,
   onSortChange,
-  variant = "compact",
   className,
-}: LessonSearchBarProps) {
+}: CustomSearchBarProps) {
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
   const getAllTags = () => {
     return [tag, tag2, tag3]
   }
 
   const [selectedTags, setSelectedTags] = useState<Tag[]>([])
-  const [mokeSearch, setMokeSearch] = useState<string>("")
+  // const [mokeSearch, setMokeSearch] = useState<string>("")
   const [selectedResource, setSelectedResource] = useState<string>(
     Resource[0].value,
   )
 
   const handleQueryChange = (value: string) => {
     const match = value.match(/^@(\w+)\s+(.*)$/)
-      if (match) {
-        const [, tag, queryText] = match
-        const matchedRes = Resource.find((r) => r.value.toLowerCase() === tag.toLowerCase())
+    if (match) {
+      const [, tag, queryText] = match
+      const matchedRes = Resource.find(
+        (r) => r.value.toLowerCase() === tag.toLowerCase(),
+      )
       if (matchedRes) {
         setSelectedResource(matchedRes.value)
-        // onSearchChange(queryText)
-        setMokeSearch(queryText)
-        return 
+        onSearchChange(queryText)
+        // setMokeSearch(queryText)
+        return
       }
     }
-    setMokeSearch(value)
+    // setMokeSearch(value)
   }
 
-  if (variant == "compact")
-    return (
-      <div className={`${className}`}>
-        <SearchBar
-          search={mokeSearch}
-          onSearch={handleQueryChange}
-          resource={selectedResource}
-          onResourceChange={(value) => {
-            setSelectedResource(value)
-            console.log(value)
-          }}
-        >
-          <SearchBarInput />
-          {selectedResource === "lesson" && (
-            <SearchBarAddons align="inline-end" className="p-0">
-              <TagsSelector
-                tags={getAllTags()}
-                selected={selectedTags}
-                setSelection={setSelectedTags}
-              />
-            </SearchBarAddons>
-          )}
-          <SearchBarAddons align="inline-start" className="p-0 h-full">
-            <SearchBarResource options={Resource} className="" placeholder="none" />
-          </SearchBarAddons>
-          <SearchBarAddons>
-            <SearchIcon className="size-4" />
-          </SearchBarAddons>
-        </SearchBar>
-      </div>
-    )
-  return <h1>Hello</h1>
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
+
+  return (
+    <SearchBar
+      search={search}
+      onSearch={handleQueryChange}
+      resource={selectedResource}
+      onResourceChange={(value) => {
+        setSelectedResource(value)
+        console.log(value)
+      }}
+      className={className}
+    >
+      <SearchBarInput ref={searchInputRef} />
+      <SearchBarAddons align="inline-end">
+        <KbdGroup>
+          <Kbd>Ctrl</Kbd>
+          <Kbd>K</Kbd>
+        </KbdGroup>
+      </SearchBarAddons>
+      {selectedResource === "lesson" && (
+        <SearchBarAddons align="inline-end" className="p-0">
+          <TagsSelector
+            tags={getAllTags()}
+            selected={selectedTags}
+            setSelection={setSelectedTags}
+          />
+        </SearchBarAddons>
+      )}
+      <SearchBarAddons align="inline-start" className="p-0 h-full">
+        <SearchBarResource options={Resource} className="" placeholder="none" />
+      </SearchBarAddons>
+      <SearchBarAddons>
+        <SearchIcon className="size-4" />
+      </SearchBarAddons>
+    </SearchBar>
+  )
 }
