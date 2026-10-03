@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
+import { DisplayResult } from "@/components/exam/DisplayResult"
 
 type ExamOption = { id: number; title: string | null }
 
@@ -36,15 +37,21 @@ export default function ExamPaper() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!paper) return
+
     try {
-      await examApi.updatePaper(
+      const { data } = await examApi.updatePaper(
         paper.id,
         paper.answers.map((answer) => ({
           id: answer.id,
           answer: answers[answer.id] ?? "",
         })),
       )
+      const goodAnswersId = data.goodAnswersId
+      const totalPoints = data.totalPoints
       setMessage("Réponses envoyées.")
+      setMessage(
+        `Vous avez obtenu ${goodAnswersId.length} bonnes réponses sur ${totalPoints}.`,
+      )
     } catch {
       setMessage("L’envoi des réponses a échoué.")
     }
