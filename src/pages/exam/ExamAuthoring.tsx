@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { examApi, toQuestion } from '@/utils/lib/exam_api'
 import { GripVertical, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { InitExam } from '@/components/exam/InitExam'
 
 export default function ExamAuthoring()
 {
@@ -77,10 +78,11 @@ export default function ExamAuthoring()
     return (
         <main className="flex flex-col gap-6 p-6">
             <h1 className="text-3xl font-bold">Exam Authoring</h1>
-            <form className="flex flex-col gap-3" onSubmit={handleCreateExam}>
-                <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Nom de l'examen" />
-                <Button type="submit" disabled={!title.trim() || questions.length === 0}>Créer l'examen</Button>
-            </form>
+            <InitExam
+                title={title}
+                setTitle={setTitle}
+                handleCreateExam={handleCreateExam}
+            />
             <section>
                 <p>Questions ajoutées : {questions.length}</p>
                 {questions.map((question, index) => (
