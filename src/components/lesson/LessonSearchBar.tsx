@@ -1,6 +1,7 @@
 import type { Tag } from "@/utils/types/lesson"
 import { useEffect, useRef, useState } from "react"
-import SearchBar, {
+import {
+  SearchBar,
   SearchBarAddons,
   SearchBarInput,
   SearchBarResource,

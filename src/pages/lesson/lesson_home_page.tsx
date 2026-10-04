@@ -18,8 +18,8 @@
 //   { label: 'Updated first', value: 'updated_at', direction: 'desc' },
 // ]
 
-import CustomSearchBar from "@/components/lesson/LessonSearchBar"
-import LessonSearchBar from "@/components/lesson/LessonSearchBar"
+import type { ResourceOption } from "@/components/homemade/searchbar_addons/searchbar_resource"
+import CustomSearchBar from "@/components/lesson/CustomSearchBar"
 import LessonTab from "@/components/lesson/LessonTab"
 import type { Lesson } from "@/utils/types/lesson"
 import { useState } from "react"
@@ -69,6 +69,7 @@ const lesson3: Lesson = {
     { id: 1, name: "tag1" },
     { id: 2, name: "tag2" },
   ],
+  description: "This is a test lesson",
   UUID: "1234567890",
   authorId: 1,
   isPrivate: false,
@@ -78,21 +79,43 @@ const lesson3: Lesson = {
   ],
 }
 
+const mokeResource: ResourceOption[] = [
+  { label: "All", value: "all" },
+  { label: "Lesson", value: "lesson" },
+  { label: "Exercise", value: "exercise" },
+  { label: "Video", value: "video" },
+]
+
+const mockSortOptions = [
+  { label: "Newest first", value: "created_at" },
+  { label: "Oldest first", value: "created_at_asc" },
+  { label: "Title A → Z", value: "title_asc" },
+  { label: "Title Z → A", value: "title_desc" },
+]
+
 export default function LessonHomePage() {
   const [page, setPage] = useState(1)
   // return <LessonCard Lesson={lesson} maxLen={200} className='w-full max-w-sm'/>
+
   return (
     <div>
-      <CustomSearchBar/>
-    <LessonTab
-      loading={false}
-      limit={12}
-      currentPage={page}
-      onPageChange={(page) => setPage(page)}
-      totalPages={10}
-      Lessons={[lesson, lesson2, lesson3, lesson, lesson, lesson]}
-      className="gap-4 p-4"
-    />
+      <CustomSearchBar
+        resources={mokeResource}
+        sortOptions={mockSortOptions}
+        handleQuery={() => {
+          return console.log("Query executed")
+        }}
+      />
+
+      <LessonTab
+        loading={false}
+        limit={12}
+        currentPage={page}
+        onPageChange={(page) => setPage(page)}
+        totalPages={10}
+        Lessons={[lesson, lesson2, lesson3, lesson, lesson, lesson]}
+        className="gap-4 p-4"
+      />
     </div>
   )
 }

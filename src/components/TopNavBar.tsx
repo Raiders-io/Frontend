@@ -1,18 +1,10 @@
-import { SearchIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { AvatarDropdown } from "./AvatarDropDown"
 import { useEffect, useRef } from "react"
-import { Kbd, KbdGroup } from "@/components/ui/kbd"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
-import CustomSearchBar from "./lesson/LessonSearchBar"
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -58,7 +50,7 @@ const TopNavBar = () => {
           </Button>
         </ButtonGroup>
       </div>
-      <CustomSearchBar className="flex-1 mx-8" />
+      {/* <CustomSearchBar className="flex-1 mx-8 max-w-3/4"/> */}
 
 
       <div className="flex items-center">

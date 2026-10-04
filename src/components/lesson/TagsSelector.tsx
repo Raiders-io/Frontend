@@ -6,7 +6,8 @@ import {
   PopoverTrigger,
 } from "../ui/popover"
 import { Button } from "../ui/button"
-import SearchBar, {
+import {
+  SearchBar,
   SearchBarAddons,
   SearchBarInput,
 } from "../homemade/search_bar"
