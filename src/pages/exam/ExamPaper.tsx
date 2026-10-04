@@ -52,6 +52,7 @@ export default function ExamPaper() {
       setMessage(
         `Vous avez obtenu ${goodAnswersId.length} bonnes réponses sur ${totalPoints}.`,
       )
+      setMessage(`Votre score est de ${data.score.toFixed(0)}%.`)
     } catch {
       setMessage("L’envoi des réponses a échoué.")
     }

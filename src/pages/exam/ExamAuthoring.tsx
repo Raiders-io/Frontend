@@ -35,10 +35,12 @@ export default function ExamAuthoring() {
           question.choices
             ?.filter((choice) => !choice.isCorrect)
             .map((choice) => choice.text) ?? [],
+        points: question.points,
       })
+      const createdQuestion = toQuestion(data, questions.length + 1)
       setQuestions((previousQuestions) => [
         ...previousQuestions,
-        toQuestion(data, previousQuestions.length + 1),
+        { ...createdQuestion, points: question.points },
       ])
       setMessage("Question créée.")
     } catch {
@@ -88,7 +90,7 @@ export default function ExamAuthoring() {
         questions: questions.map((question, index) => ({
           id: Number(question.id),
           position: index + 1,
-          points: 1,
+          points: question.points,
         })),
       })
       setMessage("Examen créé.")
