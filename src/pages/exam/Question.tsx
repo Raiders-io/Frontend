@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { ExactAnswerEditor } from "@/components/exam/ExactAnswerEditor"
 import { MultipleChoiceEditor } from "@/components/exam/MultipleChoiceEditor"
 import type { Question, QuestionChoice } from "@/utils/types/exam"
+import { ChooseQuestionWeight } from "@/components/exam/ChooseQuestionWeight"
 
 type CreateQuestionProps = { onAdd?: (question: Question) => void }
 
@@ -20,6 +21,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   const [currentAnswer, setCurrentAnswer] = useState("")
   const [choices, setChoices] = useState<QuestionChoice[]>([])
   const [currentChoice, setCurrentChoice] = useState("")
+  const [currentPoints, setCurrentPoints] = useState(1)
 
   function resetForm() {
     setText("")
@@ -30,6 +32,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     setCurrentAnswer("")
     setChoices([])
     setCurrentChoice("")
+    setCurrentPoints(1)
   }
 
   function handleTypeChange(nextType: Question["type"]) {
@@ -58,6 +61,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       pos,
       text: text.trim(),
       type,
+      points: currentPoints,
       answer: answer.trim() || undefined,
       answers:
         type === "exact_answer" && answers.length > 0 ? answers : undefined,
@@ -94,6 +98,10 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
         value={text}
         onChange={(event) => setText(event.target.value)}
         placeholder="Question"
+      />
+      <ChooseQuestionWeight
+        currentPoints={currentPoints}
+        setCurrentPoints={setCurrentPoints}
       />
       <select
         className="border rounded-md p-2"

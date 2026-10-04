@@ -36,7 +36,7 @@ export function ExactAnswerEditor({
       </div>
 
       {answers.length > 0 && (
-        <div className="border rounded-md p-2 bg-gray-50">
+        <div className="border rounded-md p-2 bg-gray-0">
           <p className="font-semibold text-sm mb-2">Réponses acceptées:</p>
           {answers.map((answer, index) => (
             <div
