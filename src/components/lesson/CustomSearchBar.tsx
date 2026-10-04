@@ -16,15 +16,18 @@ interface CustomSearchBarProps {
   className?: string
   resources?: ResourceOption[]
   sortOptions?: { label: string; value: string }[]
-  handleQuery: (
-    search: string,
-    resource?: string,
-    tags?: Tag[],
-    sort?: { value: string; ascending: boolean },
-  ) => void
+  handleQuery: (params: QueryParams) => void
   children?: React.ReactNode
 }
 
+interface QueryParams {
+  search: string
+  resource?: string
+  tags?: Tag[]
+  sort?: { value: string; ascending: boolean }
+}
+
+//TODO remove this hardcoded tags and fetch them from the backend
 const tag: Tag = {
   id: 1,
   name: "Tin",
@@ -47,11 +50,15 @@ export default function CustomSearchBar({
   handleQuery,
   children,
 }: CustomSearchBarProps) {
-  const searchInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>("")
-  const [resource, setResource] = useState(resources[0])
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("")
   const [tags, setTags] = useState<Tag[]>([])
   const [sort, setSort] = useState<string>("")
+  const [resource, setResource] = useState<ResourceOption | undefined>(
+    resources?.[0],
+  )
+  
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const getAllTags = () => {
     return [tag, tag2, tag3]
@@ -66,11 +73,11 @@ export default function CustomSearchBar({
       )
       if (matchedRes) {
         setSearch(queryText)
-        handleResourceChange(matchedRes)
+        setResource(matchedRes)
         return
       }
     }
-    handleSearchChange(value)
+    setSearch(value)
   }
 
   useEffect(() => {
@@ -87,35 +94,31 @@ export default function CustomSearchBar({
     }
   }, [])
 
-  const handleSortChange = (value: string, ascending: boolean) => {
-    setSort(value)
-    handleQuery(search, resource.value, tags, { value, ascending })
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
 
-  const handleResourceChange = (value: ResourceOption) => {
-    setResource(value)
-    handleQuery(search, value.value, tags, { value: sort, ascending: true })
-  }
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [search])
 
-  const handleTagsChange = (selectedTags: Tag[]) => {
-    setTags(selectedTags)
-    handleQuery(search, resource.value, selectedTags, {
-      value: sort,
-      ascending: true,
+  useEffect(() => {
+    handleQuery({
+      search: debouncedSearch,
+      resource: resource?.value,
+      tags,
+      sort: { value: sort, ascending: true },
     })
-  }
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value)
-    handleQuery(value, resource.value, tags, { value: sort, ascending: true })
-  }
+  }, [debouncedSearch, resource, tags, sort, handleQuery])
 
   return (
     <SearchBar
       search={search}
       onSearch={handleQueryChange}
       resource={resource}
-      onResourceChange={handleResourceChange}
+      onResourceChange={setResource}
       className={className}
     >
       <SearchBarInput ref={searchInputRef} />
@@ -127,10 +130,7 @@ export default function CustomSearchBar({
       </SearchBarAddons>
       {sortOptions && (
         <SearchBarAddons align="inline-end">
-          <SearchBarSorting
-            options={sortOptions}
-            onSortChange={handleSortChange}
-          />
+          <SearchBarSorting options={sortOptions} onSortChange={setSort} />
         </SearchBarAddons>
       )}
       {resource.value === "lesson" && (
@@ -138,7 +138,7 @@ export default function CustomSearchBar({
           <TagsSelector
             tags={getAllTags()}
             selected={tags}
-            setSelection={handleTagsChange}
+            setSelection={setTags}
           />
         </SearchBarAddons>
       )}

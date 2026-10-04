@@ -33,7 +33,12 @@ export const SearchBarResource = ({
         className,
       )}
     >
-      <Select value={resource.value} onValueChange={(val) => setResource(options.find((o) => o.value === val))}>
+      <Select
+        value={resource.value}
+        onValueChange={(val) =>
+          setResource(options.find((o) => o.value === val))
+        }
+      >
         <SelectTrigger className={cn("rounded-r-none font-bold")}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

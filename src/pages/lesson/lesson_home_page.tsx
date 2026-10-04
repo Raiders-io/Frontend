@@ -102,8 +102,8 @@ export default function LessonHomePage() {
       <CustomSearchBar
         resources={mokeResource}
         sortOptions={mockSortOptions}
-        handleQuery={() => {
-          return console.log("Query executed")
+        handleQuery={(params) => {
+          return console.log('Query executed'. concat(JSON.stringify(params)))
         }}
       />
 

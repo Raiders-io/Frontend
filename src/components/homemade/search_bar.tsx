@@ -2,7 +2,10 @@
 import { InputGroup } from "@/components/ui/input-group"
 import React, { useEffect, useState } from "react"
 import { SearchBarSorting } from "./searchbar_addons/searchbar_sorting"
-import { SearchBarResource, type ResourceOption } from "./searchbar_addons/searchbar_resource"
+import {
+  SearchBarResource,
+  type ResourceOption,
+} from "./searchbar_addons/searchbar_resource"
 import { SearchBarAddons } from "./searchbar_addons/searchbar_addons"
 import { SearchBarInput } from "./searchbar_addons/searchbar_input"
 import { SearchBarContext } from "./searchbar_addons/searchbar_context"
