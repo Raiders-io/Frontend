@@ -23,6 +23,8 @@ import FileListTableHeadRow, {
   type FileListTableColumn,
 } from "@/components/file-list/file-list-table-head-row"
 import FileListTableBodyRow from "@/components/file-list/file-list-table-body-row"
+import { useActionSettingsStore } from "@/utils/stores/action_settings_store"
+import { ActionSettings } from "@/components/file-list/file-list-action-checkbox"
 import {
   type FileListWidgetProps,
   type FileObject,
@@ -64,9 +66,10 @@ export default function FileListWidget({
   mode = "full",
   showPagination = true,
   showUpload = true,
+  showActionSettings = true,
   initialLimit = 10,
   maxHeight,
-}: FileListWidgetProps) {
+}: FileListWidgetProps & { showActionSettings?: boolean }) {
   const [files, setFiles] = useState<FileObject[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -84,6 +87,8 @@ export default function FileListWidget({
   } | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(false)
+  
+  const actionSettings = useActionSettingsStore()
 
   const refreshFiles = useCallback(async () => {
     setLoading(true)
@@ -299,10 +304,24 @@ export default function FileListWidget({
 
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
+  
+  const hasAnyActionButton = 
+    actionSettings.showDownloadButton || 
+    actionSettings.showVisibilityButton || 
+    actionSettings.showDeleteButton
+  
+  const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
+  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", "Created at"]
+  const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
+  
   const visibleColumns: FileListTableColumn[] =
     mode === "compact"
-      ? ["Select", "Icon", "Name", "Size", "Actions"]
-      : ["Select", "Icon", "Name", "Size", "Type", "Visibility", "Created at", "Actions"]
+      ? hasAnyActionButton 
+        ? [...baseColumns, "Actions"] 
+        : baseColumns
+      : hasAnyActionButton 
+        ? columnsWithActions 
+        : fullColumns
 
   const toggleFileSelection = (fileName: string) => {
     setSelectedFiles((prev) => {
@@ -413,16 +432,19 @@ export default function FileListWidget({
                   the button or dragging and dropping them into this area.
                 </CardDescription>
               </div>
-              {showUpload && (
-                <Button
-                  type="button"
-                  onClick={openFilePicker}
-                  disabled={uploading}
-                  aria-label="Upload Files"
-                >
-                  {uploading ? "Upload in progress..." : "Upload Files"}
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {showUpload && (
+                  <Button
+                    type="button"
+                    onClick={openFilePicker}
+                    disabled={uploading}
+                    aria-label="Upload Files"
+                  >
+                    {uploading ? "Upload in progress..." : "Upload Files"}
+                  </Button>
+                )}
+                {showActionSettings && <ActionSettings />}
+              </div>
             </div>
           </CardHeader>
         )}
@@ -521,15 +543,20 @@ export default function FileListWidget({
                       onDelete={handleDelete}
                       onChangeVisibility={changeVisibility}
                       isSelected={selectedFiles.has(file.name)}
+                      actionSettings={{
+                        showDownloadButton: actionSettings.showDownloadButton,
+                        showVisibilityButton: actionSettings.showVisibilityButton,
+                        showDeleteButton: actionSettings.showDeleteButton,
+                      }}
                     />
                   ))}
                 </TableBody>
                 {mode === "full" && (
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={3}>
+                      <TableCell colSpan={5} className="text-left">
                         <div className="flex items-center gap-2">
-                          {selectedFiles.size > 0 && (
+                          {selectedFiles.size > 0 && actionSettings.showDeleteButton && (
                             <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
                               <Button variant="destructive" size="sm" aria-label="Delete Selected Files">
                                 <TrashIcon />
@@ -539,10 +566,10 @@ export default function FileListWidget({
                           )}
                         </div>
                       </TableCell>
-                      <TableCell colSpan={3} className="text-right">
+                      <TableCell colSpan={visibleColumns.includes("Actions") ? 2 : 1} className="text-right">
                         Total: {totalFiles} file(s)
                       </TableCell>
-                      <TableCell colSpan={3} className="text-right">
+                      <TableCell colSpan={1} className="text-right">
                         Total space used: {formatFileSize(totalSize)}
                       </TableCell>
                     </TableRow>

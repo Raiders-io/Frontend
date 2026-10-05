@@ -7,7 +7,6 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination"
-import { ActionSettings } from "./file-list-action-checkbox"
 
 type FileListPaginationProps = {
   currentPage: number
@@ -32,7 +31,6 @@ export default function FileListPagination({
 }: FileListPaginationProps) {
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-end md:justify-between">
-      <ActionSettings />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="space-y-2">
           <Label htmlFor="limit">Files per page</Label>

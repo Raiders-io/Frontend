@@ -41,7 +41,7 @@ export default function FileListTableHeadRow({
         <TableHead className="px-4 py-3 font-medium">Created at</TableHead>
       )}
       {columns.includes("Actions") && (
-        <TableHead className="px-4 py-3 font-medium">Actions</TableHead>
+        <TableHead className="px-4 py-3 font-medium w-auto">Actions</TableHead>
       )}
     </TableRow>
   )

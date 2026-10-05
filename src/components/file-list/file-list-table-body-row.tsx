@@ -21,6 +21,11 @@ type FileListTableBodyRowProps = {
     visibility?: FileObject["visibility"],
   ) => void
   isSelected: boolean
+  actionSettings?: {
+    showDownloadButton?: boolean
+    showVisibilityButton?: boolean
+    showDeleteButton?: boolean
+  }
 }
 
 export default function FileListTableBodyRow({
@@ -35,7 +40,14 @@ export default function FileListTableBodyRow({
   onDelete,
   onChangeVisibility,
   isSelected,
+  actionSettings = {},
 }: FileListTableBodyRowProps) {
+  const {
+    showDownloadButton = true,
+    showVisibilityButton = true,
+    showDeleteButton = true,
+  } = actionSettings
+
   return (
     <TableRow
       key={file.name}
@@ -78,45 +90,51 @@ export default function FileListTableBodyRow({
         </TableCell>
       )}
       {columns.includes("Actions") && (
-        <TableCell className="px-4 py-3">
+        <TableCell className="px-4 py-3 w-auto">
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onDownload(file.name)}
-              title={`Download ${file.name}`}
-              aria-label={`Download ${file.name}`}
-            >
-              <DownloadIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                onChangeVisibility(
-                  file.name,
-                  file.visibility === "public" ? "private" : "public",
-                )
-              }
-              title={`Change visibility of ${file.name}`}
-              aria-label={`Change visibility of ${file.name}`}
-            >
-              {file.visibility === "public" ? "Make Private" : "Make Public"}
-            </Button>
-            <DeleteButton
-              action={() => onDelete(file.name)}
-              title={`Delete ${file.name}`}
-              description="This action cannot be undone."
-            >
+            {showDownloadButton && (
               <Button
-                variant="destructive"
+                variant="outline"
                 size="sm"
-                title={`Delete ${file.name}`}
-                aria-label={`Delete ${file.name}`}
+                onClick={() => onDownload(file.name)}
+                title={`Download ${file.name}`}
+                aria-label={`Download ${file.name}`}
               >
-                <TrashIcon className="h-4 w-4" />
+                <DownloadIcon className="h-4 w-4" />
               </Button>
-            </DeleteButton>
+            )}
+            {showVisibilityButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  onChangeVisibility(
+                    file.name,
+                    file.visibility === "public" ? "private" : "public",
+                  )
+                }
+                title={`Change visibility of ${file.name}`}
+                aria-label={`Change visibility of ${file.name}`}
+              >
+                {file.visibility === "public" ? "Make Private" : "Make Public"}
+              </Button>
+            )}
+            {showDeleteButton && (
+              <DeleteButton
+                action={() => onDelete(file.name)}
+                title={`Delete ${file.name}`}
+                description="This action cannot be undone."
+              >
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  title={`Delete ${file.name}`}
+                  aria-label={`Delete ${file.name}`}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              </DeleteButton>
+            )}
           </div>
         </TableCell>
       )}
