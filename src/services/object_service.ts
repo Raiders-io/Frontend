@@ -92,12 +92,20 @@ export const objectService = {
     )
     return data
   },
-  
-  quotaRetrieve: async (): Promise<QuotaResponse> => {
-		const { data } = await api.get<QuotaResponse>('/api/v1/storage/quota')
-		return data
-	}
 
+  quotaRetrieve: async (): Promise<QuotaResponse> => {
+    const { data } = await api.get<QuotaResponse>('/api/v1/storage/quota')
+    return data
+  },
+
+  updatePartially: async (fileName: string, formData: FormData): Promise<any> => {
+    let url = `/api/v1/storage/objects/${encodeURIComponent(fileName)}`
+    if (formData.get("visibility") !== undefined) {
+      url += `?visibility=${formData.get("visibility")}`
+    }
+    const { data } = await api.patch<any>(url, formData)
+    return data
+  }
 }
 
 function getMimeTypeFromFilename(filename: string): string {

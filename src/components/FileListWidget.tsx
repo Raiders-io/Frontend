@@ -363,6 +363,23 @@ export default function FileListWidget({
     }
   }
 
+  const changeVisibility = async (fileName: string, visibility?: FileObject["visibility"]) => {
+    if (!visibility)
+      visibility = files.find((file) => file.name === fileName)?.visibility
+    if (!visibility) {
+      console.error('Visibility not found for file:', fileName)
+      return
+    }
+    try {
+      const formData = new FormData()
+      formData.append("visibility", visibility)
+      await objectService.updatePartially(fileName, formData)
+      setRefreshTrigger((prev) => !prev)
+    } catch (error) {
+      console.error('Change visibility error:', error)
+    }
+  }
+
   return (
     <div
       className={containerClassName}
@@ -502,6 +519,7 @@ export default function FileListWidget({
                       onSelect={toggleFileSelection}
                       onDownload={handleDownload}
                       onDelete={handleDelete}
+                      onChangeVisibility={changeVisibility}
                       isSelected={selectedFiles.has(file.name)}
                     />
                   ))}

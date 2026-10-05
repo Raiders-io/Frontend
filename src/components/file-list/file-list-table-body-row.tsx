@@ -16,6 +16,10 @@ type FileListTableBodyRowProps = {
   onSelect: (fileName: string) => void
   onDownload: (fileName: string) => void
   onDelete: (fileName: string) => void
+  onChangeVisibility: (
+    fileName: string,
+    visibility?: FileObject["visibility"],
+  ) => void
   isSelected: boolean
 }
 
@@ -29,6 +33,7 @@ export default function FileListTableBodyRow({
   onSelect,
   onDownload,
   onDelete,
+  onChangeVisibility,
   isSelected,
 }: FileListTableBodyRowProps) {
   return (
@@ -83,6 +88,20 @@ export default function FileListTableBodyRow({
               aria-label={`Download ${file.name}`}
             >
               <DownloadIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                onChangeVisibility(
+                  file.name,
+                  file.visibility === "public" ? "private" : "public",
+                )
+              }
+              title={`Change visibility of ${file.name}`}
+              aria-label={`Change visibility of ${file.name}`}
+            >
+              {file.visibility === "public" ? "Make Private" : "Make Public"}
             </Button>
             <DeleteButton
               action={() => onDelete(file.name)}
