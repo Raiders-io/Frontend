@@ -3,7 +3,7 @@ import type { FileListTableColumn } from "@/components/file-list/file-list-table
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { CustomCheckbox } from "@/components/CustomCheckbox"
-import { DownloadIcon, TrashIcon } from "lucide-react"
+import { DownloadIcon, Globe, GlobeOff, TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
 
 type FileListTableBodyRowProps = {
@@ -116,7 +116,7 @@ export default function FileListTableBodyRow({
                 title={`Change visibility of ${file.name}`}
                 aria-label={`Change visibility of ${file.name}`}
               >
-                {file.visibility === "public" ? "Make Private" : "Make Public"}
+                {file.visibility === "public" ? <GlobeOff /> : <Globe />}
               </Button>
             )}
             {showDeleteButton && (
