@@ -63,7 +63,7 @@ export function toQuestion(
       ? "multiple_choice"
       : question.questionType === "TEXT"
         ? "exact_answer"
-        : "c_code"
+        : "c_function"
 
   return {
     id: String(question.id),
