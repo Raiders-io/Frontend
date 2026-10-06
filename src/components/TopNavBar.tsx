@@ -5,6 +5,33 @@ import { useEffect, useRef } from "react"
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
+import CustomSearchBar from "./search/CustomSearchBar"
+import type {
+  SearchQueryParams,
+  SearchResourceOption,
+  SearchSortValue,
+} from "@/utils/types/component"
+
+const resources: SearchResourceOption[] = [
+  { label: "All", value: "all" },
+  { label: "Lessons", value: "lesson" },
+  { label: "Users", value: "user" },
+  { label: "Exam", value: "exam" },
+]
+
+const sortOptions: { label: string; value: SearchSortValue }[] = [
+  {label: "Title", value: "title"},
+  {label: "Creation Date", value: "creation"},
+  {label: "Updated Date", value: "update"},
+  // {label: "Relevance", value: "relevance"},
+]
+
+const handleQuery = (params: SearchQueryParams) => {
+  console.log("Search Query:", params.search)
+  console.log("Resource:", params.resource)
+  console.log("Tags:", params.tags)
+  console.log("Sort:", params.sort)
+}
 
 const TopNavBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -22,10 +49,6 @@ const TopNavBar = () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
   }, [])
-
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault()
-  }
 
   return (
     <nav className="flex items-center justify-between p-4 border-b">
@@ -50,7 +73,7 @@ const TopNavBar = () => {
           </Button>
         </ButtonGroup>
       </div>
-      {/* <CustomSearchBar className="flex-1 mx-8 max-w-3/4"/> */}
+      <CustomSearchBar resources={resources} sortOptions={sortOptions} handleQuery={handleQuery} />
 
 
       <div className="flex items-center">

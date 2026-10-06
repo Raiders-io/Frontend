@@ -1,11 +1,11 @@
 import { createContext, useContext } from "react"
-import type { ResourceOption } from "./searchbar_resource"
+import type { SearchResourceOption } from "@/utils/types/component"
 
 interface SearchBarContextType {
   query: string
   setQuery: (val: string) => void
-  resource: ResourceOption
-  setResource: (value: ResourceOption) => void
+  resource?: SearchResourceOption
+  setResource?: (value: SearchResourceOption) => void
 }
 
 export const SearchBarContext = createContext<SearchBarContextType | null>(null)

@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { InputGroup } from "@/components/ui/input-group"
+import type { SearchResourceOption } from "@/utils/types/component"
 import React, { useEffect, useState } from "react"
 import { SearchBarSorting } from "./searchbar_addons/searchbar_sorting"
-import {
-  SearchBarResource,
-  type ResourceOption,
-} from "./searchbar_addons/searchbar_resource"
+import { SearchBarResource } from "./searchbar_addons/searchbar_resource"
 import { SearchBarAddons } from "./searchbar_addons/searchbar_addons"
 import { SearchBarInput } from "./searchbar_addons/searchbar_input"
 import { SearchBarContext } from "./searchbar_addons/searchbar_context"
@@ -13,8 +11,8 @@ import { SearchBarContext } from "./searchbar_addons/searchbar_context"
 interface SearchBarProps {
   search: string
   onSearch: (value: string) => void
-  resource?: ResourceOption
-  onResourceChange?: (value: ResourceOption) => void
+  resource?: SearchResourceOption
+  onResourceChange?: (value: SearchResourceOption) => void
   className?: string
   children?: React.ReactNode
 }
@@ -35,7 +33,7 @@ const SearchBar = ({
     onSearch(val)
   }
 
-  const handleResourceChange = (val: ResourceOption) => {
+  const handleResourceChange = (val: SearchResourceOption) => {
     setCurrResource(val)
     if (onResourceChange) {
       onResourceChange(val)

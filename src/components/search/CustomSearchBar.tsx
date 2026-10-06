@@ -1,4 +1,10 @@
 import type { Tag } from "@/utils/types/lesson"
+import type {
+  SearchQueryParams,
+  SearchResourceOption,
+  SearchSort,
+  SearchSortValue,
+} from "@/utils/types/component"
 import { useEffect, useRef, useState } from "react"
 import {
   SearchBar,
@@ -7,24 +13,15 @@ import {
   SearchBarResource,
   SearchBarSorting,
 } from "@/components/homemade/search_bar"
-import TagsSelector from "./TagsSelector"
+import TagsSelector from "@/components/lesson/TagsSelector"
 import { SearchIcon } from "lucide-react"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
-import type { ResourceOption } from "../homemade/searchbar_addons/searchbar_resource"
-
 interface CustomSearchBarProps {
   className?: string
-  resources?: ResourceOption[]
-  sortOptions?: { label: string; value: string }[]
-  handleQuery: (params: QueryParams) => void
+  resources?: SearchResourceOption[]
+  sortOptions?: { label: string; value: SearchSortValue }[]
+  handleQuery: (params: SearchQueryParams) => void
   children?: React.ReactNode
-}
-
-interface QueryParams {
-  search: string
-  resource?: string
-  tags?: Tag[]
-  sort?: { value: string; ascending: boolean }
 }
 
 //TODO remove this hardcoded tags and fetch them from the backend
@@ -53,8 +50,8 @@ export default function CustomSearchBar({
   const [search, setSearch] = useState<string>("")
   const [debouncedSearch, setDebouncedSearch] = useState<string>("")
   const [tags, setTags] = useState<Tag[]>([])
-  const [sort, setSort] = useState<string>("")
-  const [resource, setResource] = useState<ResourceOption | undefined>(
+  const [sort, setSort] = useState<SearchSort>({value: sortOptions?.[0]?.value || "title", isAscending: true})
+  const [resource, setResource] = useState<SearchResourceOption | undefined>(
     resources?.[0],
   )
   
@@ -109,7 +106,7 @@ export default function CustomSearchBar({
       search: debouncedSearch,
       resource: resource?.value,
       tags,
-      sort: { value: sort, ascending: true },
+      sort
     })
   }, [debouncedSearch, resource, tags, sort, handleQuery])
 
@@ -133,7 +130,7 @@ export default function CustomSearchBar({
           <SearchBarSorting options={sortOptions} onSortChange={setSort} />
         </SearchBarAddons>
       )}
-      {resource.value === "lesson" && (
+      {resource && resource.value === "lesson" && (
         <SearchBarAddons align="inline-end" className="p-0">
           <TagsSelector
             tags={getAllTags()}

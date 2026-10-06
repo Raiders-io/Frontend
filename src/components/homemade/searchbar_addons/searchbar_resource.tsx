@@ -6,15 +6,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/utils/lib/shadcn"
+import type { SearchResourceOption } from "@/utils/types/component"
 import { useSearchBar } from "./searchbar_context"
 
-export interface ResourceOption {
-  label: string
-  value: string
-}
-
 interface SearchBarResourceProps {
-  options: ResourceOption[]
+  options: SearchResourceOption[]
   className?: string
   placeholder?: string
 }
@@ -34,10 +30,13 @@ export const SearchBarResource = ({
       )}
     >
       <Select
-        value={resource.value}
-        onValueChange={(val) =>
-          setResource(options.find((o) => o.value === val))
-        }
+        value={resource?.value ?? placeholder}
+        onValueChange={(val) => {
+          const selectedOption = options.find((option) => option.value === val)
+          if (selectedOption) {
+            setResource?.(selectedOption)
+          }
+        }}
       >
         <SelectTrigger className={cn("rounded-r-none font-bold")}>
           <SelectValue placeholder={placeholder} />

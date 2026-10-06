@@ -1,28 +1,11 @@
-// import React, { useEffect, useMemo, useState } from 'react'
-// import { lessonService } from '@/services/lesson_service'
-// import type { Lesson, Tag } from '@/utils/types/lesson'
-// import { Input } from '@/components/ui/input'
-// import { Button } from '@/components/ui/button'
-// import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-// import { Label } from '@/components/ui/label'
-// import { ArrowLeft, ArrowRight, BookOpen, Search } from 'lucide-react'
-// import { useLocation } from 'react-router-dom'
-
-// type SortOption = 'created_at' | 'updated_at' | 'title' | 'name'
-
-// const sortOptions: { label: string; value: SortOption; direction: 'asc' | 'desc' }[] = [
-//   { label: 'Newest first', value: 'created_at', direction: 'desc' },
-//   { label: 'Oldest first', value: 'created_at', direction: 'asc' },
-//   { label: 'Title A → Z', value: 'title', direction: 'asc' },
-//   { label: 'Title Z → A', value: 'title', direction: 'desc' },
-//   { label: 'Updated first', value: 'updated_at', direction: 'desc' },
-// ]
-
-import type { ResourceOption } from "@/components/homemade/searchbar_addons/searchbar_resource"
-import CustomSearchBar from "@/components/lesson/CustomSearchBar"
+import type { SearchResourceOption } from "@/utils/types/component"
+import CustomSearchBar from "@/components/search/CustomSearchBar"
+import PaginatedGrid from "@/components/lesson/LessonTab"
 import LessonTab from "@/components/lesson/LessonTab"
 import type { Lesson } from "@/utils/types/lesson"
 import { useState } from "react"
+import LessonCard from "@/components/lesson/LessonCard"
+import SkeletonCard from "@/components/ui/skeletonCard"
 
 const lesson: Lesson = {
   title: "Hello La team !",
@@ -79,7 +62,7 @@ const lesson3: Lesson = {
   ],
 }
 
-const mokeResource: ResourceOption[] = [
+const mokeResource: SearchResourceOption[] = [
   { label: "All", value: "all" },
   { label: "Lesson", value: "lesson" },
   { label: "Exercise", value: "exercise" },
@@ -93,12 +76,38 @@ const mockSortOptions = [
   { label: "Title Z → A", value: "title_desc" },
 ]
 
+interface serializeItem<T> {
+  kind: string
+  data: T
+}
+
+const serializeItem = (kind: string, data) => {return {kind, data}} 
+
+const mockItem = [
+  serializeItem("lesson", lesson),
+  serializeItem("lesson", lesson2),
+  serializeItem("lesson", lesson3),
+  serializeItem("lesson", lesson),
+  serializeItem("lesson", lesson2),
+  serializeItem("none", {})
+]
+
+const renderItem = (item) => {
+  switch (item.kind) {
+    case "lesson":
+      return <LessonCard Lesson={item.data} maxLen={200}></LessonCard>
+    case "none":
+      return <SkeletonCard/>
+  }
+}
+
 export default function LessonHomePage() {
   const [page, setPage] = useState(1)
   // return <LessonCard Lesson={lesson} maxLen={200} className='w-full max-w-sm'/>
 
+  let key = 0
   return (
-    <div>
+    <div className="p-2">
       <CustomSearchBar
         resources={mokeResource}
         sortOptions={mockSortOptions}
@@ -106,7 +115,15 @@ export default function LessonHomePage() {
           return console.log('Query executed'. concat(JSON.stringify(params)))
         }}
       />
+      <PaginatedGrid
+        items={mockItem}
+        renderItem={renderItem}
+        getKey={() => {return key++}}
+        loading={false}
+        limit={10}
+      >
 
+      </PaginatedGrid>
       <LessonTab
         loading={false}
         limit={12}

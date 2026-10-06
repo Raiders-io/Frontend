@@ -14,13 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import type { SearchSort, SearchSortValue } from "@/utils/types/component"
 import { useState } from "react"
 
 interface SearchBarSortingProps {
   placeholder?: string
   className?: string
-  options: { label: string; value: string }[]
-  onSortChange: (value: string, isAscending: boolean) => void
+  options: { label: string; value: SearchSortValue }[]
+  onSortChange: (sort: SearchSort) => void
 }
 
 export const SearchBarSorting = ({
@@ -29,17 +30,17 @@ export const SearchBarSorting = ({
   options,
   onSortChange,
 }: SearchBarSortingProps) => {
-  const [sorting, setSorting] = useState<string>(options[0].value)
+  const [sorting, setSorting] = useState<SearchSortValue>(options[0].value)
   const [isAscending, setIsAscending] = useState<boolean>(true)
 
-  const handleSortChange = (value: string) => {
+  const handleSortChange = (value: SearchSortValue) => {
     setSorting(value)
-    onSortChange(value, isAscending)
+    onSortChange({value, isAscending})
   }
 
   const handleOrderChange = () => {
     setIsAscending(!isAscending)
-    onSortChange(sorting, !isAscending)
+    onSortChange({value: sorting, isAscending: !isAscending})
   }
 
   return (
