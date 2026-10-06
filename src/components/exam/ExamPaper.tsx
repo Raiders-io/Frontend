@@ -79,7 +79,7 @@ export default function ExamPaper({
             {question.type === "c_function" && (
               <CodeEditor
                 language="c"
-                value={currentAnswer}
+                value={currentAnswer || question.starterCode || ""}
                 onChange={(value) => onAnswerChange(answer.id, value)}
               />
             )}
