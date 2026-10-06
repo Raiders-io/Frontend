@@ -24,17 +24,22 @@ export default function ExamAuthoring() {
             ? "MCQ"
             : question.type === "exact_answer"
               ? "TEXT"
-              : "DEFAULT",
+              : "C_FUNCTION",
         goodAnswers:
           question.type === "multiple_choice"
             ? (question.choices
                 ?.filter((choice) => choice.isCorrect)
                 .map((choice) => choice.text) ?? [])
-            : (question.answers ?? []),
+            : question.type === "exact_answer"
+              ? (question.answers ?? [])
+              : [],
         badAnswers:
-          question.choices
-            ?.filter((choice) => !choice.isCorrect)
-            .map((choice) => choice.text) ?? [],
+          question.type === "multiple_choice"
+            ? (question.choices
+                ?.filter((choice) => !choice.isCorrect)
+                .map((choice) => choice.text) ?? [])
+            : [],
+        starterCode: question.starterCode ?? "",
         points: question.points,
       })
       const createdQuestion = toQuestion(data, questions.length + 1)
