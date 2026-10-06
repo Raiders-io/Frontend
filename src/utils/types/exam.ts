@@ -4,7 +4,7 @@ export type Question = {
   points: number
   text: string
   type: "multiple_choice" | "exact_answer" | "c_function"
-  answer?: string
+  starterCode?: string
   answers?: string[]
   choices?: QuestionChoice[]
 }

@@ -63,7 +63,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       text: text.trim(),
       type,
       points: currentPoints,
-      answer: codeAnswer.trim() || undefined,
+      starterCode: type === "c_function" ? codeAnswer.trim() || undefined : undefined,
       answers:
         type === "exact_answer" && answers.length > 0 ? answers : undefined,
       choices:
