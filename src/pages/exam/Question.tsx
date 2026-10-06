@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ExactAnswerEditor } from "@/components/exam/ExactAnswerEditor"
 import { MultipleChoiceEditor } from "@/components/exam/MultipleChoiceEditor"
 import type { Question, QuestionChoice } from "@/utils/types/exam"
 import { ChooseQuestionWeight } from "@/components/exam/ChooseQuestionWeight"
+import { CodeQuestionEditor } from "@/components/exam/CodeQuestionEditor"
 
 type CreateQuestionProps = { onAdd?: (question: Question) => void }
 
@@ -14,6 +14,7 @@ export default function Question({ onAdd }: CreateQuestionProps) {
 
 export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   const [text, setText] = useState("")
+  const [file, setFile] = useState<File | null>(null)
   const [type, setType] = useState<Question["type"]>("multiple_choice")
   const [pos, setPos] = useState(1)
   const [answer, setAnswer] = useState("")
@@ -33,6 +34,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     setChoices([])
     setCurrentChoice("")
     setCurrentPoints(1)
+    setFile(null)
   }
 
   function handleTypeChange(nextType: Question["type"]) {
@@ -47,8 +49,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     }
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  function submitQuestion(codeAnswer = answer) {
     if (!text.trim()) return
     if (type === "multiple_choice") {
       if (choices.length < 2 || !choices.some((choice) => choice.isCorrect))
@@ -62,13 +63,18 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       text: text.trim(),
       type,
       points: currentPoints,
-      answer: answer.trim() || undefined,
+      answer: codeAnswer.trim() || undefined,
       answers:
         type === "exact_answer" && answers.length > 0 ? answers : undefined,
       choices:
         type === "multiple_choice" && choices.length > 0 ? choices : undefined,
     })
     resetForm()
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    submitQuestion()
   }
 
   function addChoice() {
@@ -112,7 +118,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       >
         <option value="multiple_choice">Choix</option>
         <option value="exact_answer">Réponses possibles</option>
-        <option value="c_code">C</option>
+        <option value="c_function">C function</option>
       </select>
       {(() => {
         switch (type) {
@@ -155,8 +161,22 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
                 }
               />
             )
-          case "c_code":
-            return <Button type="submit">Ajouter la question</Button>
+          case "c_function":
+            return (
+              <CodeQuestionEditor
+                onFileChange={setFile}
+                onSubmit={() => {
+                  if (file) {
+                    const reader = new FileReader()
+                    reader.onload = () => {
+                      const fileContent = reader.result as string
+                      submitQuestion(fileContent)
+                    }
+                    reader.readAsText(file)
+                  }
+                }}
+              />
+            )
         }
       })()}
     </form>

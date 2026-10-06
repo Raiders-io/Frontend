@@ -49,7 +49,7 @@ export function ExamQuestion({
         />
       )}
 
-      {question.type === "c_code" && (
+      {question.type === "c_function" && (
         <CodeEditor value={answer} onChange={onAnswerChange} language={"c"} />
       )}
     </li>
