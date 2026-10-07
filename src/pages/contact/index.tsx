@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react"
-import { GithubLogoComponent } from "@/components/GithubImg"
+import { GithubLogo } from "@/components/GithubLogo"
 
 export default function ContactPage() {
 	return (
@@ -14,7 +14,7 @@ export default function ContactPage() {
 			<div className="mt-10 space-y-3">
 				<a href="https://github.com/Raiders-io" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 rounded-lg border p-5 transition-colors hover:bg-muted/40">
 					<span className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background">
-						<GithubLogoComponent />
+						<GithubLogo />
 					</span>
 					<span className="min-w-0 flex-1">
 						<span className="block text-sm font-medium text-foreground">Raiders.io sur GitHub</span>
@@ -25,7 +25,7 @@ export default function ContactPage() {
 
 				<a href="https://docs.github.com/fr/issues/tracking-your-work-with-issues/using-issues/creating-an-issue" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 rounded-lg border p-5 transition-colors hover:bg-muted/40">
 					<span className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background">
-						<GithubLogoComponent />
+						<GithubLogo />
 					</span>
 					<span className="min-w-0 flex-1">
 						<span className="block text-sm font-medium text-foreground">Tuto création d'une issue</span>

@@ -1,6 +1,6 @@
 import { isThemeDark } from "@/components/theme-provider"
 
-export const GithubLogoComponent = () => {
+export const GithubLogo = () => {
   return isThemeDark() ? (
     <img
       height="32"

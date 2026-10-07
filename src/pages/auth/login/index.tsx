@@ -107,16 +107,16 @@ export default function LoginPage() {
               <p className="text-sm text-destructive">{formError}</p>
             </div>
           )}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 h-11 w-full"
+            aria-label="Se connecter"
+          >
+            {isSubmitting ? "Connexion…" : "Se connecter"}
+          </Button>
         </form>
       </FieldGroup>
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-2 h-11 w-full"
-        aria-label="Se connecter"
-      >
-        {isSubmitting ? "Connexion…" : "Se connecter"}
-      </Button>
     </AuthLayout>
   )
 }
