@@ -23,6 +23,13 @@ api.interceptors.response.use(
 			toast.error("Internal server error", { id: "server-error" })
 		else if (!error.response)
 			toast.error("Can't join server", { id: "network-error" })
+		//Check if relevant
+		else if (
+			axios.isAxiosError(error) &&
+			(error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED')
+		) {
+			error.message = 'Request timeout'
+		}
 		return Promise.reject(error)
 	},
 )
