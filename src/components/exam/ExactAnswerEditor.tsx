@@ -22,7 +22,7 @@ export function ExactAnswerEditor({
         <Input
           value={currentAnswer}
           onChange={(event) => onCurrentAnswerChange(event.target.value)}
-          placeholder="Ajouter une réponse possible"
+          placeholder="Add a possible answer"
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault()
@@ -37,7 +37,7 @@ export function ExactAnswerEditor({
 
       {answers.length > 0 && (
         <div className="border rounded-md p-2 bg-gray-0">
-          <p className="font-semibold text-sm mb-2">Réponses acceptées:</p>
+          <p className="font-semibold text-sm mb-2">Accepted answers:</p>
           {answers.map((answer, index) => (
             <div
               key={`${answer}-${index}`}
@@ -50,7 +50,7 @@ export function ExactAnswerEditor({
                 size="sm"
                 onClick={() => onRemoveAnswer(index)}
               >
-                Supprimer
+                Delete
               </Button>
             </div>
           ))}

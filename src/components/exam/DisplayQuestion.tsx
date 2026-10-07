@@ -13,7 +13,7 @@ export function DisplayQuestion({ question }: DisplayQuestionProps) {
       <br />
       {question.type === "multiple_choice" && (
         <>
-          <strong>Choix:</strong>
+          <strong>Choices:</strong>
           <ul className="ml-4 list-disc">
             {question.choices?.map((choice) => (
               <li key={choice.id}>
@@ -25,7 +25,7 @@ export function DisplayQuestion({ question }: DisplayQuestionProps) {
       )}
       {question.type === "exact_answer" && (
         <>
-          <strong>Réponses acceptées:</strong>
+          <strong>Accepted answers:</strong>
           <ul className="ml-4 list-disc">
             {question.answers?.map((answer, index) => (
               <li key={index}>{answer}</li>

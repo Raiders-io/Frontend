@@ -86,7 +86,7 @@ export default function ExamPaper({
           </fieldset>
         )
       })}
-      <Button type="submit">Envoyer les réponses</Button>
+      <Button type="submit">Submit answers</Button>
     </form>
   )
 }
