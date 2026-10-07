@@ -25,7 +25,7 @@ export function MultipleChoiceEditor({
         <Input
           value={currentChoice}
           onChange={(event) => onCurrentChoiceChange(event.target.value)}
-          placeholder="Ajouter un choix de réponse"
+          placeholder="Add an answer choice"
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault()
@@ -40,7 +40,7 @@ export function MultipleChoiceEditor({
 
       {choices.length > 0 && (
         <div className="border rounded-md p-2 bg-gray-0">
-          <p className="font-semibold text-sm mb-2">Choix disponibles:</p>
+          <p className="font-semibold text-sm mb-2">Available choices:</p>
           {choices.map((choice) => (
             <div
               key={choice.id}
@@ -60,7 +60,7 @@ export function MultipleChoiceEditor({
                 size="sm"
                 onClick={() => onRemoveChoice(choice.id)}
               >
-                Supprimer
+                Delete
               </Button>
             </div>
           ))}
