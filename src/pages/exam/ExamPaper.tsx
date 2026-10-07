@@ -17,7 +17,7 @@ export default function ExamPaper() {
     examApi
       .listExams()
       .then(({ data }) => setExams(data))
-      .catch(() => setMessage("Impossible de charger les examens."))
+      .catch(() => setMessage("Unable to load exams."))
   }, [])
 
   async function startExam() {
@@ -29,7 +29,7 @@ export default function ExamPaper() {
       setMessage("")
     } catch {
       setMessage(
-        "Impossible de démarrer l'examen. Vérifiez votre authentification.",
+        "Unable to start the exam. Check your authentication.",
       )
     }
   }
@@ -48,13 +48,13 @@ export default function ExamPaper() {
       )
       const goodAnswersId = data.goodAnswersId
       const totalPoints = data.totalPoints
-      setMessage("Réponses envoyées.")
+      setMessage("Answers submitted.")
       setMessage(
-        `Vous avez obtenu ${goodAnswersId.length} bonnes réponses sur ${totalPoints}.`,
+        `You got ${goodAnswersId.length} correct answers out of ${totalPoints}.`,
       )
-      setMessage(`Votre score est de ${data.score.toFixed(0)}%.`)
+      setMessage(`Your score is ${data.score.toFixed(0)}%.`)
     } catch {
-      setMessage("L’envoi des réponses a échoué.")
+      setMessage("Failed to submit answers.")
     }
   }
 
@@ -68,7 +68,7 @@ export default function ExamPaper() {
             value={selectedExam}
             onChange={(event) => setSelectedExam(event.target.value)}
           >
-            <option value="">Choisir un examen</option>
+            <option value="">Choose an exam</option>
             {exams.map((exam) => (
               <option key={exam.id} value={exam.id}>
                 {exam.title}
@@ -76,7 +76,7 @@ export default function ExamPaper() {
             ))}
           </select>
           <Button type="button" onClick={startExam} disabled={!selectedExam}>
-            Démarrer
+            Start
           </Button>
         </div>
       )}

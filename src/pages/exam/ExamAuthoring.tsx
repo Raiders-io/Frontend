@@ -42,9 +42,9 @@ export default function ExamAuthoring() {
         ...previousQuestions,
         { ...createdQuestion, points: question.points },
       ])
-      setMessage("Question créée.")
+      setMessage("Question created.")
     } catch {
-      setMessage("La création de la question a échoué.")
+      setMessage("Failed to create question.")
     }
   }
 
@@ -93,10 +93,10 @@ export default function ExamAuthoring() {
           points: question.points,
         })),
       })
-      setMessage("Examen créé.")
+      setMessage("Exam created.")
       setTitle("")
     } catch {
-      setMessage("La création de l’examen a échoué.")
+      setMessage("Failed to create exam.")
     }
   }
 
@@ -109,7 +109,7 @@ export default function ExamAuthoring() {
         handleCreateExam={handleCreateExam}
       />
       <section>
-        <p>Questions ajoutées : {questions.length}</p>
+        <p>Questions added: {questions.length}</p>
         {questions.map((question, index) => (
           <div
             key={question.id}
