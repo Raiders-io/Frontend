@@ -110,8 +110,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
           handleTypeChange(event.target.value as Question["type"])
         }
       >
-        <option value="multiple_choice">Choix</option>
-        <option value="exact_answer">Réponses possibles</option>
+        <option value="multiple_choice">Multiple choice</option>
+        <option value="exact_answer">Possible answers</option>
         <option value="c_code">C</option>
       </select>
       {(() => {
@@ -156,7 +156,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
               />
             )
           case "c_code":
-            return <Button type="submit">Ajouter la question</Button>
+            return <Button type="submit">Add question</Button>
         }
       })()}
     </form>
