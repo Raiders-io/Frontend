@@ -5,11 +5,11 @@ import type {
 } from "@/utils/types/chat"
 import { baseURL } from "@/utils/lib/axios"
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  baseURL,
-  {
-    path: "/api/socket.io",
-    autoConnect: false,
-    transports: ["websocket"],
-  },
-)
+export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(baseURL, {
+  path: '/api/socket.io',
+  autoConnect: false,
+  transports: ['websocket'],
+  reconnectionAttempts: 5,
+  timeout: 10000,
+})
+
