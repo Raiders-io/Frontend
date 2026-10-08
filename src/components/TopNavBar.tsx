@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { AvatarDropdown } from "./AvatarDropDown"
-import { useEffect, useRef } from "react"
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
@@ -34,21 +33,6 @@ const handleQuery = (params: SearchQueryParams) => {
 }
 
 const TopNavBar = () => {
-  const searchInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "k") {
-        event.preventDefault()
-        searchInputRef.current?.focus()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [])
 
   return (
     <nav className="flex items-center justify-between p-4 border-b">

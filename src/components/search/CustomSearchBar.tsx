@@ -1,11 +1,10 @@
 import type { Tag } from "@/utils/types/lesson"
 import type {
-  SearchQueryParams,
   SearchResourceOption,
   SearchSort,
   SearchSortValue,
 } from "@/utils/types/component"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   SearchBar,
   SearchBarAddons,
@@ -16,66 +15,92 @@ import {
 import TagsSelector from "@/components/lesson/TagsSelector"
 import { SearchIcon } from "lucide-react"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
+import { useSearchQueryParams } from "@/utils/hooks/searchParams"
+
 interface CustomSearchBarProps {
   className?: string
   resources?: SearchResourceOption[]
   sortOptions?: { label: string; value: SearchSortValue }[]
-  handleQuery: (params: SearchQueryParams) => void
   children?: React.ReactNode
 }
 
 //TODO remove this hardcoded tags and fetch them from the backend
-const tag: Tag = {
-  id: 1,
-  name: "Tin",
-}
-
-const tag2: Tag = {
-  id: 2,
-  name: "Copper",
-}
-
-const tag3: Tag = {
-  id: 3,
-  name: "Iron",
-}
+const ALL_TAGS: Tag[] = [
+  { id: 1, name: "React" },
+  { id: 2, name: "JavaScript" },
+  { id: 3, name: "TypeScript" },
+  { id: 4, name: "CSS" },
+  { id: 5, name: "HTML" },
+  { id: 11, name: "React" },
+  { id: 21, name: "JavaScript" },
+  { id: 31, name: "TypeScript" },
+  { id: 41, name: "CSS" },
+  { id: 51, name: "HTML" },
+  { id: 12, name: "React" },
+  { id: 22, name: "JavaScript" },
+  { id: 32, name: "TypeScript" },
+  { id: 42, name: "CSS" },
+  { id: 52, name: "HTML" },
+  { id: 121, name: "React" },
+  { id: 221, name: "JavaScript" },
+  { id: 321, name: "TypeScript" },
+  { id: 421, name: "CSS" },
+  { id: 521, name: "HTML" },
+]
 
 export default function CustomSearchBar({
   resources,
   sortOptions,
   className,
-  handleQuery,
   children,
 }: CustomSearchBarProps) {
-  const [search, setSearch] = useState<string>("")
-  const [debouncedSearch, setDebouncedSearch] = useState<string>("")
-  const [tags, setTags] = useState<Tag[]>([])
-  const [sort, setSort] = useState<SearchSort>({value: sortOptions?.[0]?.value || "title", isAscending: true})
-  const [resource, setResource] = useState<SearchResourceOption | undefined>(
-    resources?.[0],
-  )
-  
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  const getAllTags = () => {
-    return [tag, tag2, tag3]
-  }
+  const {
+    query,
+    resource,
+    tags,
+    sort,
+    order,
+    setQuery,
+    setResource,
+    setTags,
+    setSort,
+  } = useSearchQueryParams()
+  
+  const [search, setSearch] = useState<string>(query)
 
-  const handleQueryChange = (value: string) => {
-    const match = value.match(/^@(\w+)\s+(.*)$/)
-    if (match) {
-      const [, tag, queryText] = match
-      const matchedRes = resources?.find(
-        (r) => r.value.toLowerCase() === tag.toLowerCase(),
-      )
-      if (matchedRes) {
-        setSearch(queryText)
-        setResource(matchedRes)
-        return
-      }
+  const currentResource = useMemo(() => 
+    resources?.find((r) => r.value === resource) || resources?.[0]
+  , [resources, resource])
+
+  // const tagsObject = useMemo(() => {
+  //   if (!tags || tags.length === 0) return []
+  //     return tags.map((tag) => ALL_TAGS.find((t) => t.name === tag)).filter(Boolean) as Tag[]
+  // }, [tags])
+
+  const currentSortObject = useMemo<SearchSort>(() => {
+    const defaultVal = sortOptions?.[0]?.value || ""
+    return {
+      value: (sort as SearchSortValue) || defaultVal,
+      isAscending: order === "asc",
     }
-    setSearch(value)
-  }
+  }, [sort, order, sortOptions])
+
+  useEffect(() => {
+    setSearch(query)
+  }, [query])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (search !== query)
+      setQuery(search)
+    }, 300)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [search, setQuery, query])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -91,31 +116,44 @@ export default function CustomSearchBar({
     }
   }, [])
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-    }, 300)
+  const handleResourceChange = (newResource: SearchResourceOption) => {
+    setResource(newResource.value)
+  }
 
-    return () => {
-      clearTimeout(timer)
+  const handleSortChange = (newSort: SearchSort) => {
+    setSort(newSort.value, newSort.isAscending)
+  }
+
+  const handleTagsChange = (newTags: Tag[]) => {
+    setTags(newTags.map((tag) => tag.name))
+  }
+
+  const getAllTags = () => {
+    return ALL_TAGS
+  }
+
+  const handleQueryChange = (value: string) => {
+    const match = value.match(/^@(\w+)\s+(.*)$/)
+    if (match) {
+      const [, tag, queryText] = match
+      const matchedRes = resources?.find(
+        (r) => r.value.toLowerCase() === tag.toLowerCase(),
+      )
+      if (matchedRes) {
+        setSearch(queryText)
+        setResource(matchedRes.value)
+        return
+      }
     }
-  }, [search])
-
-  useEffect(() => {
-    handleQuery({
-      search: debouncedSearch,
-      resource: resource?.value,
-      tags,
-      sort
-    })
-  }, [debouncedSearch, resource, tags, sort, handleQuery])
+    setSearch(value)
+  }
 
   return (
     <SearchBar
       search={search}
       onSearch={handleQueryChange}
-      resource={resource}
-      onResourceChange={setResource}
+      resource={currentResource}
+      onResourceChange={handleResourceChange}
       className={className}
     >
       <SearchBarInput ref={searchInputRef} />
@@ -127,15 +165,15 @@ export default function CustomSearchBar({
       </SearchBarAddons>
       {sortOptions && (
         <SearchBarAddons align="inline-end">
-          <SearchBarSorting options={sortOptions} onSortChange={setSort} />
+          <SearchBarSorting value={currentSortObject} options={sortOptions} onSortChange={handleSortChange} />
         </SearchBarAddons>
       )}
-      {resource && resource.value === "lesson" && (
+      {currentResource?.value === "lesson" && (
         <SearchBarAddons align="inline-end" className="p-0">
           <TagsSelector
-            tags={getAllTags()}
-            selected={tags}
-            setSelection={setTags}
+            tags={ALL_TAGS}
+            selected={tags?.map((tagName) => ALL_TAGS.find((t) => t.name === tagName)).filter(Boolean) as Tag[]}
+            setSelection={handleTagsChange}
           />
         </SearchBarAddons>
       )}

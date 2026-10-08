@@ -1,47 +1,47 @@
 import { router } from "@/utils/router"
 
 export const changePageHome = () => {
-	router.navigate('/')
+  router.navigate("/")
 }
 
 export const changePageLogin = () => {
-	router.navigate('/login')
+  router.navigate("/login")
 }
 
 export const changePageSignup = () => {
-	router.navigate('/signup')
+  router.navigate("/signup")
 }
 
 export const changePageProfile = () => {
-	router.navigate('/profile')
+  router.navigate("/profile")
 }
 
 export const changePageFileList = () => {
-	router.navigate('/file/list')
+  router.navigate("/file/list")
 }
 
 export const changePageLessons = () => {
-	router.navigate('/lessons')
+  router.navigate("/lessons")
 }
 
 export const changePageFriends = () => {
-	router.navigate('/friends')
+  router.navigate("/friends")
 }
 
 export const changePageEditProfile = () => {
-	router.navigate('/edit-profile')
+  router.navigate("/edit-profile")
 }
 
 export const changePageChat = () => {
-	router.navigate('/chat')
+  router.navigate("/chat")
 }
 
 export const changePageAbout = () => {
-	router.navigate('/about')
+  router.navigate("/about")
 }
 
 export const changePageContact = () => {
-	router.navigate('/contact')
+  router.navigate("/contact")
 }
 
 export const changePageTerms = () => {

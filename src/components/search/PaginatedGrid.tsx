@@ -29,7 +29,9 @@ export default function PaginatedGrid<T>({
   
   return (
     <div className={className}>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      )}
       <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(280px,_1fr))] items-stretch">
         {loading ? (
           Array.from({ length: limit }).map((_, index) => (
@@ -46,7 +48,9 @@ export default function PaginatedGrid<T>({
           </div>
         )}
       </div>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      )}
     </div>
   )
 }

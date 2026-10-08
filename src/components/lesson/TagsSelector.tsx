@@ -15,6 +15,7 @@ import { useState } from "react"
 import CheckBoxTab from "../homemade/checkbox_tab"
 import { cn } from "@/utils/lib/shadcn"
 
+
 interface TagsTableProps {
   tags: Tag[]
   variant?: "compact" | "extended"
@@ -61,6 +62,7 @@ export default function TagsSelector({
                 </SearchBarAddons>
               </SearchBar>
             </PopoverHeader>
+            <div className="max-h-[400px] overflow-y-auto">
             <CheckBoxTab
               className={className}
               data={tags.filter((tag) =>
@@ -74,6 +76,7 @@ export default function TagsSelector({
                 setSelection(selectedTags)
               }}
             />
+            </div>
           </PopoverContent>
         </Popover>
       </div>

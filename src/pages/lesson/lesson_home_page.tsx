@@ -1,7 +1,7 @@
 import type { SearchResourceOption } from "@/utils/types/component"
 import CustomSearchBar from "@/components/search/CustomSearchBar"
-import PaginatedGrid from "@/components/lesson/LessonTab"
-import LessonTab from "@/components/lesson/LessonTab"
+import PaginatedGrid from "@/components/search/PaginatedGrid"
+// import LessonTab from "@/components/lesson/LessonTab"
 import type { Lesson } from "@/utils/types/lesson"
 import { useState } from "react"
 import LessonCard from "@/components/lesson/LessonCard"
@@ -124,15 +124,6 @@ export default function LessonHomePage() {
       >
 
       </PaginatedGrid>
-      <LessonTab
-        loading={false}
-        limit={12}
-        currentPage={page}
-        onPageChange={(page) => setPage(page)}
-        totalPages={10}
-        Lessons={[lesson, lesson2, lesson3, lesson, lesson, lesson]}
-        className="gap-4 p-4"
-      />
     </div>
   )
 }

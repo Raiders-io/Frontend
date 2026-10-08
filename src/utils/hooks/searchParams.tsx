@@ -7,6 +7,10 @@ export function useSearchQueryParams() {
   const query = searchParams.get("q") ?? ""
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10))
   const limit = Math.max(1, parseInt(searchParams.get("limit") ?? "10", 10))
+  const resource = searchParams.get("resource") ?? ""
+  const tags = searchParams.get("tags")?.split(",").filter(Boolean) ?? []
+  const sort = searchParams.get("sort") ?? ""
+  const order = searchParams.get("order") ?? "asc"
 
   const updateParams = useCallback(
     (newParams: Record<string, string | number | null | undefined>) => {
@@ -24,17 +28,17 @@ export function useSearchQueryParams() {
 
           return updated
         },
-        { replace: false } // Set to true if you don't want every page click to add history entries
+        { replace: false }, // Set to true if you don't want every page click to add history entries
       )
     },
-    [setSearchParams]
+    [setSearchParams],
   )
 
   const setPage = useCallback(
     (newPage: number) => {
       updateParams({ page: newPage })
     },
-    [updateParams]
+    [updateParams],
   )
 
   const setQuery = useCallback(
@@ -42,7 +46,7 @@ export function useSearchQueryParams() {
       // Reset page to 1 whenever a new search query is executed
       updateParams({ q: newQuery, page: 1 })
     },
-    [updateParams]
+    [updateParams],
   )
 
   const setResource = useCallback(
@@ -50,7 +54,7 @@ export function useSearchQueryParams() {
       // Reset page to 1 whenever a new resource is selected
       updateParams({ resource: newResource, page: 1 })
     },
-    [updateParams]
+    [updateParams],
   )
 
   const setTags = useCallback(
@@ -58,16 +62,33 @@ export function useSearchQueryParams() {
       // Reset page to 1 whenever new tags are selected
       updateParams({ tags: newTags.join(","), page: 1 })
     },
-    [updateParams]
+    [updateParams],
   )
 
   const setSort = useCallback(
     (sortValue: string, isAscending: boolean) => {
       // Reset page to 1 whenever a new sort option is selected
-      updateParams({ sort: sortValue, order: isAscending ? "asc" : "desc", page: 1 })
+      updateParams({
+        sort: sortValue,
+        order: isAscending ? "asc" : "desc",
+        page: 1,
+      })
     },
-    [updateParams]
+    [updateParams],
   )
 
-  return { query, page, limit, setPage, setQuery, setResource, setTags, setSort }
+  return {
+    query,
+    page,
+    limit,
+    resource,
+    tags,
+    sort,
+    order,
+    setPage,
+    setQuery,
+    setResource,
+    setTags,
+    setSort,
+  }
 }

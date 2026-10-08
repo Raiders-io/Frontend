@@ -37,7 +37,10 @@ export const objectService = {
     return data
   },
 
-  update: async (fileName: string, formData: FormData): Promise<ObjectUpdateResponse> => {
+  update: async (
+    fileName: string,
+    formData: FormData,
+  ): Promise<ObjectUpdateResponse> => {
     const { data } = await api.put<ObjectUpdateResponse>(
       `/api/v1/storage/objects/${encodeURIComponent(fileName)}`,
       formData,

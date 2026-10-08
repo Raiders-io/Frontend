@@ -1,4 +1,8 @@
-import type { ObjectError, ObjectSuccess, ObjectStoreResponse } from "@/utils/types/object"
+import type {
+  ObjectError,
+  ObjectSuccess,
+  ObjectStoreResponse,
+} from "@/utils/types/object"
 
 /**
  * Check if an error message indicates a file already exists conflict
@@ -51,7 +55,7 @@ const normalizeResponseToArray = (
   if (typeof response === "string") {
     return []
   }
-  
+
   if (Array.isArray((response as ObjectStoreResponse).objects)) {
     return (response as ObjectStoreResponse).objects
   }
@@ -90,7 +94,9 @@ export const extractConflictFiles = (
     if (isFileConflictError(response)) {
       // All original files are conflicts
       return {
-        conflicts: originalFiles.map((f) => createObjectError(f.name, response)),
+        conflicts: originalFiles.map((f) =>
+          createObjectError(f.name, response),
+        ),
         validFiles: [],
       }
     }
@@ -99,27 +105,27 @@ export const extractConflictFiles = (
   }
 
   const filesArray = normalizeResponseToArray(response)
-  
+
   const conflicts: ObjectError[] = []
   const validFiles: File[] = []
-  
+
   filesArray.forEach((item) => {
     if (isObjectError(item) && isFileConflictError(item.error)) {
       conflicts.push(item)
     }
   })
-  
+
   // Match original files with conflicts
   originalFiles.forEach((file) => {
     const hasConflict = conflicts.some((conflict) => {
-      const conflictFileName = conflict.key.split('/').pop()
+      const conflictFileName = conflict.key.split("/").pop()
       return conflictFileName === file.name
     })
     if (!hasConflict) {
       validFiles.push(file)
     }
   })
-  
+
   return { conflicts, validFiles }
 }
 
@@ -134,7 +140,7 @@ export const hasFileConflicts = (
   if (typeof response === "string") {
     return isFileConflictError(response)
   }
-  
+
   const filesArray = normalizeResponseToArray(response)
   return filesArray.some(
     (item) => isObjectError(item) && isFileConflictError(item.error),
@@ -157,7 +163,7 @@ export const getConflictingFiles = (
     }
     return []
   }
-  
+
   const filesArray = normalizeResponseToArray(response)
   return filesArray.filter(
     (item): item is ObjectError =>

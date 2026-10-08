@@ -10,7 +10,7 @@ export default function App() {
 		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 			<Suspense fallback={null}>
 				<div className="flex min-h-screen flex-col">
-					<TopNavBar />
+					{/* <TopNavBar /> */}
 					<div className="flex-1">
 						<RouterProvider router={router} />
 					</div>

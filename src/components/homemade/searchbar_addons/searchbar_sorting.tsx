@@ -20,12 +20,14 @@ import { useState } from "react"
 interface SearchBarSortingProps {
   placeholder?: string
   className?: string
+  value?: SearchSort
   options: { label: string; value: SearchSortValue }[]
   onSortChange: (sort: SearchSort) => void
 }
 
 export const SearchBarSorting = ({
   placeholder,
+  value,
   className,
   options,
   onSortChange,
