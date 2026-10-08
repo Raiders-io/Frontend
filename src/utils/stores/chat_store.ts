@@ -9,6 +9,7 @@ interface ChatState {
 	addConversation: (conversation: Conversation) => void
 	setMessages: (conversationId: number, messages: Message[]) => void
 	addMessage: (message: Message) => void
+	prependMessages: (conversationId: number, older: Message[]) => void
 	setActiveConversation: (conversationId: number | null) => void
 }
 
@@ -31,7 +32,7 @@ export const useChatStore = create<ChatState>((set) => ({
 			const newMessages = { ...state.messages }
 			newMessages[conversationId] = messages
 			return { messages: newMessages }
-	}),
+		}),
 
 	addMessage: (message) =>
 		set((state) => {
@@ -42,7 +43,19 @@ export const useChatStore = create<ChatState>((set) => ({
 			const newMessages = { ...state.messages }
 			newMessages[message.conversationId] = newList
 			return { messages: newMessages }
-			}),
+		}),
+
+	prependMessages: (conversationId, older) =>
+		set((state) => {
+			const existing = state.messages[conversationId] ?? []
+			const existingIds = new Set(existing.map((m) => m.id))
+			const toAdd = older.filter((m) => !existingIds.has(m.id))
+			if (toAdd.length === 0)
+				return state
+			const newMessages = { ...state.messages }
+			newMessages[conversationId] = [...toAdd, ...existing]
+			return { messages: newMessages }
+		}),
 
 	setActiveConversation: (conversationId) => set({ activeConversationId: conversationId }),
 }))

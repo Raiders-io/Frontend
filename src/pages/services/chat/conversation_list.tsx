@@ -1,4 +1,5 @@
 import type { Conversation } from '@/utils/types/chat'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { avatarColor, initials } from '@/utils/lib/avatar'
 
 interface ConversationListProps {
@@ -37,11 +38,11 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel }
 											isActive ? 'bg-secondary' : 'hover:bg-muted/50'
 										}`}
 									>
-										<span
-											className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-medium text-white ${avatarColor(label)}`}
-										>
-											{initials(label)}
-										</span>
+										<Avatar className="size-8 shrink-0">
+											<AvatarFallback className={`text-[10px] font-medium text-white ${avatarColor(label)}`}>
+												{initials(label)}
+											</AvatarFallback>
+										</Avatar>
 										<span
 											className={`truncate text-sm ${
 												isActive ? 'font-medium text-foreground' : 'text-foreground/80'

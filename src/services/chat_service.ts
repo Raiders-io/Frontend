@@ -7,9 +7,10 @@ export const chatService = {
 		return data.data
 	},
 
-	fetchMessages: async (conversationId: number): Promise<Message[]> => {
+	fetchMessages: async (conversationId: number, before?: number): Promise<Message[]> => {
 		const { data } = await api.get<{ data: Message[] }>(
 			`/api/messaging/conversations/${conversationId}/messages`,
+			{ params: before ? { before } : undefined },
 		)
 		return data.data
 	},
