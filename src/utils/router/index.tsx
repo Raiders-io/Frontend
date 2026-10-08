@@ -6,7 +6,6 @@ import TopNavBar from "@/components/TopNavBar"
 const LoginPage = lazy(() => import("@/pages/auth/login"))
 const SignupPage = lazy(() => import("@/pages/auth/signup"))
 const HomePage = lazy(() => import("@/pages/home"))
-const LessonHomePage = lazy(() => import("@/pages/lesson/lesson_home_page"))
 const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
@@ -57,10 +56,6 @@ export const router = createBrowserRouter([
       {
         path: "/lessons/:slug",
         element: <LessonPage />,
-      },
-      {
-        path: "/lessons",
-        element: <LessonHomePage />,
       },
       {
         path: "/file/list",

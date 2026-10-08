@@ -6,7 +6,6 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
 import CustomSearchBar from "./search/CustomSearchBar"
 import type {
-  SearchQueryParams,
   SearchResourceOption,
   SearchSortValue,
 } from "@/utils/types/component"
@@ -20,17 +19,10 @@ const resources: SearchResourceOption[] = [
 
 const sortOptions: { label: string; value: SearchSortValue }[] = [
   {label: "Title", value: "title"},
-  {label: "Creation Date", value: "creation"},
-  {label: "Updated Date", value: "update"},
+  {label: "Creation Date", value: "created_at"},
+  {label: "Updated Date", value: "updated_at"},
   // {label: "Relevance", value: "relevance"},
 ]
-
-const handleQuery = (params: SearchQueryParams) => {
-  console.log("Search Query:", params.search)
-  console.log("Resource:", params.resource)
-  console.log("Tags:", params.tags)
-  console.log("Sort:", params.sort)
-}
 
 const TopNavBar = () => {
 
@@ -57,7 +49,7 @@ const TopNavBar = () => {
           </Button>
         </ButtonGroup>
       </div>
-      <CustomSearchBar resources={resources} sortOptions={sortOptions} handleQuery={handleQuery} />
+      <CustomSearchBar resources={resources} sortOptions={sortOptions} className="max-w-2/3"/>
 
 
       <div className="flex items-center">

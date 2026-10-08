@@ -32,7 +32,7 @@ export const SearchBarSorting = ({
   options,
   onSortChange,
 }: SearchBarSortingProps) => {
-  const [sorting, setSorting] = useState<SearchSortValue>(options[0].value)
+  const [sorting, setSorting] = useState<SearchSortValue>(value?.value || options[0].value)
   const [isAscending, setIsAscending] = useState<boolean>(true)
 
   const handleSortChange = (value: SearchSortValue) => {

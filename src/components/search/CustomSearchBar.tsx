@@ -74,10 +74,10 @@ export default function CustomSearchBar({
     resources?.find((r) => r.value === resource) || resources?.[0]
   , [resources, resource])
 
-  // const tagsObject = useMemo(() => {
-  //   if (!tags || tags.length === 0) return []
-  //     return tags.map((tag) => ALL_TAGS.find((t) => t.name === tag)).filter(Boolean) as Tag[]
-  // }, [tags])
+  const tagsObject = useMemo(() => {
+    if (!tags || tags.length === 0) return []
+      return tags.map((tag) => getAllTags().find((t) => t.name === tag)).filter(Boolean) as Tag[]
+  }, [tags])
 
   const currentSortObject = useMemo<SearchSort>(() => {
     const defaultVal = sortOptions?.[0]?.value || ""
@@ -171,8 +171,8 @@ export default function CustomSearchBar({
       {currentResource?.value === "lesson" && (
         <SearchBarAddons align="inline-end" className="p-0">
           <TagsSelector
-            tags={ALL_TAGS}
-            selected={tags?.map((tagName) => ALL_TAGS.find((t) => t.name === tagName)).filter(Boolean) as Tag[]}
+            tags={getAllTags()}
+            selected={tagsObject}
             setSelection={handleTagsChange}
           />
         </SearchBarAddons>
