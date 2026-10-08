@@ -6,9 +6,10 @@ interface ConversationListProps {
 	activeId: number | null
 	onSelect: (conversationId: number) => void
 	getLabel: (participantIds: string[]) => string
+	hasError?: boolean
 }
 
-export function ConversationList({ conversations, activeId, onSelect, getLabel }: ConversationListProps) {
+export function ConversationList({ conversations, activeId, onSelect, getLabel, hasError }: ConversationListProps) {
 	return (
 		<aside className="flex w-72 shrink-0 flex-col border-r">
 			<div className="flex h-14 shrink-0 items-center justify-between border-b px-5">
@@ -19,7 +20,11 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel }
 			</div>
 
 			<div className="flex-1 overflow-y-auto p-2">
-				{conversations.length === 0 ? (
+				{hasError ? (
+					<p className="px-3 py-8 text-center text-sm text-destructive">
+						Impossible de charger les conversations.
+					</p>
+				) : conversations.length === 0 ? (
 					<p className="px-3 py-8 text-center text-sm text-muted-foreground">
 						Aucune conversation.
 					</p>

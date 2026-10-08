@@ -7,5 +7,7 @@ export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL
 	path: '/api/socket.io',
 	autoConnect: false,
 	transports: ['websocket'],
+	reconnectionAttempts: 5,
+	timeout: 10000, 
 })
  

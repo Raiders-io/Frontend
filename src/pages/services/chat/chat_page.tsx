@@ -21,6 +21,8 @@ export default function ChatPage() {
 	const setMessages = useChatStore((s) => s.setMessages)
 	const setActiveConversation = useChatStore((s) => s.setActiveConversation)
 	const [userMap, setUserMap] = useState<Record<string, string>>({})
+	const [conversationsError, setConversationsError] = useState(false)
+	const [messagesError, setMessagesError] = useState(false)
 
 	useEffect(() => {
 		userService.fetchUsers()
@@ -36,15 +38,17 @@ export default function ChatPage() {
 	useEffect(() => {
 		if (activeConversationId === null)
 			return
+		setMessagesError(false)
 		chatService.fetchMessages(activeConversationId)
 			.then((history) => setMessages(activeConversationId, history))
-			.catch(console.error)
+			.catch(() => setMessagesError(true))
 	}, [activeConversationId])
 
 	useEffect(() => {
+		setConversationsError(false)
 		chatService.fetchConversations()
 			.then(setConversations)
-			.catch(console.error)
+			.catch(() => setConversationsError(true))
 	}, [setConversations])
 
 	const conversationLabel = (participantIds: string[] = []): string => {
@@ -66,6 +70,7 @@ export default function ChatPage() {
 					activeId={activeConversationId}
 					onSelect={setActiveConversation}
 					getLabel={conversationLabel}
+					hasError={conversationsError}
 				/>
 
 				<main className="flex min-w-0 flex-1 flex-col">
@@ -87,7 +92,15 @@ export default function ChatPage() {
 								</div>
 							</header>
 
-							<MessageThread messages={activeMessages} currentUserId={currentUserId} />
+							{messagesError ? (
+								<div className="flex flex-1 items-center justify-center px-6">
+									<p className="text-sm text-destructive">
+										Impossible de charger les messages.
+									</p>
+								</div>
+							) : (
+								<MessageThread messages={activeMessages} currentUserId={currentUserId} />
+							)}
 							<MessageInput
 								placeholder={`Écrire à ${activeLabel}…`}
 								onSend={(content) => sendMessage(activeConversationId, content)}
