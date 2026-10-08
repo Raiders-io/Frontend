@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/utils/router'
-import TopNavBar from '@/components/TopNavBar'
 import { ThemeProvider } from "@/components/theme-provider"
 import { FooterComponent } from '@/components/FooterComponent'
 
@@ -10,7 +9,6 @@ export default function App() {
 		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 			<Suspense fallback={null}>
 				<div className="flex min-h-screen flex-col">
-					{/* <TopNavBar /> */}
 					<div className="flex-1">
 						<RouterProvider router={router} />
 					</div>
