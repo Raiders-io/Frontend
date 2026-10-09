@@ -49,7 +49,6 @@ export function MessageThread({ messages, currentUserId, hasMore, onLoadOlder }:
 
 	const handleScroll = async () => {
 		const container = containerRef.current
-		console.log('TEST SCROLL')
 		if (!container || !hasMore || loadingRef.current || shouldRestoreRef.current)
 			return
 		if (container.scrollTop <= SCROLL_THRESHOLD) {

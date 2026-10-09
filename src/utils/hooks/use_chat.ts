@@ -18,9 +18,7 @@ export function useChat() {
 		socket.connect()
 
 		const onCreated = ({ conversationId }: { conversationId: number }) => {
-			console.log('created reçu', conversationId)
 			addConversation({ id: conversationId })
-			socket.emit('conversation:join', { conversationId })
 			setActiveConversation(conversationId)
 		}
 		const onReceived = (message: Message) => addMessage(message)

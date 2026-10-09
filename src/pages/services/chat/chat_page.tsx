@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { MessagesSquare } from 'lucide-react'
 import { useChat } from '@/utils/hooks/use_chat'
 import { useChatStore } from '@/utils/stores/chat_store'
