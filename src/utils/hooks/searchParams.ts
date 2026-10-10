@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom" // or "react-router" in v7
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
 export function useSearchQueryParams() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -8,12 +8,16 @@ export function useSearchQueryParams() {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10))
   const limit = Math.max(1, parseInt(searchParams.get("limit") ?? "10", 10))
   const resource = searchParams.get("resource") ?? ""
-  const tags = searchParams.get("tags")?.split(",").filter(Boolean) ?? []
+  const tagsRaw = searchParams.get("tags") ?? ""
+  const tags = useMemo(() => tagsRaw.split(",").filter(Boolean), [tagsRaw])
   const sort = searchParams.get("sort") ?? ""
   const order = searchParams.get("order") ?? "asc"
 
   const updateParams = useCallback(
-    (newParams: Record<string, string | number | null | undefined>) => {
+    (
+      newParams: Record<string, string | number | null | undefined>,
+      { replace = false }: { replace?: boolean } = {},
+    ) => {
       setSearchParams(
         (prevParams) => {
           const updated = new URLSearchParams(prevParams)
@@ -28,7 +32,7 @@ export function useSearchQueryParams() {
 
           return updated
         },
-        { replace: false }, // Set to true if you don't want every page click to add history entries
+        { replace }, // Set to true if you don't want every page click to add history entries
       )
     },
     [setSearchParams],
@@ -44,7 +48,7 @@ export function useSearchQueryParams() {
   const setQuery = useCallback(
     (newQuery: string) => {
       // Reset page to 1 whenever a new search query is executed
-      updateParams({ q: newQuery, page: 1 })
+      updateParams({ q: newQuery, page: 1 }, { replace: true })
     },
     [updateParams],
   )

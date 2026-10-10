@@ -1,5 +1,3 @@
-import type { Tag } from "./lesson"
-
 export type SearchResource =
   "all" | "lesson" | "user" | "exam" | "exercise" | "video"
 
@@ -9,7 +7,7 @@ export interface SearchResourceOption {
 }
 
 export type SearchSortValue =
-  "title" | "created_at" | "updated_at" | "pertinence"
+  "title" | "created_at" | "updated_at" | "pertinence" 
 
 export interface SearchSort {
   value: SearchSortValue
@@ -17,12 +15,13 @@ export interface SearchSort {
 }
 
 export interface SearchQueryParams {
-  search: string
+  q: string
+  page: number
+  limit: number
   resource?: SearchResource
-  tags?: Tag[]
-  sort?: SearchSort
-  page?: number
-  limit?: number
+  tags?: string[]
+  sort?: SearchSortValue
+  order?: "asc" | "desc"
 }
 
 export interface SerializedSearchItem<T> {

@@ -41,12 +41,14 @@ export const lessonService = {
 
   searchLessons: async (
     params: LessonSearchParams = {},
+    signal?: AbortSignal,
   ): Promise<PaginatedLessonsResponse> => {
     const { data } = await api.get<PaginatedLessonsResponse>("/api/v1/search", {
       params,
       paramsSerializer: {
         indexes: null,
       },
+      signal
     })
     return data
   },
