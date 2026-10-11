@@ -17,13 +17,13 @@ interface PaginatedGridProps<T> {
 
 export default function PaginatedGrid<T>({
   items,
-  renderItem,
-  getKey,
   loading,
   limit,
   className,
   currentPage,
   totalPages,
+  renderItem,
+  getKey,
   onPageChange
 }: PaginatedGridProps<T>) {
   

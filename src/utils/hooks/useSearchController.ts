@@ -7,6 +7,7 @@ import type {
   SearchSortValue,
 } from "../types/component"
 import type { Tag } from "../types/lesson"
+import { useTagStore } from "../stores/tag_store"
 
 const TIMER = 300
 
@@ -22,7 +23,6 @@ export function useDebouncedValue<T>(value: T, delay = 300): T {
 export function useSearchController(
   resources?: SearchResourceOption[],
   sortOptions?: { label: string; value: SearchSortValue }[],
-  allTags: Tag[] = [],
 ) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -35,6 +35,10 @@ export function useSearchController(
     [location.pathname],
   )
   const debouncedSearch = useDebouncedValue(search, TIMER)
+  const tagRef = useTagStore((s) => s.tags);
+  const fetchData = useTagStore((s) => s.fetchData);
+  const loading = useTagStore((s) => s.loading);
+  const isFetched = useTagStore((s) => s.isFetched);
 
   const {
     query,
@@ -47,6 +51,12 @@ export function useSearchController(
     setTags,
     setSort,
   } = useSearchQueryParams()
+
+  useEffect(() => {
+    if (!isFetched && !loading) {
+      fetchData()
+    }
+  }, [fetchData, isFetched, loading])
 
   useEffect(() => {
     if (isSearchPage && !focus.current) setSearch(query)
@@ -80,9 +90,9 @@ export function useSearchController(
   const currTags = useMemo(() => {
     if (!tags || tags.length === 0) return []
     return tags
-      .map((tag) => allTags.find((t) => t.name === tag))
+      .map((tag) => tagRef.find((t) => t.name === tag))
       .filter(Boolean) as Tag[]
-  }, [tags, allTags])
+  }, [tags, tagRef])
 
   const currSort = useMemo<SearchSort>(() => {
     const defaultVal = sortOptions?.[0]?.value || ("" as SearchSortValue)
@@ -154,6 +164,7 @@ export function useSearchController(
     currTags,
     currSort,
     isFocus,
+    tagRef,
     handleEnterKey,
     onResourceChange,
     onSortChange,

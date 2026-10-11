@@ -24,7 +24,7 @@ interface CustomSearchBarProps {
 }
 
 //TODO remove this hardcoded tags and fetch them from the backend
-const ALL_TAGS: Tag[] = [
+const MOCK_TAGS: Tag[] = [
   { id: 1, name: "React" },
   { id: 2, name: "JavaScript" },
   { id: 3, name: "TypeScript" },
@@ -47,10 +47,6 @@ const ALL_TAGS: Tag[] = [
   { id: 521, name: "HTML" },
 ]
 
-const getAllTags = () => {
-  return ALL_TAGS
-}
-
 export default function CustomSearchBar({
   resources,
   sortOptions,
@@ -61,6 +57,7 @@ export default function CustomSearchBar({
     searchInputRef,
     search,
     debouncedSearch,
+    tagRef,
     currResource,
     currTags,
     currSort,
@@ -72,7 +69,7 @@ export default function CustomSearchBar({
     onQueryChange,
     onFocus,
     onBlur,
-  } = useSearchController(resources, sortOptions, getAllTags())
+  } = useSearchController(resources, sortOptions)
 
   return (
     <SearchPreview isFocus={isFocus} query={debouncedSearch} className={className}>
@@ -103,7 +100,7 @@ export default function CustomSearchBar({
       {currResource?.value === "lesson" && (
         <SearchBarAddons align="inline-end" className="p-0">
           <TagsSelector
-            tags={getAllTags()}
+            tags={tagRef || MOCK_TAGS}
             selected={currTags}
             setSelection={onTagsChange}
           />

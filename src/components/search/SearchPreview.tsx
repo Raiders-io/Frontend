@@ -1,6 +1,7 @@
 import { useSearchLesson } from "@/utils/hooks/useSearch"
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
 import { LoaderCircle } from "lucide-react"
+import { useLocation } from "react-router-dom"
 import SkeletonCard from "../ui/skeletonCard"
 import LessonCard from "../lesson/LessonCard"
 
@@ -15,6 +16,11 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
   const enabled = isFocus && query.trim().length >= 2
   const { items, total, loading } = useSearchLesson({ query, limit: 5, enabled })
   const isOpen = enabled && (loading || items.length > 0)
+  const location = useLocation()
+
+  if (location.pathname.startsWith("/search")) {
+    return <div className={`${className} relative w-full`}>{children}</div>
+  }
 
   return (
     <div className={`${className} relative w-full`}>
