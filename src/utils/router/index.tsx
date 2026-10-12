@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom"
 import { lazy } from "react"
 import ProtectedRoute from "@/utils/router/protected_route"
 import TopNavBar from "@/components/TopNavBar"
+import ProfilePage from "@/pages/user/ProfilePage"
 
 const LoginPage = lazy(() => import("@/pages/auth/login"))
 const SignupPage = lazy(() => import("@/pages/auth/signup"))
@@ -73,6 +74,12 @@ export const router = createBrowserRouter([
           <ProtectedRoute>
             <ChatPage />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProfilePage />
         ),
       },
       {
