@@ -24,11 +24,13 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   const [choices, setChoices] = useState<QuestionChoice[]>([])
   const [currentChoice, setCurrentChoice] = useState("")
   const [currentPoints, setCurrentPoints] = useState(1)
+  const [fileError, setFileError] = useState("")
+  const [codeEditorKey, setCodeEditorKey] = useState(0)
 
-  function resetForm() {
+  function resetForm(resetType = true) {
     setText("")
     setPos((prevPos) => prevPos + 1)
-    setType("multiple_choice")
+    if (resetType) setType("multiple_choice")
     setAnswer("")
     setAnswers([])
     setCurrentAnswer("")
@@ -37,6 +39,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     setCurrentPoints(1)
     setFile(null)
     setReferenceFile(null)
+    setFileError("")
+    setCodeEditorKey((previousKey) => previousKey + 1)
   }
 
   function handleTypeChange(nextType: Question["type"]) {
@@ -73,12 +77,43 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       choices:
         type === "multiple_choice" && choices.length > 0 ? choices : undefined,
     })
-    resetForm()
+    resetForm(type !== "c_function")
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    submitQuestion()
+    if (type !== "c_function") {
+      submitQuestion()
+      return
+    }
+
+    if (!file || !referenceFile) return
+
+    setFileError("")
+    try {
+      const [mainCode, referenceCode] = await Promise.all(
+        [file, referenceFile].map(
+          (selectedFile) =>
+            new Promise<string>((resolve, reject) => {
+              const reader = new FileReader()
+              reader.onload = () => {
+                if (typeof reader.result !== "string") {
+                  reject(new Error("Unable to read the selected C file"))
+                  return
+                }
+                resolve(reader.result)
+              }
+              reader.onerror = () => reject(reader.error)
+              reader.readAsText(selectedFile)
+            }),
+        ),
+      )
+      submitQuestion(mainCode, referenceCode)
+    } catch (error) {
+      setFileError(
+        error instanceof Error ? error.message : "Unable to read the selected C files",
+      )
+    }
   }
 
   function addChoice() {
@@ -168,28 +203,20 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
           case "c_function":
             return (
               <CodeQuestionEditor
+                key={codeEditorKey}
+                mainFile={file}
+                referenceFile={referenceFile}
                 onMainFileChange={setFile}
                 onReferenceFileChange={setReferenceFile}
-                onSubmit={() => {
-                  if (!file || !referenceFile) return
-                  Promise.all(
-                    [file, referenceFile].map(
-                      (selectedFile) =>
-                        new Promise<string>((resolve, reject) => {
-                          const reader = new FileReader()
-                          reader.onload = () => resolve(reader.result as string)
-                          reader.onerror = () => reject(reader.error)
-                          reader.readAsText(selectedFile)
-                        }),
-                    ),
-                  ).then(([mainCode, referenceCode]) => {
-                    submitQuestion(mainCode, referenceCode)
-                  })
-                }}
               />
             )
         }
       })()}
+      {fileError && (
+        <p role="alert" className="text-sm text-destructive">
+          {fileError}
+        </p>
+      )}
     </form>
   )
 }
