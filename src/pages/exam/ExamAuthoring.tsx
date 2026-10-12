@@ -10,6 +10,7 @@ import { InitExam } from "@/components/exam/InitExam"
 export default function ExamAuthoring() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
   const [message, setMessage] = useState("")
   const [draggedQuestionIndex, setDraggedQuestionIndex] = useState<
     number | null
@@ -93,6 +94,7 @@ export default function ExamAuthoring() {
     try {
       await examApi.createExam({
         title: title.trim(),
+        description: description.trim(),
         questions: questions.map((question, index) => ({
           id: question.id,
           position: index + 1,
@@ -101,6 +103,7 @@ export default function ExamAuthoring() {
       })
       setMessage("Exam created.")
       setTitle("")
+      setDescription("")
     } catch {
       setMessage("Failed to create exam.")
     }
@@ -112,6 +115,8 @@ export default function ExamAuthoring() {
       <InitExam
         title={title}
         setTitle={setTitle}
+        description={description}
+        setDescription={setDescription}
         handleCreateExam={handleCreateExam}
       />
       <section>
