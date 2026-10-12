@@ -76,12 +76,17 @@ export default function ExamPaper({
                 }
               />
             )}
-            {question.type === "c_code" && (
-              <CodeEditor
-                language="c"
-                value={currentAnswer}
-                onChange={(value) => onAnswerChange(answer.id, value)}
-              />
+            {question.type === "c_function" && (
+              <>
+                <pre className="max-h-64 overflow-auto rounded-md bg-muted p-3 text-sm">
+                  {question.starterCode}
+                </pre>
+                <CodeEditor
+                  language="c"
+                  value={currentAnswer}
+                  onChange={(value) => onAnswerChange(answer.id, value)}
+                />
+              </>
             )}
           </fieldset>
         )

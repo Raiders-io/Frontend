@@ -3,8 +3,9 @@ export type Question = {
   pos: number
   points: number
   text: string
-  type: "multiple_choice" | "exact_answer" | "c_code"
-  answer?: string
+  type: "multiple_choice" | "exact_answer" | "c_function"
+  starterCode?: string
+  referenceCode?: string
   answers?: string[]
   choices?: QuestionChoice[]
 }
