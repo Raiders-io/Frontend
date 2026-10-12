@@ -31,6 +31,9 @@ export default function ExamPaper({
   return (
     <form className="flex flex-col gap-6" onSubmit={onSubmit}>
       <h2 className="text-2xl font-semibold">{paper.exam?.title}</h2>
+      <p className="text-lg text-muted-foreground">
+        {paper.exam?.description?.trim() || "No description provided."}
+      </p>
       {paper.answers.map((answer, index) => {
         const backendQuestion = answer.examsQuestion?.question
         if (!backendQuestion) return null

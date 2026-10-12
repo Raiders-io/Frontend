@@ -5,10 +5,14 @@ import { Button } from "@/components/ui/button"
 export function InitExam({
   title,
   setTitle,
+  description,
+  setDescription,
   handleCreateExam,
 }: {
   title: string
   setTitle: (title: string) => void
+  description: string
+  setDescription: (description: string) => void
   handleCreateExam: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
   return (
@@ -21,7 +25,12 @@ export function InitExam({
         required
       />
 
-      <Textarea className="w-full min-h-24" placeholder="Exam Description" />
+      <Textarea
+        className="w-full min-h-24"
+        placeholder="Exam Description"
+        value={description}
+        onChange={(event) => setDescription(event.target.value)}
+      />
 
       <Button variant="default" type="submit" disabled={!title.trim()}>
         Create exam
