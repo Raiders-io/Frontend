@@ -15,6 +15,7 @@ export default function Question({ onAdd }: CreateQuestionProps) {
 export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   const [text, setText] = useState("")
   const [file, setFile] = useState<File | null>(null)
+  const [referenceFile, setReferenceFile] = useState<File | null>(null)
   const [type, setType] = useState<Question["type"]>("multiple_choice")
   const [pos, setPos] = useState(1)
   const [answer, setAnswer] = useState("")
@@ -35,6 +36,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     setCurrentChoice("")
     setCurrentPoints(1)
     setFile(null)
+    setReferenceFile(null)
   }
 
   function handleTypeChange(nextType: Question["type"]) {
@@ -49,7 +51,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     }
   }
 
-  function submitQuestion(codeAnswer = answer) {
+  function submitQuestion(codeAnswer = answer, referenceCode = "") {
     if (!text.trim()) return
     if (type === "multiple_choice") {
       if (choices.length < 2 || !choices.some((choice) => choice.isCorrect))
@@ -64,6 +66,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       type,
       points: currentPoints,
       starterCode: type === "c_function" ? codeAnswer.trim() || undefined : undefined,
+      referenceCode:
+        type === "c_function" ? referenceCode.trim() || undefined : undefined,
       answers:
         type === "exact_answer" && answers.length > 0 ? answers : undefined,
       choices:
@@ -164,16 +168,23 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
           case "c_function":
             return (
               <CodeQuestionEditor
-                onFileChange={setFile}
+                onMainFileChange={setFile}
+                onReferenceFileChange={setReferenceFile}
                 onSubmit={() => {
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onload = () => {
-                      const fileContent = reader.result as string
-                      submitQuestion(fileContent)
-                    }
-                    reader.readAsText(file)
-                  }
+                  if (!file || !referenceFile) return
+                  Promise.all(
+                    [file, referenceFile].map(
+                      (selectedFile) =>
+                        new Promise<string>((resolve, reject) => {
+                          const reader = new FileReader()
+                          reader.onload = () => resolve(reader.result as string)
+                          reader.onerror = () => reject(reader.error)
+                          reader.readAsText(selectedFile)
+                        }),
+                    ),
+                  ).then(([mainCode, referenceCode]) => {
+                    submitQuestion(mainCode, referenceCode)
+                  })
                 }}
               />
             )
