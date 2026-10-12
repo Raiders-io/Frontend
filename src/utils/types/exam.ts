@@ -19,4 +19,5 @@ export type ExamType = {
   name: string
   description?: string
   questions: Question[]
+  createdAt?: string
 }
