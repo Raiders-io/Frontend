@@ -1,24 +1,21 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 type CodeQuestionEditorProps = {
+  mainFile: File | null
+  referenceFile: File | null
   onMainFileChange: (file: File | null) => void
   onReferenceFileChange: (file: File | null) => void
-  onSubmit: () => void
 }
 
 export function CodeQuestionEditor({
+  mainFile,
+  referenceFile,
   onMainFileChange,
   onReferenceFileChange,
-  onSubmit,
 }: CodeQuestionEditorProps) {
-  const [mainFile, setMainFile] = useState<File | null>(null)
-  const [referenceFile, setReferenceFile] = useState<File | null>(null)
-
   const handleMainFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] ?? null
-    setMainFile(selectedFile)
     onMainFileChange(selectedFile)
   }
 
@@ -26,7 +23,6 @@ export function CodeQuestionEditor({
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const selectedFile = event.target.files?.[0] ?? null
-    setReferenceFile(selectedFile)
     onReferenceFileChange(selectedFile)
   }
 
@@ -49,11 +45,10 @@ export function CodeQuestionEditor({
         aria-label="Upload C reference function"
       />
       <Button
-        type="button"
+        type="submit"
         disabled={!mainFile || !referenceFile}
-        onClick={onSubmit}
       >
-        Add question
+        Submit
       </Button>
     </div>
   )
