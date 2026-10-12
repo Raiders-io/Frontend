@@ -50,7 +50,7 @@ export default function ExamAuthoring() {
 
   async function handleRemoveQuestion(question: Question) {
     try {
-      await examApi.deleteQuestion(Number(question.id))
+      await examApi.deleteQuestion(question.id)
       setQuestions((previousQuestions) =>
         previousQuestions
           .filter((currentQuestion) => currentQuestion.id !== question.id)
@@ -88,7 +88,7 @@ export default function ExamAuthoring() {
       await examApi.createExam({
         title: title.trim(),
         questions: questions.map((question, index) => ({
-          id: Number(question.id),
+          id: question.id,
           position: index + 1,
           points: question.points,
         })),
