@@ -40,6 +40,7 @@ export default function ExamAuthoring() {
                 .map((choice) => choice.text) ?? [])
             : [],
         starterCode: question.starterCode ?? "",
+        referenceCode: question.referenceCode ?? "",
         points: question.points,
       })
       const createdQuestion = toQuestion(data, questions.length + 1)

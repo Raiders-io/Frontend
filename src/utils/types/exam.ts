@@ -5,6 +5,7 @@ export type Question = {
   text: string
   type: "multiple_choice" | "exact_answer" | "c_function"
   starterCode?: string
+  referenceCode?: string
   answers?: string[]
   choices?: QuestionChoice[]
 }

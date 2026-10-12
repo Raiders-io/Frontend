@@ -8,6 +8,7 @@ type BackendQuestion = {
   goodAnswers: string[] | string | null
   badAnswers: string[] | string | null
   starterCode: string | null
+  referenceCode: string | null
   points: number
 }
 
@@ -73,6 +74,8 @@ export function toQuestion(
     type,
     points: question.points,
     starterCode: type === "c_function" ? question.starterCode ?? undefined : undefined,
+    referenceCode:
+      type === "c_function" ? question.referenceCode ?? undefined : undefined,
     answers: type === "exact_answer" ? goodAnswers : undefined,
     choices:
       type === "multiple_choice"
@@ -106,6 +109,7 @@ export const examApi = {
     goodAnswers: string[]
     badAnswers: string[]
     starterCode: string
+    referenceCode: string
     points: number
   }) =>
     api
