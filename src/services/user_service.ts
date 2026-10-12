@@ -1,9 +1,117 @@
 import api from "@/utils/lib/axios"
-import type { User } from "@/utils/types/auth"
+import type { PaginationParams, Paginated } from "@/utils/types/common"
+import type {
+  Friendship,
+  LessonCompleted,
+  LessonOngoing,
+  LessonStatus,
+  Me,
+  PublicUser,
+  ReceivedFriendRequest,
+  SentFriendRequest,
+  UpdateMePayload,
+  UserModel,
+  UserSearchResult } from "@/utils/types/user"
+
+const PROFILE = "/api/v1/profile"
+const FRIENDS = "/api/v1/friends/me"
+const LESSONS = `${PROFILE}/me/lessons`
 
 export const userService = {
-  fetchUsers: async (): Promise<User[]> => {
-    const { data } = await api.get<{ data: User[] }>("/api/v1/auth/users")
-    return data.data
+  fetchMe: async (): Promise<Me> => {
+    const { data } = await api.get<Me>(`${PROFILE}/me`)
+    return data
+  },
+
+  updateMe: async (payload: UpdateMePayload): Promise<Me> => {
+    const form = new FormData()
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== undefined) form.append(key, value as string | Blob)
+    })
+    const { data } = await api.patch<Me>(`${PROFILE}/me`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    return data
+  },
+  fetchUser: async (id: string): Promise<PublicUser> => {
+    const { data } = await api.get<PublicUser>(`${PROFILE}/${id}`)
+    return data
+  },
+
+  getAvatarUrl: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
+
+  searchUsers: async (
+    q: string,
+    { page, limit }: PaginationParams = {}
+  ): Promise<Paginated<UserSearchResult>> => {
+    const { data } = await api.get<Paginated<UserSearchResult>>(`${PROFILE}/search`, {
+      params: { q, page, limit },
+    })
+    return data
+  },
+
+  fetchFriends: async (): Promise<UserModel[]> => {
+    const { data } = await api.get<UserModel[]>(FRIENDS)
+    return data
+  },
+
+  fetchReceivedRequests: async (): Promise<ReceivedFriendRequest[]> => {
+    const { data } = await api.get<ReceivedFriendRequest[]>(`${FRIENDS}/requests`)
+    return data
+  },
+
+  fetchSentRequests: async (): Promise<SentFriendRequest[]> => {
+    const { data } = await api.get<SentFriendRequest[]>(`${FRIENDS}/requests/sent`)
+    return data
+  },
+
+  sendFriendRequest: async (friendId: string): Promise<Friendship> => {
+    const { data } = await api.post<Friendship>(`${FRIENDS}/requests/${friendId}`)
+    return data
+  },
+
+  cancelFriendRequest: async (friendId: string): Promise<void> => {
+    await api.delete(`${FRIENDS}/requests/${friendId}`)
+  },
+
+  acceptFriendRequest: async (askingId: string): Promise<Friendship> => {
+    const { data } = await api.patch<Friendship>(`${FRIENDS}/requests/${askingId}/accept`)
+    return data
+  },
+
+  declineFriendRequest: async (askingId: string): Promise<void> => {
+    await api.patch(`${FRIENDS}/requests/${askingId}/decline`)
+  },
+
+  unfriend: async (friendId: string): Promise<void> => {
+    await api.delete(`${FRIENDS}/${friendId}`)
+  },
+
+  fetchCompletedLessons: async (
+    params: PaginationParams = {}
+  ): Promise<Paginated<LessonCompleted>> => {
+    const { data } = await api.get<Paginated<LessonCompleted>>(`${LESSONS}/completed`, { params })
+    return data
+  },
+
+  fetchOngoingLessons: async (
+    params: PaginationParams = {}
+  ): Promise<Paginated<LessonOngoing>> => {
+    const { data } = await api.get<Paginated<LessonOngoing>>(`${LESSONS}/ongoing`, { params })
+    return data
+  },
+
+  fetchLessonStatus: async (lessonId: string): Promise<LessonStatus> => {
+    const { data } = await api.get<LessonStatus>(`${LESSONS}/${lessonId}`)
+    return data
+  },
+
+  subscribeLesson: async (lessonId: string): Promise<LessonOngoing> => {
+    const { data } = await api.post<LessonOngoing>(`${LESSONS}/${lessonId}/subscribe`)
+    return data
+  },
+
+  unsubscribeLesson: async (lessonId: string): Promise<void> => {
+    await api.delete(`${LESSONS}/${lessonId}/unsubscribe`)
   },
 }

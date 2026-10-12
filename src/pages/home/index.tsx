@@ -8,15 +8,15 @@ import { changePageChat } from '@/utils/router/changePage'
 
 export default function UsersList() {
 	const { createConversation } = useChat()
-	const [members, setMembers] = useState<User[]>([])
-	const [isLoading, setIsLoading] = useState(true)
+	//const [members, setMembers] = useState<User[]>([])
+	//const [isLoading, setIsLoading] = useState(true)
 
-	useEffect(() => {
-		userService.fetchUsers()
-			.then(setMembers)
-			.catch(console.error)
-			.finally(() => setIsLoading(false))
-	}, [])
+	// useEffect(() => {
+	// 	userService.fetchUsers()
+	// 		.then(setMembers)
+	// 		.catch(console.error)
+	// 		.finally(() => setIsLoading(false))
+	// }, [])
 
 	const startConversation = (userId: string) => {
 		createConversation([userId])
