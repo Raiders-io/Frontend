@@ -15,6 +15,7 @@ type BackendQuestion = {
 type BackendExam = {
   id: string
   title: string | null
+  description: string | null
   questions?: BackendQuestion[]
 }
 
@@ -122,6 +123,7 @@ export const examApi = {
     api.delete(`/questions/${questionId}`),
   createExam: (exam: {
     title: string
+    description: string
     questions: { id: string; position: number; points: number }[]
   }) =>
     api
