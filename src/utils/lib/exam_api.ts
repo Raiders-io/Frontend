@@ -2,7 +2,7 @@ import api from "@/utils/lib/axios"
 import type { Question } from "@/utils/types/exam"
 
 type BackendQuestion = {
-  id: number
+  id: string
   title: string
   questionType: string
   goodAnswers: string[] | string | null
@@ -11,13 +11,13 @@ type BackendQuestion = {
 }
 
 type BackendExam = {
-  id: number
+  id: string
   title: string | null
   questions?: BackendQuestion[]
 }
 
 type BackendPaperAnswer = {
-  id: number
+  id: string
   answer: string | null
   examsQuestion?: { question?: BackendQuestion }
 }
@@ -25,8 +25,8 @@ type BackendPaperAnswer = {
 type BackendError = { error: string }
 
 export type ExamPaper = {
-  id: number
-  examId: number
+  id: string
+  examId: string
   status: string
   exam?: BackendExam
   answers: BackendPaperAnswer[]
@@ -111,11 +111,11 @@ export const examApi = {
         ...response,
         data: rejectBackendError(response.data),
       })),
-  deleteQuestion: (questionId: number) =>
+  deleteQuestion: (questionId: string) =>
     api.delete(`/questions/${questionId}`),
   createExam: (exam: {
     title: string
-    questions: { id: number; position: number; points: number }[]
+    questions: { id: string; position: number; points: number }[]
   }) =>
     api
       .post<BackendExam>("/exam-authorings", exam)
@@ -130,20 +130,20 @@ export const examApi = {
         ...response,
         data: rejectBackendError(response.data),
       })),
-  startPaper: (examId: number) =>
+  startPaper: (examId: string) =>
     api
-      .post<{ id: number }>("/exam-papers", { examId })
+      .post<{ id: string }>("/exam-papers", { examId })
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
-  getPaper: (paperId: number) =>
+  getPaper: (paperId: string) =>
     api
       .get<ExamPaper>(`/exam-papers/${paperId}`)
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
-  updatePaper: (paperId: number, answers: { id: number; answer: string }[]) =>
+  updatePaper: (paperId: string, answers: { id: string; answer: string }[]) =>
     api.patch(`/exam-papers/${paperId}`, { answers, submit: true }),
 }

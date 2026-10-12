@@ -4,13 +4,13 @@ import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
 import { DisplayResult } from "@/components/exam/DisplayResult"
 
-type ExamOption = { id: number; title: string | null }
+type ExamOption = { id: string; title: string | null }
 
 export default function ExamPaper() {
   const [exams, setExams] = useState<ExamOption[]>([])
   const [selectedExam, setSelectedExam] = useState("")
   const [paper, setPaper] = useState<ExamPaperData | null>(null)
-  const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [answers, setAnswers] = useState<Record<string, string>>({})
   const [message, setMessage] = useState("")
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function ExamPaper() {
   async function startExam() {
     if (!selectedExam) return
     try {
-      const { data } = await examApi.startPaper(Number(selectedExam))
+      const { data } = await examApi.startPaper(selectedExam)
       const paperResponse = await examApi.getPaper(data.id)
       setPaper(paperResponse.data)
       setMessage("")

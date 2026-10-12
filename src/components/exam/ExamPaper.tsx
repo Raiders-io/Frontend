@@ -7,8 +7,8 @@ import {
 
 type ExamPaperProps = {
   paper: ExamPaperData
-  answers: Record<number, string>
-  onAnswerChange: (answerId: number, value: string) => void
+  answers: Record<string, string>
+  onAnswerChange: (answerId: string, value: string) => void
   onSubmit: React.FormEventHandler<HTMLFormElement>
 }
 
