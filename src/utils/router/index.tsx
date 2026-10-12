@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { lazy } from 'react'
 import ProtectedRoute from '@/utils/router/protected_route'
+import ExamCard from '@/components/exam/ExamCard'
 
 const LoginPage = lazy(() => import('@/pages/auth/login'))
 const SignupPage = lazy(() => import('@/pages/auth/signup'))
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
 	{
 		path: '/exam/paper',
 		element: <ExamPaper />,
+	},
+	{
+		path: '/test',
+		element: <ExamCard exam={{ name: "Test Exam", description: "This is a test exam", questions: [], createdAt: new Date().toISOString() }} />,
 	},
 	{
 		path: '*',
