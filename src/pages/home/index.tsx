@@ -25,7 +25,7 @@ export default function UsersList() {
 
 	return (
 		<div className="flex h-full flex-col">
-			<main className="flex-1 overflow-y-auto">
+			/*<main className="flex-1 overflow-y-auto">
 				<div className="mx-auto max-w-2xl px-6 py-14">
 					<h1 className="text-[26px] font-semibold tracking-tight text-foreground">
 						Membres
@@ -92,7 +92,7 @@ export default function UsersList() {
 						)}
 					</div>
 				</div>
-			</main>
+			</main>*/
 		</div>
 	)
 }
