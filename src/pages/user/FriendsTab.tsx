@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getDisplayName, getErrorMessage, getInitials } from "./utils"
 import type { ReceivedFriendRequest, SentFriendRequest, UserModel } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
+import { changePageChat } from '@/utils/router/changePage'
+import { useChat } from '@/utils/hooks/use_chat'
 
 interface Data {
   friends: UserModel[]
@@ -43,6 +45,12 @@ export function FriendsTab() {
   const [data, setData] = useState<Data | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const { createConversation } = useChat()
+
+	const startConversation = (userId: string) => {
+		createConversation([userId])
+		changePageChat()
+	}
 
   const load = useCallback(async () => {
     try {
@@ -109,6 +117,13 @@ export function FriendsTab() {
           <List empty="Vous n'avez pas encore d'amis.">
             {data.friends.map((friend) => (
               <UserRow key={friend.id} user={friend}>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => startConversation(friend.id)}
+				>
+         			Écrire
+        		</Button>
                 <Button
                   variant="ghost"
                   size="icon"
