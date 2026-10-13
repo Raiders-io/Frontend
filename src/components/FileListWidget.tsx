@@ -173,21 +173,22 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
+    const label =
+      `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ??
+      ""
 
-    if (label.includes("image")) 
-      return <FileImageIcon className="h-4 w-4" />
-    if (label.includes("video")) 
-      return <MonitorPlay className="h-4 w-4" />
-    if (label.includes("audio")) 
-      return <AudioLines className="h-4 w-4" />
-    if (label.includes("pdf")) 
-      return <ScrollText className="h-4 w-4" />
+    if (label.includes("image")) return <FileImageIcon className="h-4 w-4" />
+    if (label.includes("video")) return <MonitorPlay className="h-4 w-4" />
+    if (label.includes("audio")) return <AudioLines className="h-4 w-4" />
+    if (label.includes("pdf")) return <ScrollText className="h-4 w-4" />
     if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
       return <FileArchiveIcon className="h-4 w-4" />
-    if (label.includes("json")) 
-      return <FileJsonIcon className="h-4 w-4" />
-    if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
+    if (label.includes("json")) return <FileJsonIcon className="h-4 w-4" />
+    if (
+      label.includes("text") ||
+      label.includes("plain") ||
+      label.includes("markdown")
+    )
       return <FileText className="h-4 w-4" />
     return <Type className="h-4 w-4" />
   }
@@ -370,7 +371,7 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Delete error:', error)
+      console.error("Delete error:", error)
     }
   }
 
@@ -384,7 +385,7 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Bulk delete error:', error)
+      console.error("Bulk delete error:", error)
     }
   }
 
