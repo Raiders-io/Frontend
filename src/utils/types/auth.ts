@@ -9,15 +9,14 @@ export interface SignupPayload {
   password: string
 }
 
-export interface User {
+export interface Credentials {
   id: string
-  fullName: string
   email: string
 }
 
 export interface AuthResponse {
   data: {
-    user: User
+    user: Credentials
     token: string
   }
 }

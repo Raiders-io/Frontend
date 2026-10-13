@@ -8,12 +8,12 @@ export const UserAvatar = () => {
     <Avatar>
       <AvatarImage
         src="https://github.com/iDarkAxe.png"
-        alt={`Avatar Image of ${user?.fullName}`}
+        alt={`Avatar Image of ${user?.id}`}
       />
       <AvatarFallback
-        className={`text-white items-center ${avatarColor(user?.fullName ?? "")}`}
+        className={`text-white items-center ${avatarColor(user?.id ?? "")}`}
       >
-        {initials(user?.fullName ?? "?")}
+        {initials(user?.id ?? "?")}
       </AvatarFallback>
     </Avatar>
   )

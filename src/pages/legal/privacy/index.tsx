@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <p>
-              <strong>User</strong> means any individual who accesses or uses
+              <strong>Credentials</strong> means any individual who accesses or uses
               the Service.
             </p>
           </li>
@@ -438,7 +438,7 @@ export default function PrivacyPolicy() {
             <p>Account Information</p>
             <ul>
               <li>
-                User Accounts: retained for the duration of Your Account
+                Credentials Accounts: retained for the duration of Your Account
                 relationship plus up to 24 months after account closure to
                 handle any post-termination issues or resolve disputes.
               </li>
@@ -624,8 +624,8 @@ export default function PrivacyPolicy() {
         <p>
           Some countries and states set a higher age at which an individual can
           consent to the processing of their own Personal Information. Where We
-          rely on consent as a legal basis and the law applicable to a User sets
-          an age higher than 16, We may require the consent of that User's
+          rely on consent as a legal basis and the law applicable to a Credentials sets
+          an age higher than 16, We may require the consent of that Credentials's
           parent or guardian before We collect and use their Personal
           Information.
         </p>
