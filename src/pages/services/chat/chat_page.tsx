@@ -12,8 +12,10 @@ import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
 import type { User } from '@/utils/types/auth'
 import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export default function ChatPage() {
+	const { t } = useTranslation()
 	const { t } = useTranslation()
 	const { sendMessage } = useChat()
 	const currentUserId = useAuthStore((s) => s.user?.id ?? '')
@@ -56,8 +58,8 @@ export default function ChatPage() {
 	const conversationLabel = (participantIds: string[] = []): string => {
 		const names = participantIds
 			.filter((id) => id !== currentUserId)
-			.map((id) => userMap[id] ?? 'Utilisateur inconnu')
-		return names.length > 0 ? names.join(', ') : 'Conversation vide'
+			.map((id) => userMap[id] ?? t('unknown-user', 'Utilisateur inconnu'))
+		return names.length > 0 ? names.join(', ') : t('empty-conversation', 'Conversation vide')
 	}
 
 	const loadOlder = async () => {
@@ -100,7 +102,8 @@ export default function ChatPage() {
 									<p className="truncate text-sm font-medium text-foreground">
 										{activeLabel}
 									</p>
-									<p className="font-mono text-[11px] text-muted-foreground">{t('lengthMessage', '{{length}} message', { length: activeMessages.length })}{activeMessages.length > 1 ? 's' : ''}
+									<p className="font-mono text-[11px] text-muted-foreground">
+										{t('lengthMessage', '{{length}} message', { length: activeMessages.length })}
 									</p>
 								</div>
 							</header>
@@ -112,7 +115,7 @@ export default function ChatPage() {
 								onLoadOlder={loadOlder}
 							/>
 							<MessageInput
-								placeholder={t('writeActivelabel')}
+								placeholder={t('writeActivelabel', 'Write to {{activeLabel}}…', { activeLabel })}
 								onSend={(content) => sendMessage(activeConversationId, content)}
 							/>
 						</>
@@ -123,10 +126,10 @@ export default function ChatPage() {
 								strokeWidth={1.25}
 							/>
 							<p className="text-sm font-medium text-foreground">
-								{t('no-conversation-opened', 'Aucune conversation ouverte')}
+								{t('no-conversation-opened', 'No conversation opened')}
 							</p>
 							<p className="max-w-xs text-center text-sm text-muted-foreground">
-								{t('select-conversation-or-start-one', 'Sélectionne une conversation à gauche, ou démarres-en une depuis\n\t\t\t\t\t\t\t\tla liste des membres.')}
+								{t('select-conversation-or-start-one', 'Select a conversation to the left, or start one from your friends list.')}
 							</p>
 						</div>
 					)}

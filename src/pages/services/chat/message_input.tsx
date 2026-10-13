@@ -20,6 +20,7 @@ interface MessageInputProps {
 
 export function MessageInput({ onSend, placeholder = i18next.t('write-Message', 'Écrire un message…') }: MessageInputProps) {
 	const { t } = useTranslation()
+
 	const { register, handleSubmit, reset, watch } = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: { content: '' },

@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useLayoutEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { Bubble, BubbleContent } from '@/components/ui/bubble'
 import { Message, MessageContent, MessageFooter } from '@/components/ui/message'
 import type { Message as ChatMessage } from '@/utils/types/chat'
@@ -17,20 +19,21 @@ function formatTime(iso: string): string {
 	return new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 }
 
-function formatDay(iso: string): string {
+function formatDay(iso: string, t: TFunction): string {
 	const date = new Date(iso)
 	const today = new Date()
 	const yesterday = new Date()
 	yesterday.setDate(today.getDate() - 1)
 
 	if (date.toDateString() === today.toDateString())
-		return "Aujourd'hui"
+		return t('today', "Aujourd'hui")
 	if (date.toDateString() === yesterday.toDateString())
-		return 'Hier'
+		return t('yesterday', 'Hier')
 	return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
 }
 
 export function MessageThread({ messages, currentUserId, hasMore, onLoadOlder }: MessageThreadProps) {
+	const { t } = useTranslation()
 	const containerRef = useRef<HTMLDivElement>(null)
 	const { t } = useTranslation()
 	const shouldRestoreRef = useRef(false)
@@ -92,7 +95,7 @@ export function MessageThread({ messages, currentUserId, hasMore, onLoadOlder }:
 							<div className="my-6 flex items-center gap-3 first:mt-0">
 								<span className="h-px flex-1 bg-border" />
 								<span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-									{formatDay(message.createdAt)}
+									{formatDay(message.createdAt, t)}
 								</span>
 								<span className="h-px flex-1 bg-border" />
 							</div>
