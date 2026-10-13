@@ -1,8 +1,8 @@
 import { BookCheck, Flame, Trophy } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { EditProfileDialog } from "./EditProfileDialog"
-import { getDisplayName, getInitials } from "./utils"
 import type { Me } from "@/utils/types/user"
+import { getDisplayName} from "@/utils/lib/user"
+import { UserAvatar } from "@/components/user/UserAvatar"
 
 interface Props {
   me: Me
@@ -19,10 +19,7 @@ export function ProfileHeader({ me, onUpdated }: Props) {
   return (
     <header className="space-y-8">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
-        <Avatar className="size-24">
-          <AvatarImage src={me.avatarUrl ?? undefined} alt={me.username} />
-          <AvatarFallback className="text-2xl font-medium">{getInitials(me)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar user={me}/>
 
         <div className="min-w-0 flex-1 space-y-3">
           <div className="flex items-start justify-between gap-4">
