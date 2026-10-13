@@ -1,10 +1,10 @@
 export interface Message {
-  id: number
-  conversationId: number
-  senderId: string
-  content: string
-  createdAt: string
-  updatedAt: string
+	id: number
+	conversationId: number
+	senderId: string
+	content: string
+	createdAt: string
+	readAt: string
 }
 
 export interface Conversation {
