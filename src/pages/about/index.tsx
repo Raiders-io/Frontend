@@ -33,16 +33,16 @@ export default function AboutPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="p-4 text-center">Chargement...</div>
+  if (loading) return <div className="p-4 text-center">Loading...</div>
   if (error)
-    return <div className="p-4 text-red-500 text-center">Erreur : {error}</div>
+    return <div className="p-4 text-red-500 text-center">Error: {error}</div>
 
   return (
     <>
       <div className="prose dark:prose-invert max-w-none">
         <Card>
           <CardHeader>
-            <h1 className="text-3xl font-bold">À propos</h1>
+            <h1 className="text-3xl font-bold">About</h1>
           </CardHeader>
           <CardContent>
             <ReactMarkdown

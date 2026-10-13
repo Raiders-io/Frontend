@@ -13,8 +13,8 @@ import { AuthLayout } from '@/pages/auth/auth_layout'
 import { changePageHome } from '@/utils/router/changePage'
 
 const loginSchema = z.object({
-	email: z.string().email('Email invalide'),
-	password: z.string().min(8, 'Mot de passe trop court'),
+	email: z.string().email('Invalid email'),
+	password: z.string().min(8, 'Password is too short'),
 })
 
 type LoginForm = z.infer<typeof loginSchema>
@@ -38,24 +38,24 @@ export default function LoginPage() {
 			console.error('Login error:', error)
 			setFormError(
 				isAxiosError(error) && error.response
-					? 'Email ou mot de passe incorrect.'
-					: 'Le serveur est injoignable. Réessaie dans un instant.',
+					? 'Incorrect email or password.'
+					: 'The server is unreachable. Please try again shortly.',
 			)
 		}
 	}
 
 	return (
 		<AuthLayout
-			title="Connexion"
-			subtitle="Entre tes identifiants pour accéder à ton compte."
+			title="Log in"
+			subtitle="Enter your credentials to access your account."
 			footer={
 				<>
-					Pas encore de compte ?{' '}
+					No account yet?{' '}
 					<Link
 						to="/signup"
 						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
 					>
-						Créer un compte
+						Create an account
 					</Link>
 				</>
 			}
@@ -80,7 +80,7 @@ export default function LoginPage() {
 
 				<div className="space-y-1.5">
 					<Label htmlFor="password" className="text-xs font-medium text-foreground">
-						Mot de passe
+						Password
 					</Label>
 					<Input
 						id="password"
@@ -100,8 +100,8 @@ export default function LoginPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Se connecter">
-					{isSubmitting ? 'Connexion…' : 'Se connecter'}
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Log in">
+					{isSubmitting ? 'Logging in…' : 'Log in'}
 				</Button>
 			</form>
 		</AuthLayout>

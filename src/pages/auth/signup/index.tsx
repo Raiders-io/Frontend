@@ -15,7 +15,7 @@ import { changePageHome } from '@/utils/router/changePage'
 const signupSchema = z.object({
 	fullName: z.string().min(2, 'Nom trop court'),
 	email: z.string().email('Email invalide'),
-	password: z.string().min(8, 'Mot de passe trop court'),
+	password: z.string().min(8, 'Password is too short'),
 	passwordConfirmation: z.string(),
 }).refine((data) => data.password === data.passwordConfirmation, {
 	message: 'Les mots de passe ne correspondent pas',
@@ -43,24 +43,24 @@ export default function SignupPage() {
 			console.error('Signup error:', error)
 			setFormError(
 				isAxiosError(error) && error.response?.status === 422
-					? 'Cet email est déjà utilisé.'
-					: 'La création du compte a échoué. Réessaie dans un instant.',
+					? 'This email is already in use.'
+					: 'Account creation failed. Please try again shortly.',
 			)
 		}
 	}
 
 	return (
 		<AuthLayout
-			title="Créer un compte"
-			subtitle="Quelques informations et tu peux commencer."
+			title="Create an account"
+			subtitle="Enter a few details and get started."
 			footer={
 				<>
-					Déjà un compte ?{' '}
+					Already have an account?{' '}
 					<Link
 						to="/login"
 						className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
 					>
-						Se connecter
+						Log in
 					</Link>
 				</>
 			}
@@ -68,7 +68,7 @@ export default function SignupPage() {
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
 				<div className="space-y-1.5">
 					<Label htmlFor="fullName" className="text-xs font-medium text-foreground">
-						Nom
+						Name
 					</Label>
 					<Input
 						id="fullName"
@@ -101,7 +101,7 @@ export default function SignupPage() {
 
 				<div className="space-y-1.5">
 					<Label htmlFor="password" className="text-xs font-medium text-foreground">
-						Mot de passe
+						Password
 					</Label>
 					<Input
 						id="password"
@@ -115,13 +115,13 @@ export default function SignupPage() {
 							errors.password ? 'text-destructive' : 'text-muted-foreground'
 						}`}
 					>
-						{errors.password?.message ?? '8 caractères minimum.'}
+						{errors.password?.message ?? 'At least 8 characters.'}
 					</p>
 				</div>
 
 				<div className="space-y-1.5">
 					<Label htmlFor="passwordConfirmation" className="text-xs font-medium text-foreground">
-						Confirmer le mot de passe
+						Confirm password
 					</Label>
 					<Input
 						id="passwordConfirmation"
@@ -141,8 +141,8 @@ export default function SignupPage() {
 					</div>
 				)}
 
-				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Créer un compte">
-					{isSubmitting ? 'Création…' : 'Créer un compte'}
+				<Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full" aria-label="Create an account">
+					{isSubmitting ? 'Creating…' : 'Create an account'}
 				</Button>
 			</form>
 		</AuthLayout>

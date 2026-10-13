@@ -2,7 +2,9 @@ type FileListDropOverlayProps = {
   visible: boolean
 }
 
-export default function FileListDropOverlay({ visible }: FileListDropOverlayProps) {
+export default function FileListDropOverlay({
+  visible,
+}: FileListDropOverlayProps) {
   if (!visible) {
     return null
   }

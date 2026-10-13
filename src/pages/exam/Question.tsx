@@ -155,8 +155,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
           handleTypeChange(event.target.value as Question["type"])
         }
       >
-        <option value="multiple_choice">Choix</option>
-        <option value="exact_answer">Réponses possibles</option>
+        <option value="multiple_choice">Multiple choice question</option>
+        <option value="exact_answer">Written answer</option>
         <option value="c_function">C function</option>
       </select>
       {(() => {

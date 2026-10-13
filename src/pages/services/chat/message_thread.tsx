@@ -34,7 +34,7 @@ export function MessageThread({ messages, currentUserId }: MessageThreadProps) {
 		return (
 			<div className="flex flex-1 items-center justify-center px-6">
 				<p className="text-sm text-muted-foreground">
-					Aucun message. Écris le premier.
+					No messages. Write the first one.
 				</p>
 			</div>
 		)

@@ -118,21 +118,22 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
+    const label =
+      `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ??
+      ""
 
-    if (label.includes("image")) 
-      return <FileImageIcon className="h-4 w-4" />
-    if (label.includes("video")) 
-      return <MonitorPlay className="h-4 w-4" />
-    if (label.includes("audio")) 
-      return <AudioLines className="h-4 w-4" />
-    if (label.includes("pdf")) 
-      return <ScrollText className="h-4 w-4" />
+    if (label.includes("image")) return <FileImageIcon className="h-4 w-4" />
+    if (label.includes("video")) return <MonitorPlay className="h-4 w-4" />
+    if (label.includes("audio")) return <AudioLines className="h-4 w-4" />
+    if (label.includes("pdf")) return <ScrollText className="h-4 w-4" />
     if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
       return <FileArchiveIcon className="h-4 w-4" />
-    if (label.includes("json")) 
-      return <FileJsonIcon className="h-4 w-4" />
-    if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
+    if (label.includes("json")) return <FileJsonIcon className="h-4 w-4" />
+    if (
+      label.includes("text") ||
+      label.includes("plain") ||
+      label.includes("markdown")
+    )
       return <FileText className="h-4 w-4" />
     return <Type className="h-4 w-4" />
   }
@@ -147,7 +148,9 @@ export default function FileListWidget({
       setMeta(response.objects.meta)
       setSelectedFiles((prev) => {
         const newSet = new Set(prev)
-        const currentFileNames = new Set(response.objects.data.map((f) => f.name))
+        const currentFileNames = new Set(
+          response.objects.data.map((f) => f.name),
+        )
         for (const fileName of prev) {
           if (!currentFileNames.has(fileName)) {
             newSet.delete(fileName)
@@ -243,7 +246,16 @@ export default function FileListWidget({
   const visibleColumns: FileListTableColumn[] =
     mode === "compact"
       ? ["Select", "Icon", "Name", "Size", "Actions"]
-      : ["Select", "Icon", "Name", "Size", "Type", "Visibility", "Created at", "Actions"]
+      : [
+          "Select",
+          "Icon",
+          "Name",
+          "Size",
+          "Type",
+          "Visibility",
+          "Created at",
+          "Actions",
+        ]
 
   const toggleFileSelection = (fileName: string) => {
     setSelectedFiles((prev) => {
@@ -286,7 +298,7 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Delete error:', error)
+      console.error("Delete error:", error)
     }
   }
 
@@ -300,7 +312,7 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Bulk delete error:', error)
+      console.error("Bulk delete error:", error)
     }
   }
 
@@ -434,8 +446,20 @@ export default function FileListWidget({
                       <TableCell colSpan={3}>
                         <div className="flex items-center gap-2">
                           {selectedFiles.size > 0 && (
-                            <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
-                              <Button variant="destructive" size="sm" aria-label="Delete Selected Files">
+                            <DeleteButton
+                              action={handleBulkDelete}
+                              title="Delete Selected Files"
+                              description={`The following files will be deleted:\n\n${Array.from(
+                                selectedFiles,
+                              )
+                                .map((element) => `- ${element}`)
+                                .join("\n")}.\n\nThis action cannot be undone.`}
+                            >
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                aria-label="Delete Selected Files"
+                              >
                                 <TrashIcon />
                                 Delete Selected
                               </Button>
