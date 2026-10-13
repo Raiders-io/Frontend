@@ -17,9 +17,9 @@ const ExamAuthoring = lazy(() => import("@/pages/exam/ExamAuthoring"))
 const ExamPaper = lazy(() => import("@/pages/exam/ExamPaper"))
 const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
 const TermsOfService = lazy(() => import("@/pages/legal/terms"))
+const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
-
 const SearchPage = lazy(() => import("@/pages/search"))
 
 export function RootLayout() {
@@ -96,6 +96,10 @@ export const router = createBrowserRouter([
       {
         path: "/terms",
         element: <TermsOfService />,
+      },
+      {
+        path: "/gdpr",
+        element: <GDPRPage />,
       },
       {
         path: "/cookies",
