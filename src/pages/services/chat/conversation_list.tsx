@@ -13,6 +13,7 @@ interface ConversationListProps {
 
 export function ConversationList({ conversations, activeId, onSelect, getLabel, hasError }: ConversationListProps) {
 	const { t } = useTranslation()
+
 	return (
 		<aside className="flex w-72 shrink-0 flex-col border-r">
 			<div className="flex h-14 shrink-0 items-center justify-between border-b px-5">

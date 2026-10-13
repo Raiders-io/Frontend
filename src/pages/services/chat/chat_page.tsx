@@ -12,8 +12,10 @@ import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
 import type { User } from '@/utils/types/auth'
 import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export default function ChatPage() {
+	const { t } = useTranslation()
 	const { t } = useTranslation()
 	const { sendMessage } = useChat()
 	const currentUserId = useAuthStore((s) => s.user?.id ?? '')
