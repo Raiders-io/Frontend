@@ -3,11 +3,10 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "@/utils/types/chat"
-
-const URL: string = "https://localhost:4443"
+import { baseURL } from "@/utils/lib/axios"
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  URL,
+  baseURL,
   {
     path: "/api/socket.io",
     autoConnect: false,
