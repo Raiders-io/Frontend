@@ -91,8 +91,8 @@ export function AvatarDropdown() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem disabled aria-label="User Name">
-            {user?.fullName}
+          <DropdownMenuItem disabled aria-label="Credentials Name">
+            {user?.id}
           </DropdownMenuItem>
           <LogOutButton />
         </DropdownMenuGroup>

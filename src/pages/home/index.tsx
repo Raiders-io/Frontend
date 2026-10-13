@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useChat } from '@/utils/hooks/use_chat'
-import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
 import { Button } from '@/components/ui/button'
-import type { User } from '@/utils/types/auth'
+import type { Credentials } from '@/utils/types/auth'
 import { changePageChat } from '@/utils/router/changePage'
+import { authService } from '@/services/auth_service'
 
-export default function UsersList() {
+export default function UsersList() 
+{
 	const { createConversation } = useChat()
-	//const [members, setMembers] = useState<User[]>([])
-	//const [isLoading, setIsLoading] = useState(true)
+	const [members, setMembers] = useState<Credentials[]>([])
+	const [isLoading, setIsLoading] = useState(true)
 
-	// useEffect(() => {
-	// 	userService.fetchUsers()
-	// 		.then(setMembers)
-	// 		.catch(console.error)
-	// 		.finally(() => setIsLoading(false))
-	// }, [])
+	useEffect(() => {
+		authService.fetchUsers()
+			.then(setMembers)
+			.catch(console.error)
+			.finally(() => setIsLoading(false))
+	}, [])
 
 	const startConversation = (userId: string) => {
 		createConversation([userId])
@@ -25,7 +26,7 @@ export default function UsersList() {
 
 	return (
 		<div className="flex h-full flex-col">
-			/*<main className="flex-1 overflow-y-auto">
+			<main className="flex-1 overflow-y-auto">
 				<div className="mx-auto max-w-2xl px-6 py-14">
 					<h1 className="text-[26px] font-semibold tracking-tight text-foreground">
 						Membres
@@ -64,14 +65,14 @@ export default function UsersList() {
 										className="group flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-muted/40"
 									>
 										<span
-											className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[11px] font-medium text-white ${avatarColor(member.fullName)}`}
+											className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[11px] font-medium text-white ${avatarColor(member.id)}`}
 										>
-											{initials(member.fullName)}
+											{initials(member.email)}
 										</span>
 
 										<div className="min-w-0 flex-1">
 											<p className="truncate text-sm font-medium text-foreground">
-												{member.fullName}
+												{member.email}
 											</p>
 											<p className="truncate font-mono text-xs text-muted-foreground">
 												{member.email}
@@ -92,7 +93,7 @@ export default function UsersList() {
 						)}
 					</div>
 				</div>
-			</main>*/
+			</main>
 		</div>
 	)
 }

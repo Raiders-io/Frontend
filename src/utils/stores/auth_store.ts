@@ -1,11 +1,11 @@
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import type { User } from "@/utils/types/auth"
+import type { Credentials } from "@/utils/types/auth"
 
 interface AuthState {
-  user: User | null
+  user: Credentials | null
   token: string | null
-  setAuth: (user: User | null, token: string | null) => void
+  setAuth: (user: Credentials | null, token: string | null) => void
   logout: () => void
 }
 

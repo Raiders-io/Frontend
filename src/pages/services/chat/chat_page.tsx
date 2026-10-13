@@ -4,12 +4,12 @@ import { useChat } from '@/utils/hooks/use_chat'
 import { useChatStore } from '@/utils/stores/chat_store'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { chatService } from '@/services/chat_service'
-import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
 import { ConversationList } from './conversation_list'
 import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
-import type { User } from '@/utils/types/auth'
+import type { Credentials } from '@/utils/types/auth'
+import { authService } from '@/services/auth_service'
 
 export default function ChatPage() {
 	const { sendMessage } = useChat()
@@ -25,11 +25,11 @@ export default function ChatPage() {
 	const [messagesError, setMessagesError] = useState(false)
 
 	useEffect(() => {
-		userService.fetchUsers()
-			.then((users: User[]) => {
+		authService.fetchUsers()
+			.then((users: Credentials[]) => {
 				const map: Record<string, string> = {}
 				for (const u of users)
-					map[u.id] = u.fullName
+					map[u.id] = u.email
 				setUserMap(map)
 			})
 			.catch(console.error)
