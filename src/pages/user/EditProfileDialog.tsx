@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Camera, Pencil } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -17,9 +16,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { getErrorMessage, getInitials } from "./utils"
 import type { Me, UpdateMePayload } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
+import { UserAvatar } from "@/components/user/UserAvatar"
+import { getErrorMessage } from "./utils"
 
 // Règles alignées sur le backend (USER_CONSTRAINTS / AVATAR_CONSTRAINTS)
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
@@ -146,10 +146,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex items-center gap-4">
-            <Avatar className="size-16">
-              <AvatarImage src={preview ?? me.avatarUrl ?? undefined} alt="" />
-              <AvatarFallback>{getInitials(me)}</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={me}/>
             <div className="space-y-1">
               <Button type="button" variant="outline" size="sm" asChild>
                 <label className="cursor-pointer">

@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getDisplayName, getErrorMessage, getInitials } from "./utils"
 import type { ReceivedFriendRequest, SentFriendRequest, UserModel } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
+import { getInitials, getDisplayName } from "@/utils/lib/user"
+import { getErrorMessage } from "./utils"
 
 interface Data {
   friends: UserModel[]
