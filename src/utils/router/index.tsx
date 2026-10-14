@@ -2,7 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom"
 import { lazy } from "react"
 import ProtectedRoute from "@/utils/router/protected_route"
 import TopNavBar from "@/components/TopNavBar"
-import ProfilePage from "@/pages/user/ProfilePage"
+import ProfilePage, { PublicProfilePage } from "@/pages/user/ProfilePage"
 
 const LoginPage = lazy(() => import("@/pages/auth/login"))
 const SignupPage = lazy(() => import("@/pages/auth/signup"))
@@ -10,7 +10,7 @@ const HomePage = lazy(() => import("@/pages/home"))
 const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
-const EditProfile = lazy(() => import("@/pages/user/Settings"))
+const Settings = lazy(() => import("@/pages/user/Settings"))
 const AboutPage = lazy(() => import("@/pages/about"))
 const ContactPage = lazy(() => import("@/pages/contact"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
@@ -79,14 +79,20 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: (
-          <ProfilePage />
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
         ),
       },
       {
-        path: "/edit-profile",
+        path: "/users/:id",
+        element: <PublicProfilePage />,
+      },
+      {
+        path: "/settings",
         element: (
           <ProtectedRoute>
-            <EditProfile />
+            <Settings />
           </ProtectedRoute>
         ),
       },

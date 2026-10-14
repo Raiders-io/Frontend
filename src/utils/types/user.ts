@@ -1,5 +1,5 @@
 
-export interface PublicUser {
+export interface PublicProfile {
   id: string
   username: string
   firstname: string | null
@@ -7,13 +7,15 @@ export interface PublicUser {
   bio: string | null
   avatarUrl: string | null
   currentStreak: number
+  lessonsCompletedCount: number
+  longestStreak: number
 }
 
-export interface Me extends PublicUser {
-  longestStreak: number
+export interface PrivateProfile extends PublicProfile {
   lastActivityDate: string | null
-  lessonsCompletedCount: number
 }
+
+export type Profile = PrivateProfile | PublicProfile
 
 export interface UpdateMePayload {
   username?: string

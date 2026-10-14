@@ -29,7 +29,7 @@ export const changePageFriends = () => {
 }
 
 export const changePageEditProfile = () => {
-  router.navigate("/edit-profile")
+  router.navigate("/settings")
 }
 
 export const changePageChat = () => {

@@ -5,8 +5,8 @@ import type {
   LessonCompleted,
   LessonOngoing,
   LessonStatus,
-  Me,
-  PublicUser,
+  PrivateProfile,
+  PublicProfile,
   ReceivedFriendRequest,
   SentFriendRequest,
   UpdateMePayload,
@@ -18,23 +18,23 @@ const FRIENDS = "/api/v1/friends/me"
 const LESSONS = `${PROFILE}/me/lessons`
 
 export const userService = {
-  fetchMe: async (): Promise<Me> => {
-    const { data } = await api.get<Me>(`${PROFILE}/me`)
+  fetchMe: async (): Promise<PrivateProfile> => {
+    const { data } = await api.get<PrivateProfile>(`${PROFILE}/me`)
     return data
   },
 
-  updateMe: async (payload: UpdateMePayload): Promise<Me> => {
+  updateMe: async (payload: UpdateMePayload): Promise<PrivateProfile> => {
     const form = new FormData()
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== undefined) form.append(key, value as string | Blob)
     })
-    const { data } = await api.patch<Me>(`${PROFILE}/me`, form, {
+    const { data } = await api.patch<PrivateProfile>(`${PROFILE}/me`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     return data
   },
-  fetchUser: async (id: string): Promise<PublicUser> => {
-    const { data } = await api.get<PublicUser>(`${PROFILE}/${id}`)
+  fetchUser: async (id: string): Promise<PublicProfile> => {
+    const { data } = await api.get<PublicProfile>(`${PROFILE}/${id}`)
     return data
   },
 

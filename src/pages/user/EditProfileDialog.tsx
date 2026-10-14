@@ -16,10 +16,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import type { Me, UpdateMePayload } from "@/utils/types/user"
+import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
 import { UserAvatar } from "@/components/user/UserAvatar"
 import { getErrorMessage } from "./utils"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 
 // Règles alignées sur le backend (USER_CONSTRAINTS / AVATAR_CONSTRAINTS)
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
@@ -34,14 +35,14 @@ const schema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, "Lettres, chiffres et _ uniquement"),
   firstname: z.string().trim().max(30, "30 caractères maximum"),
   lastname: z.string().trim().max(30, "30 caractères maximum"),
-  bio: z.string().trim().max(500, "500 caractères maximum"),
+  bio: z.string().trim().max(255, "255 caractères maximum"),
 })
 
 type FormValues = z.infer<typeof schema>
 
 interface Props {
-  me: Me
-  onSaved: (me: Me) => void
+  me: PrivateProfile
+  onSaved: (me: PrivateProfile) => void
 }
 
 function FieldError({ message }: { message?: string }) {
@@ -68,7 +69,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
 
   const bioLength = watch("bio")?.length ?? 0
 
-  function toDefaults(user: Me): FormValues {
+  function toDefaults(user: PrivateProfile): FormValues {
     return {
       username: user.username,
       firstname: user.firstname ?? "",
@@ -146,7 +147,13 @@ export function EditProfileDialog({ me, onSaved }: Props) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex items-center gap-4">
-            <UserAvatar user={me}/>
+            {preview ? (
+              <Avatar className="size-18 shrink-0">
+                <AvatarImage src={preview} alt="Aperçu de la photo de profil" className="object-cover" />
+              </Avatar>
+            ) : (
+              <UserAvatar user={me} className="size-18 shrink-0" />
+            )}
             <div className="space-y-1">
               <Button type="button" variant="outline" size="sm" asChild>
                 <label className="cursor-pointer">
@@ -156,7 +163,10 @@ export function EditProfileDialog({ me, onSaved }: Props) {
                     type="file"
                     accept={AVATAR_TYPES.join(",")}
                     className="sr-only"
-                    onChange={(e) => handleFile(e.target.files?.[0])}
+                    onChange={(e) => {
+                      handleFile(e.target.files?.[0])
+                      e.target.value = ""
+                    }}
                   />
                 </label>
               </Button>
@@ -187,9 +197,14 @@ export function EditProfileDialog({ me, onSaved }: Props) {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <Label htmlFor="bio">Bio</Label>
-              <span className="text-muted-foreground text-xs tabular-nums">{bioLength}/500</span>
+              <span className="text-muted-foreground text-xs tabular-nums">{bioLength}/255</span>
             </div>
-            <Textarea id="bio" rows={4} className="resize-none" {...register("bio")} />
+            <Textarea
+              id="bio"
+              rows={4}
+              className="max-h-32 resize-none overflow-y-auto"
+              {...register("bio")}
+            />
             <FieldError message={errors.bio?.message} />
           </div>
 
