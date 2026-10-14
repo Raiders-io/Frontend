@@ -15,6 +15,7 @@ import { useState } from "react"
 import CheckBoxTab from "../homemade/checkbox_tab"
 import { cn } from "@/utils/lib/shadcn"
 import { mockTag } from "@/utils/mock"
+import { useTranslation } from 'react-i18next'
 
 
 interface TagsTableProps {
@@ -29,6 +30,7 @@ export default function TagsSelector({
   selected,
   setSelection,
 }: TagsTableProps) {
+  const { t } = useTranslation()
   const [draft, setDraft] = useState("")
 
     return (
@@ -36,7 +38,7 @@ export default function TagsSelector({
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className={className}>
-              <h1 className="font-bold">Select tag</h1>
+              <h1 className="font-bold">{t('selectTag', 'Select tag')}</h1>
             </Button>
           </PopoverTrigger>
           <PopoverContent>

@@ -15,6 +15,7 @@ import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { useSearchController } from "@/utils/hooks/useSearchController"
 import { SearchPreview } from "./SearchPreview"
 import { mockTag } from "@/utils/mock"
+import { useTranslation } from 'react-i18next'
 
 interface CustomSearchBarProps {
   className?: string
@@ -29,6 +30,7 @@ export default function CustomSearchBar({
   className,
   children,
 }: CustomSearchBarProps) {
+  const { t } = useTranslation()
   const {
     searchInputRef,
     search,
@@ -64,7 +66,7 @@ export default function CustomSearchBar({
         />
       <SearchBarAddons align="inline-end">
         <KbdGroup>
-          <Kbd>Ctrl</Kbd>
+          <Kbd>{t('ctrl', 'Ctrl')}</Kbd>
           <Kbd>K</Kbd>
         </KbdGroup>
       </SearchBarAddons>
@@ -88,7 +90,7 @@ export default function CustomSearchBar({
           <SearchBarResource
             options={resources}
             className=""
-            placeholder="All resources"
+            placeholder={t('allResources', 'All resources')}
           />
         </SearchBarAddons>
       )}
