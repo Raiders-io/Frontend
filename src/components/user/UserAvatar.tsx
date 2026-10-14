@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { userService } from "@/services/user_service";
 import { cn } from "@/utils/lib/shadcn";
 import { avatarColor, getInitials } from "@/utils/lib/user"
 import type { PublicProfile } from "@/utils/types/user"
@@ -12,7 +13,7 @@ interface UserAvatarProps {
 export const UserAvatar = ({ user, className, fallbackClassName }: UserAvatarProps) => (
   <Avatar className={cn("relative flex shrink-0 overflow-hidden rounded-full", className)}>
     <AvatarImage
-      src={user.avatarUrl ?? undefined}
+      src={user?.id ? userService.getAvatar(user.id) : undefined}
       alt={user.username}
       className="aspect-square h-full w-full object-cover"
     />

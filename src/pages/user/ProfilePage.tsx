@@ -8,7 +8,7 @@ import { LessonsTab } from "./LessonsTab"
 import { FriendsTab } from "./FriendsTab"
 import { EditProfileDialog } from "./EditProfileDialog"
 import { getErrorMessage } from "./utils"
-import type { PrivateProfile, Profile } from "@/utils/types/user"
+import type { PrivateProfile, Profile, PublicProfile } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
 import { useParams } from "react-router-dom"
 
@@ -43,9 +43,18 @@ const PROFILE_TABS: ProfileTabDef[] = [
 const visibleTabs = (isOwner: boolean) =>
   PROFILE_TABS.filter((t) => isOwner || !t.ownerOnly)
 
-function useProfile(userId?: string) {
-  const isOwner = !userId
-  const [user, setUser] = useState<Profile | null>(null)
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function fetchProfile(identifier?: string) {
+  if (!identifier) return userService.fetchMe()
+  return UUID_RE.test(identifier)
+    ? userService.fetchUser(identifier)
+    : userService.fetchByUsername(identifier)
+}
+
+function useProfile(identifier?: string) {
+  const isOwner = !identifier
+  const [user, setUser] = useState<PublicProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
 
@@ -54,11 +63,7 @@ function useProfile(userId?: string) {
     setUser(null)
     setError(null)
 
-    const request = isOwner
-      ? userService.fetchMe()
-      : userService.fetchUser(userId)
-
-    request
+    fetchProfile(identifier)
       .then((data) => !cancelled && setUser(data))
       .catch((e) => {
         if (cancelled) return
@@ -72,7 +77,7 @@ function useProfile(userId?: string) {
     return () => {
       cancelled = true
     }
-  }, [userId, isOwner, attempt])
+  }, [identifier, attempt])
 
   const retry = useCallback(() => setAttempt((n) => n + 1), [])
 
