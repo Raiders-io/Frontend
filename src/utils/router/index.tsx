@@ -85,7 +85,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/users/:id",
+        path: "/users/:identifier",
         element: <PublicProfilePage />,
       },
       {

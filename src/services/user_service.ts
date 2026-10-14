@@ -33,12 +33,18 @@ export const userService = {
     })
     return data
   },
+
   fetchUser: async (id: string): Promise<PublicProfile> => {
     const { data } = await api.get<PublicProfile>(`${PROFILE}/${id}`)
     return data
   },
 
-  getAvatarUrl: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
+  fetchByUsername: async (username: string) => {
+    const { data } = await api.get<PublicProfile>(`/profile/u/${encodeURIComponent(username)}`)
+    return data
+  },
+
+  getAvatar: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
 
   searchUsers: async (
     q: string,

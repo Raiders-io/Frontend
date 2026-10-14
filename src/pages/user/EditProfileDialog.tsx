@@ -25,6 +25,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar"
 // Règles alignées sur le backend (USER_CONSTRAINTS / AVATAR_CONSTRAINTS)
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
 const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"]
+const BIO_MAX_LENGTH = 255
 
 const schema = z.object({
   username: z
@@ -35,7 +36,7 @@ const schema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, "Lettres, chiffres et _ uniquement"),
   firstname: z.string().trim().max(30, "30 caractères maximum"),
   lastname: z.string().trim().max(30, "30 caractères maximum"),
-  bio: z.string().trim().max(255, "255 caractères maximum"),
+  bio: z.string().trim().max(BIO_MAX_LENGTH , `${BIO_MAX_LENGTH} caractères maximum`),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -197,7 +198,13 @@ export function EditProfileDialog({ me, onSaved }: Props) {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <Label htmlFor="bio">Bio</Label>
-              <span className="text-muted-foreground text-xs tabular-nums">{bioLength}/255</span>
+              <span
+                className={`text-xs tabular-nums ${
+                  bioLength > BIO_MAX_LENGTH ? "text-destructive font-medium" : "text-muted-foreground"
+                }`}
+              >
+                {bioLength}/{BIO_MAX_LENGTH}
+              </span>
             </div>
             <Textarea
               id="bio"
