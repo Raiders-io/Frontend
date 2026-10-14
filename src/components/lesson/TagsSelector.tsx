@@ -14,6 +14,7 @@ import {
 import { useState } from "react"
 import CheckBoxTab from "../homemade/checkbox_tab"
 import { cn } from "@/utils/lib/shadcn"
+import { useTranslation } from 'react-i18next'
 
 
 interface TagsTableProps {
@@ -30,6 +31,7 @@ export default function TagsSelector({
   selected,
   setSelection,
 }: TagsTableProps) {
+  const { t } = useTranslation()
   const [draft, setDraft] = useState("")
 
   if (variant == "compact")
@@ -38,7 +40,7 @@ export default function TagsSelector({
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="rounded-l-none">
-              <h1 className="font-bold">Select tag</h1>
+              <h1 className="font-bold">{t('selectTag', 'Select tag')}</h1>
             </Button>
           </PopoverTrigger>
           <PopoverContent>

@@ -3,10 +3,12 @@ import { CreateQuestion } from '@/pages/exam/Question'
 import { DisplayQuestion } from '@/components/exam/DisplayQuestion'
 import type { Question } from '@/utils/types/exam'
 import { useState } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 
 
 export default function ExamAuthoring()
 {
+    const { t } = useTranslation()
     const [questions, setQuestions] = useState<Question[]>([])
 
     function handleAddQuestion(question: Question) 
@@ -16,17 +18,15 @@ export default function ExamAuthoring()
 
     return (
     <>
-    <h1>Exam Authoring</h1>
+    <h1>{t('examAuthoring', 'Exam Authoring')}</h1>
     {initExam()}
-    <p>
-        Questions ajoutées : {questions.length}
-        <br />
-        {questions.map((question) => (
+    <p><Trans i18nKey="questionsAjoutesLengthQuestionslengthBr">Questions ajoutées : {{ length: questions.length }}
+        <br /></Trans>{questions.map((question) => (
             <div key={question.id}>
                 <br />
-                <strong>Question {question.pos}:</strong> {question.text}
+                <strong>{t('questionPos', 'Question {{pos}}:', { pos: question.pos })}</strong> {question.text}
                 <br />
-                <strong>Type:</strong> {question.type}
+                <strong>{t('type', 'Type:')}</strong> {question.type}
                 <br />
                 <DisplayQuestion question={question} />
                 <br />

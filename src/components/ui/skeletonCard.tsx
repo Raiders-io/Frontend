@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useState } from "react"
+import { useTranslation } from 'react-i18next'
 
 function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -11,6 +12,7 @@ interface SkeletonCardProps {
 }
 
 export default function SkeletonCard({className}: SkeletonCardProps) {
+  const { t } = useTranslation()
   const [ randomNum ] = useState(() => getRandomInt(1, 5))
   return (
     <Card className={`flex h-full flex-col overflow-hidden ${className}`}>
@@ -29,7 +31,7 @@ export default function SkeletonCard({className}: SkeletonCardProps) {
       </CardContent>
       <CardFooter className='mt-auto'>
         <div className='flex gap-2'>
-        <h1>Lesson created by:</h1>
+        <h1>{t('lessonCreatedBy', 'Lesson created by:')}</h1>
         <Skeleton className="h-6 w-12" />
         </div>
       </CardFooter>

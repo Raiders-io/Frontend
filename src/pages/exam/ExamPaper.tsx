@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ExamType } from '@/utils/types/exam'
 import { ExamQuestion } from '@/components/exam/ExamQuestion'
+import { useTranslation } from 'react-i18next'
 
 const exam: ExamType = {
     name: 'feur',
@@ -36,6 +37,7 @@ const exam: ExamType = {
 
 export default function ExamPaper()
 {
+    const { t } = useTranslation()
     const [answers, setAnswers] = useState<Record<string, string>>({})
     const [submittedAnswers, setSubmittedAnswers] = useState<Record<string, string> | null>(null)
 
@@ -68,7 +70,7 @@ export default function ExamPaper()
                         />
                     ))}
                 </ol>
-                <button className="rounded-md border px-4 py-2" type="submit">Submit</button>
+                <button className="rounded-md border px-4 py-2" type="submit">{t('submit', 'Submit')}</button>
             </form>
             {submittedAnswers && (
                 <pre className="rounded-md border p-4">{JSON.stringify(submittedAnswers, null, 2)}</pre>

@@ -7,6 +7,7 @@ import {
   PaginationNext,
 } from "../ui/pagination"
 import { Button } from "../ui/button"
+import { useTranslation } from 'react-i18next'
 interface LessonPaginationProps {
   currentPage: number
   totalPages: number
@@ -18,6 +19,7 @@ export default function LessonPagination({
   totalPages,
   onPageChange,
 }: LessonPaginationProps) {
+  const { t } = useTranslation()
   return (
     <Pagination>
       <PaginationContent>

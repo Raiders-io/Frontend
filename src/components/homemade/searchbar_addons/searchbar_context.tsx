@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react"
 import type { SearchResourceOption } from "@/utils/types/component"
+import i18next from 'i18next'
 
 interface SearchBarContextType {
   query: string
@@ -14,7 +15,7 @@ export const useSearchBar = () => {
   const context = useContext(SearchBarContext)
   if (!context)
     throw new Error(
-      "SearchBar sub-components must be rendered within <SearchBar />",
+      i18next.t('searchbarSubcomponentsMustBeRenderedWithinSearchbar', 'SearchBar sub-components must be rendered within <SearchBar />'),
     )
   return context
 }

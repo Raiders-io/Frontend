@@ -120,8 +120,8 @@ export default function FileListTableBodyRow({
                     file.visibility === "public" ? "private" : "public",
                   )
                 }
-                title={`Change visibility of ${file.name}`}
-                aria-label={`Change visibility of ${file.name}`}
+                title={t('changeVisibilityOfName', 'Change visibility of {{name}}', { name: file.name })}
+                aria-label={t('changeVisibilityOfName', 'Change visibility of {{name}}', { name: file.name })}
               >
                 {file.visibility === "public" ? <GlobeOff /> : <Globe />}
               </Button>
@@ -129,14 +129,14 @@ export default function FileListTableBodyRow({
             {showDeleteButton && (
               <DeleteButton
                 action={() => onDelete(file.name)}
-                title={`Delete ${file.name}`}
-                description="This action cannot be undone."
+                title={t('deleteName', 'Delete {{name}}', { name: file.name })}
+                description={t('thisActionCannotBeUndone', 'This action cannot be undone.')}
               >
                 <Button
                   variant="destructive"
                   size="sm"
-                  title={`Delete ${file.name}`}
-                  aria-label={`Delete ${file.name}`}
+                  title={t('deleteName', 'Delete {{name}}', { name: file.name })}
+                  aria-label={t('deleteName', 'Delete {{name}}', { name: file.name })}
                 >
                   <TrashIcon className="h-4 w-4" />
                 </Button>
