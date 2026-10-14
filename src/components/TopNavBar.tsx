@@ -1,38 +1,30 @@
-import { SearchIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { AvatarDropdown } from "./AvatarDropDown"
-import { useEffect, useRef } from "react"
-import { Kbd, KbdGroup } from "@/components/ui/kbd"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
 import { LogOutDropDown } from "./LogOutDropDown"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
+import CustomSearchBar from "./search/CustomSearchBar"
+import type {
+  SearchResourceOption,
+  SearchSortValue,
+} from "@/utils/types/component"
+
+const resources: SearchResourceOption[] = [
+  { label: "All", value: "all" },
+  { label: "Lessons", value: "lesson" },
+  { label: "Users", value: "user" },
+  { label: "Exam", value: "exam" },
+]
+
+const sortOptions: { label: string; value: SearchSortValue }[] = [
+  {label: "Title", value: "title"},
+  {label: "Creation Date", value: "created_at"},
+  {label: "Updated Date", value: "updated_at"},
+  // {label: "Relevance", value: "relevance"},
+]
 
 const TopNavBar = () => {
-  const searchInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "k") {
-        event.preventDefault()
-        searchInputRef.current?.focus()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [])
-
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault()
-  }
 
   return (
     <nav className="flex items-center justify-between p-4 border-b">
@@ -57,30 +49,8 @@ const TopNavBar = () => {
           </Button>
         </ButtonGroup>
       </div>
+      <CustomSearchBar resources={resources} sortOptions={sortOptions} className="max-w-2/3"/>
 
-      <div className="flex-1 mx-8">
-        <form onSubmit={handleSearch}>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <SearchIcon />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                placeholder="Search lesson..."
-                className="w-full pl-10"
-                ref={searchInputRef}
-              />
-              <InputGroupAddon align="inline-end">
-                <KbdGroup>
-                  <Kbd>Ctrl</Kbd>
-                  <Kbd>K</Kbd>
-                </KbdGroup>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </form>
-      </div>
 
       <div className="flex items-center">
         {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}

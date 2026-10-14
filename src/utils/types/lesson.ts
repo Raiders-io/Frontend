@@ -42,6 +42,6 @@ export interface LessonSearchParams {
   tags?: string[]
   page?: number
   limit?: number
-  sortBy?: 'created_at' | 'updated_at' | 'title' | 'name' | 'pertinence'
-  direction?: 'asc' | 'desc'
+  sortBy?: "created_at" | "updated_at" | "title" | "name" | "pertinence"
+  direction?: "asc" | "desc"
 }

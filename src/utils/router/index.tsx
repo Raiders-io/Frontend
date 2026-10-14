@@ -1,96 +1,134 @@
-import { createBrowserRouter } from 'react-router-dom'
-import { lazy } from 'react'
-import ProtectedRoute from '@/utils/router/protected_route'
-import ExamCard from '@/components/exam/ExamCard'
+import { createBrowserRouter, Outlet } from "react-router-dom"
+import { lazy } from "react"
+import ProtectedRoute from "@/utils/router/protected_route"
+import TopNavBar from "@/components/TopNavBar"
 
-const LoginPage = lazy(() => import('@/pages/auth/login'))
-const SignupPage = lazy(() => import('@/pages/auth/signup'))
-const HomePage = lazy(() => import('@/pages/home'))
-const LessonHomePage = lazy(() => import('@/pages/lesson/lesson_home_page'))
-const LessonPage = lazy(() => import('@/pages/lesson/lesson_page'))
-const FileListPage = lazy(() => import('@/pages/file/index'))
-const ChatPage = lazy(() => import('@/pages/services/chat/chat_page'))
-const EditProfile = lazy(() => import('@/pages/user/edit-profile'))
-const AboutPage = lazy(() => import('@/pages/about'))
-const NotFound = lazy(() => import('@/pages/NotFound'))
-const ExamAuthoring = lazy(() => import('@/pages/exam/ExamAuthoring'))
-const ExamPaper = lazy(() => import('@/pages/exam/ExamPaper'))
+const LoginPage = lazy(() => import("@/pages/auth/login"))
+const SignupPage = lazy(() => import("@/pages/auth/signup"))
+const HomePage = lazy(() => import("@/pages/home"))
+const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
+const FileListPage = lazy(() => import("@/pages/file/index"))
+const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
+const EditProfile = lazy(() => import("@/pages/user/edit-profile"))
+const AboutPage = lazy(() => import("@/pages/about"))
+const ContactPage = lazy(() => import("@/pages/contact"))
+const NotFound = lazy(() => import("@/pages/NotFound"))
+const ExamAuthoring = lazy(() => import("@/pages/exam/ExamAuthoring"))
+const ExamPaper = lazy(() => import("@/pages/exam/ExamPaper"))
+const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
+const TermsOfService = lazy(() => import("@/pages/legal/terms"))
+const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
+const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
+const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
+const SearchPage = lazy(() => import("@/pages/search"))
+
+export function RootLayout() {
+  return (
+    <div>
+      <TopNavBar />
+      <main>
+        <Outlet /> {/* Child routes render here */}
+      </main>
+    </div>
+  )
+}
 
 export const router = createBrowserRouter([
-	{
-		path: '/',
-		element: (
-			<ProtectedRoute>
-				<HomePage />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: '/login',
-		element: <LoginPage />,
-	},
-	{
-		path: '/signup',
-		element: <SignupPage />,
-	},
-	{
-		path: '/lessons/:slug',
-		element: <LessonPage />,
-	},
-	{
-		path: '/lessons',
-		element: <LessonHomePage />,
-	},
-	{
-		path: '/file/list',
-		element: (
-			// <ProtectedRoute>
-				<FileListPage />
-			// </ProtectedRoute>
-		),
-	},
-	{
-		path: '/chat',
-		element: (
-			<ProtectedRoute>
-				<ChatPage />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: '/edit-profile',
-		element: (
-			<ProtectedRoute>
-				<EditProfile />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: '/about',
-		element: <AboutPage />,
-	},
-	{
-		path: '/exam/authoring',
-		element: (
-			<ProtectedRoute>
-				<ExamAuthoring />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: '/exam/paper',
-		element: (
-			<ProtectedRoute>
-				<ExamPaper />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: '/test',
-		element: <ExamCard exam={{ name: "Test Exam", description: "This is a test exam", questions: [], createdAt: new Date().toISOString() }} />,
-	},
-	{
-		path: '*',
-		element: <NotFound />,
-	},
+  {
+    element: <RootLayout />,
+    children: [
+      {
+        path: "/",
+        element: (
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
+      },
+      {
+        path: "/lessons/:slug",
+        element: <LessonPage />,
+      },
+      {
+        path: "/file/list",
+        element: (
+          // <ProtectedRoute>
+          <FileListPage />
+          // </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/chat",
+        element: (
+          <ProtectedRoute>
+            <ChatPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/edit-profile",
+        element: (
+          <ProtectedRoute>
+            <EditProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/about",
+        element: <AboutPage />,
+      },
+      {
+        path: "/contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "/gdpr",
+        element: <GDPRPage />,
+      },
+      {
+        path: "/cookies",
+        element: <CookiesPage />,
+      },
+      {
+        path: "/data-request",
+        element: <DataRequestPage />,
+      },
+      {
+        path: "/exam/authoring",
+        element: (<ProtectedRoute>
+          <ExamAuthoring />
+        </ProtectedRoute>),
+      },
+      {
+        path: "/exam/paper",
+        element: (<ProtectedRoute>
+          <ExamPaper />
+        </ProtectedRoute>),
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
+    ],
+  },
 ])

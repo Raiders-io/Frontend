@@ -2,6 +2,8 @@ import api from "@/utils/lib/axios"
 import type {
   ObjectIndexResponse,
   ObjectStoreResponse,
+  ObjectUpdateResponse,
+  ObjectUpdateManyResponse,
   ObjectDestroyResponse,
   ObjectDestroyManyResponse,
   QuotaResponse,
@@ -29,6 +31,25 @@ export const objectService = {
 
   store: async (formData: FormData): Promise<ObjectStoreResponse> => {
     const { data } = await api.post<ObjectStoreResponse>(
+      "/api/v1/storage/objects",
+      formData,
+    )
+    return data
+  },
+
+  update: async (
+    fileName: string,
+    formData: FormData,
+  ): Promise<ObjectUpdateResponse> => {
+    const { data } = await api.put<ObjectUpdateResponse>(
+      `/api/v1/storage/objects/${encodeURIComponent(fileName)}`,
+      formData,
+    )
+    return data
+  },
+
+  updateMany: async (formData: FormData): Promise<ObjectUpdateManyResponse> => {
+    const { data } = await api.put<ObjectUpdateManyResponse>(
       "/api/v1/storage/objects",
       formData,
     )
@@ -74,12 +95,20 @@ export const objectService = {
     )
     return data
   },
-  
-  quotaRetrieve: async (): Promise<QuotaResponse> => {
-		const { data } = await api.get<QuotaResponse>('/api/v1/storage/quota')
-		return data
-	}
 
+  quotaRetrieve: async (): Promise<QuotaResponse> => {
+    const { data } = await api.get<QuotaResponse>('/api/v1/storage/quota')
+    return data
+  },
+
+  updatePartially: async (fileName: string, formData: FormData): Promise<any> => {
+    let url = `/api/v1/storage/objects/${encodeURIComponent(fileName)}`
+    if (formData.get("visibility") !== undefined) {
+      url += `?visibility=${formData.get("visibility")}`
+    }
+    const { data } = await api.patch<any>(url, formData)
+    return data
+  }
 }
 
 function getMimeTypeFromFilename(filename: string): string {

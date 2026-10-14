@@ -1,23 +1,23 @@
 export interface LoginPayload {
-	email: string
-	password: string
+  email: string
+  password: string
 }
 
 export interface SignupPayload {
-	fullName: string
-	email: string
-	password: string
+  fullName: string
+  email: string
+  password: string
 }
 
 export interface User {
-	id: string
-	fullName: string
-	email: string
+  id: string
+  fullName: string
+  email: string
 }
 
 export interface AuthResponse {
-	data: {
-		user: User
-		token: string
-	}
+  data: {
+    user: User
+    token: string
+  }
 }

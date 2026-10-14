@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -22,11 +23,22 @@ import FileListTableHeadRow, {
   type FileListTableColumn,
 } from "@/components/file-list/file-list-table-head-row"
 import FileListTableBodyRow from "@/components/file-list/file-list-table-body-row"
+import { useActionSettingsStore } from "@/utils/stores/action_settings_store"
+import { ActionSettings } from "@/components/file-list/file-list-action-checkbox"
 import {
   type FileListWidgetProps,
   type FileObject,
   type MetaPagination,
+  type ObjectError,
 } from "@/utils/types/object"
+import {
+  FileConflictDialog,
+} from "@/components/FileConflictDialog"
+import {
+  getConflictingFiles,
+  hasFileConflicts,
+  isFileConflictError,
+} from "@/utils/helpers/fileConflicts"
 import {
   Table,
   TableBody,
@@ -48,14 +60,16 @@ import {
 import { TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
 import { formatFileSize, formatDate } from "@/utils/utils/object"
+import { type ObjectSuccess } from "@/utils/types/object"
 
 export default function FileListWidget({
   mode = "full",
   showPagination = true,
   showUpload = true,
+  showActionSettings = true,
   initialLimit = 10,
   maxHeight,
-}: FileListWidgetProps) {
+}: FileListWidgetProps & { showActionSettings?: boolean }) {
   const [files, setFiles] = useState<FileObject[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -67,12 +81,47 @@ export default function FileListWidget({
   const [limit, setLimit] = useState(initialLimit)
   const [meta, setMeta] = useState<MetaPagination | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
+  const [conflictDialog, setConflictDialog] = useState<{
+    conflicts: ObjectError[]
+    originalFiles: File[]
+  } | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(false)
+  
+  const actionSettings = useActionSettingsStore()
+
+  const refreshFiles = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await objectService.index(page, limit)
+      setFiles(response.objects.data)
+      setMeta(response.objects.meta)
+      setSelectedFiles((prev) => {
+        const newSet = new Set(prev)
+        const currentFileNames = new Set(response.objects.data.map((f) => f.name))
+        for (const fileName of prev) {
+          if (!currentFileNames.has(fileName)) {
+            newSet.delete(fileName)
+          }
+        }
+        return newSet
+      })
+    } catch (requestError) {
+      console.error("File list error:", requestError)
+      setError("Impossible to load the file list.")
+      setFiles([])
+      setMeta(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [page, limit])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void refreshFiles()
-  }, [page, limit, refreshTrigger])
+  }, [page, limit, refreshTrigger, refreshFiles])
 
   useEffect(() => {
     const resetDragging = () => {
@@ -118,9 +167,7 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label =
-      `${mimeType ?? ""} ${fileName?.match(/\.[^\.]+$/)?.[0] ?? ""}`.toLowerCase() ??
-      ""
+    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
 
     if (label.includes("image")) return <FileImageIcon className="h-4 w-4" />
     if (label.includes("video")) return <MonitorPlay className="h-4 w-4" />
@@ -136,36 +183,6 @@ export default function FileListWidget({
     )
       return <FileText className="h-4 w-4" />
     return <Type className="h-4 w-4" />
-  }
-
-  const refreshFiles = async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const response = await objectService.index(page, limit)
-      setFiles(response.objects.data)
-      setMeta(response.objects.meta)
-      setSelectedFiles((prev) => {
-        const newSet = new Set(prev)
-        const currentFileNames = new Set(
-          response.objects.data.map((f) => f.name),
-        )
-        for (const fileName of prev) {
-          if (!currentFileNames.has(fileName)) {
-            newSet.delete(fileName)
-          }
-        }
-        return newSet
-      })
-    } catch (requestError) {
-      console.error("File list error:", requestError)
-      setError("Impossible to load the file list.")
-      setFiles([])
-      setMeta(null)
-    } finally {
-      setLoading(false)
-    }
   }
 
   const uploadFiles = async (
@@ -188,11 +205,54 @@ export default function FileListWidget({
         formData.append("files[]", file)
       }
 
-      await objectService.store(formData)
-      setUploadSuccess(`${filesToUpload.length} file(s) uploaded successfully.`)
+      const filesStatus = await objectService.store(formData)
+
+      // Check if there are any file conflicts
+      if (hasFileConflicts(filesStatus)) {
+        const conflicts = getConflictingFiles(filesStatus, filesToUpload)
+        if (conflicts.length > 0) {
+          setConflictDialog({
+            conflicts,
+            originalFiles: filesToUpload,
+          })
+          // Don't show success message yet, wait for conflict resolution
+          return
+        }
+      }
+
+      // If no conflicts or user handled them, show success
+      const successfulUploads = filesStatus.objects.filter(
+        (item): item is ObjectSuccess => !("error" in item),
+      ).length
+      if (successfulUploads > 0) {
+        setUploadSuccess(`${successfulUploads} file(s) uploaded successfully.`)
+      }
       await refreshFiles()
     } catch (requestError) {
       console.error("Upload error:", requestError)
+      
+      // Handle HTTP error responses (e.g., 409 Conflict with plain text body)
+      // Check if the error is a file conflict error
+      if (requestError instanceof Error || typeof requestError === "string") {
+        const errorMessage = typeof requestError === "string" 
+          ? requestError 
+          : requestError.message
+        
+        if (isFileConflictError(errorMessage)) {
+          // Create conflict entries for all files
+          const conflicts = filesToUpload.map((f) => ({
+            key: f.name,
+            error: errorMessage,
+          }))
+          
+          setConflictDialog({
+            conflicts,
+            originalFiles: filesToUpload,
+          })
+          return
+        }
+      }
+      
       setUploadError("The upload failed.")
     } finally {
       setUploading(false)
@@ -243,19 +303,24 @@ export default function FileListWidget({
 
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
+  
+  const hasAnyActionButton = 
+    actionSettings.showDownloadButton || 
+    actionSettings.showVisibilityButton || 
+    actionSettings.showDeleteButton
+  
+  const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
+  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", "Created at"]
+  const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
+  
   const visibleColumns: FileListTableColumn[] =
     mode === "compact"
-      ? ["Select", "Icon", "Name", "Size", "Actions"]
-      : [
-          "Select",
-          "Icon",
-          "Name",
-          "Size",
-          "Type",
-          "Visibility",
-          "Created at",
-          "Actions",
-        ]
+      ? hasAnyActionButton 
+        ? [...baseColumns, "Actions"] 
+        : baseColumns
+      : hasAnyActionButton 
+        ? columnsWithActions 
+        : fullColumns
 
   const toggleFileSelection = (fileName: string) => {
     setSelectedFiles((prev) => {
@@ -316,6 +381,23 @@ export default function FileListWidget({
     }
   }
 
+  const changeVisibility = async (fileName: string, visibility?: FileObject["visibility"]) => {
+    if (!visibility)
+      visibility = files.find((file) => file.name === fileName)?.visibility
+    if (!visibility) {
+      console.error('Visibility not found for file:', fileName)
+      return
+    }
+    try {
+      const formData = new FormData()
+      formData.append("visibility", visibility)
+      await objectService.updatePartially(fileName, formData)
+      setRefreshTrigger((prev) => !prev)
+    } catch (error) {
+      console.error('Change visibility error:', error)
+    }
+  }
+
   return (
     <div
       className={containerClassName}
@@ -349,16 +431,19 @@ export default function FileListWidget({
                   the button or dragging and dropping them into this area.
                 </CardDescription>
               </div>
-              {showUpload && (
-                <Button
-                  type="button"
-                  onClick={openFilePicker}
-                  disabled={uploading}
-                  aria-label="Upload Files"
-                >
-                  {uploading ? "Upload in progress..." : "Upload Files"}
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {showUpload && (
+                  <Button
+                    type="button"
+                    onClick={openFilePicker}
+                    disabled={uploading}
+                    aria-label="Upload Files"
+                  >
+                    {uploading ? "Upload in progress..." : "Upload Files"}
+                  </Button>
+                )}
+                {showActionSettings && <ActionSettings />}
+              </div>
             </div>
           </CardHeader>
         )}
@@ -385,6 +470,25 @@ export default function FileListWidget({
             uploadError={uploadError}
             uploadSuccess={uploadSuccess}
           />
+          {conflictDialog && (
+            <FileConflictDialog
+              conflicts={conflictDialog.conflicts}
+              originalFiles={conflictDialog.originalFiles}
+              onComplete={async () => {
+                setConflictDialog(null)
+                setUploadSuccess(
+                  `${conflictDialog.originalFiles.length} file(s) replaced successfully.`,
+                )
+                await refreshFiles()
+              }}
+              onCancel={() => {
+                setConflictDialog(null)
+                setUploadSuccess(
+                  `${conflictDialog.originalFiles.length - conflictDialog.conflicts.length} file(s) uploaded successfully. ${conflictDialog.conflicts.length} file(s) skipped.`,
+                )
+              }}
+            />
+          )}
 
           {showPagination && mode === "full" && (
             <FileListPagination
@@ -436,30 +540,24 @@ export default function FileListWidget({
                       onSelect={toggleFileSelection}
                       onDownload={handleDownload}
                       onDelete={handleDelete}
+                      onChangeVisibility={changeVisibility}
                       isSelected={selectedFiles.has(file.name)}
+                      actionSettings={{
+                        showDownloadButton: actionSettings.showDownloadButton,
+                        showVisibilityButton: actionSettings.showVisibilityButton,
+                        showDeleteButton: actionSettings.showDeleteButton,
+                      }}
                     />
                   ))}
                 </TableBody>
                 {mode === "full" && (
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={3}>
+                      <TableCell colSpan={5} className="text-left">
                         <div className="flex items-center gap-2">
-                          {selectedFiles.size > 0 && (
-                            <DeleteButton
-                              action={handleBulkDelete}
-                              title="Delete Selected Files"
-                              description={`The following files will be deleted:\n\n${Array.from(
-                                selectedFiles,
-                              )
-                                .map((element) => `- ${element}`)
-                                .join("\n")}.\n\nThis action cannot be undone.`}
-                            >
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                aria-label="Delete Selected Files"
-                              >
+                          {selectedFiles.size > 0 && actionSettings.showDeleteButton && (
+                            <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
+                              <Button variant="destructive" size="sm" aria-label="Delete Selected Files">
                                 <TrashIcon />
                                 Delete Selected
                               </Button>
@@ -467,10 +565,10 @@ export default function FileListWidget({
                           )}
                         </div>
                       </TableCell>
-                      <TableCell colSpan={3} className="text-right">
+                      <TableCell colSpan={visibleColumns.includes("Actions") ? 2 : 1} className="text-right">
                         Total: {totalFiles} file(s)
                       </TableCell>
-                      <TableCell colSpan={3} className="text-right">
+                      <TableCell colSpan={1} className="text-right">
                         Total space used: {formatFileSize(totalSize)}
                       </TableCell>
                     </TableRow>

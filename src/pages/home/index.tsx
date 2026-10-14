@@ -3,7 +3,6 @@ import { useChat } from '@/utils/hooks/use_chat'
 import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
 import { Button } from '@/components/ui/button'
-import { AppHeader } from '@/components/app_header'
 import type { User } from '@/utils/types/auth'
 import { changePageChat } from '@/utils/router/changePage'
 
@@ -26,8 +25,6 @@ export default function UsersList() {
 
 	return (
 		<div className="flex h-full flex-col">
-			<AppHeader />
-
 			<main className="flex-1 overflow-y-auto">
 				<div className="mx-auto max-w-2xl px-6 py-14">
 					<h1 className="text-[26px] font-semibold tracking-tight text-foreground">
