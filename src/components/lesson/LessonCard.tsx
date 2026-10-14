@@ -10,7 +10,7 @@ import type { Lesson } from "@/utils/types/lesson"
 import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
 import { Button } from "../ui/button"
-import { router } from "@/utils/router"
+import { useNavigate } from "react-router-dom"
 
 interface LessonCardProps {
   Lesson: Lesson
@@ -23,9 +23,10 @@ export default function LessonCard({
   maxLen = 80,
   className,
 }: LessonCardProps) {
+  const navigate = useNavigate()
   const [showMore, setShowMore] = useState(false)
   const text = Lesson.description
-  const lessonAddr = `/${Lesson.author}/${Lesson.slug}/`
+  const lessonAddr = `/lesson/${Lesson.author}/${Lesson.slug}/`
   return (
     <Card className={`flex h-full flex-col overflow-hidden ${className}`}>
       <CardHeader className="flex-1">
@@ -34,7 +35,7 @@ export default function LessonCard({
             variant="ghost"
             className="text-lg font-semibold w-full max-w-sm"
             onClick={() => {
-              return router.navigate(lessonAddr)
+              return navigate(lessonAddr)
             }}
           >
             {" "}
@@ -82,7 +83,7 @@ export default function LessonCard({
           type="button"
           variant="outline"
           onClick={() => {
-            return router.navigate(`/profile/${Lesson.author}`)
+            return navigate(`/profile/${Lesson.author}`)
           }}
         >
           {Lesson.author}
