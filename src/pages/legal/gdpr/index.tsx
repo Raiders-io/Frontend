@@ -34,51 +34,43 @@ const rights: Right[] = [
 export default function GdprPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12 md:py-16">
-      {" "}
       <header className="mb-12 space-y-4">
-        {" "}
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          {" "}
-          Data Protection & GDPR{" "}
+          Data Protection & GDPR
         </h1>
         <p className="text-muted-foreground leading-7">
-          {" "}
           You have rights regarding your personal data under applicable data
-          protection laws, including the GDPR.{" "}
-        </p>{" "}
+          protection laws, including the GDPR.
+        </p>
       </header>
       <section className="mb-12">
-        {" "}
         <h2 className="mb-6 text-xl font-semibold tracking-tight">
-          {" "}
-          Your Rights{" "}
+          Your Rights
         </h2>
         <ul className="divide-y">
-          {" "}
           {rights.map((right) => (
             <li key={right.title} className="py-5 first:pt-0 last:pb-0">
-              {" "}
+              
               <h3 className="mb-1 font-medium"> {right.title} </h3>
               <p className="text-sm leading-6 text-muted-foreground">
-                {" "}
-                {right.description}{" "}
-              </p>{" "}
+                {right.description}
+              </p>
             </li>
-          ))}{" "}
-        </ul>{" "}
+          ))}
+        </ul>
       </section>
       <section className="space-y-3">
-        {" "}
+        
         <h2 className="text-xl font-semibold tracking-tight">
-          {" "}
-          Exercising Your Rights{" "}
+          
+          Exercising Your Rights
         </h2>
         <p className="text-sm leading-7 text-muted-foreground">
-          {" "}
+          
           You may contact the data controller to exercise your rights under
-          applicable data protection laws.{" "}
-        </p>{" "}
-      </section>{" "}
+          applicable data protection laws.
+        </p>
+      </section>
     </main>
   )
 }
