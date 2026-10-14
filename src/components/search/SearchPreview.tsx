@@ -15,7 +15,7 @@ interface SearchPreviewProps {
 export function SearchPreview({ isFocus, query, children, className }: SearchPreviewProps) {
   const enabled = isFocus && query.trim().length >= 2
   const { items, total, loading } = useSearchLesson({ query, limit: 5, enabled })
-  const isOpen = enabled && (loading || items.length > 0)
+  const isOpen = enabled && (loading || items?.length > 0)
   const location = useLocation()
 
   if (location.pathname.startsWith("/search")) {
@@ -47,7 +47,7 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
             ? Array.from({ length: 5 }).map((_, i) => (
                 <SkeletonCard key={i} className="w-full max-h-20" />
               ))
-            : items.map((item) => (
+            : items?.map((item) => (
                 <LessonCard
                   key={item.UUID}
                   Lesson={item}

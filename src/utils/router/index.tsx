@@ -20,7 +20,8 @@ import {
   DataRequestPage,
   LessonCreatePage,
   RootLayout,
-  SearchPage
+  SearchPage,
+  GDPRPage,
 } from "@/utils/router/lazyRoutes"
 
 export const router = createBrowserRouter([

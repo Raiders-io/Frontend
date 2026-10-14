@@ -47,7 +47,7 @@ export default function UsersList() {
 									</li>
 								))}
 							</ul>
-						) : members.length === 0 ? (
+						) : members?.length === 0 ? (
 							<div className="rounded-lg border border-dashed px-6 py-14 text-center">
 								<p className="text-sm font-medium text-foreground">
 									Personne d'autre pour l'instant
@@ -58,7 +58,7 @@ export default function UsersList() {
 							</div>
 						) : (
 							<ul className="divide-y overflow-hidden rounded-lg border">
-								{members.map((member) => (
+								{members?.map((member) => (
 									<li
 										key={member.id}
 										className="group flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-muted/40"

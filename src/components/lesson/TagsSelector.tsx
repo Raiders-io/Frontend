@@ -18,21 +18,18 @@ import { cn } from "@/utils/lib/shadcn"
 
 interface TagsTableProps {
   tags: Tag[]
-  variant?: "compact" | "extended"
   className?: string
   selected: Tag[]
   setSelection: (items: Tag[]) => void
 }
 export default function TagsSelector({
   tags,
-  variant = "compact",
   className,
   selected,
   setSelection,
 }: TagsTableProps) {
   const [draft, setDraft] = useState("")
 
-  if (variant == "compact")
     return (
       <div className={cn("rounded-none")}>
         <Popover>
@@ -81,6 +78,4 @@ export default function TagsSelector({
         </Popover>
       </div>
     )
-
-  return <h1>wiiii</h1>
 }

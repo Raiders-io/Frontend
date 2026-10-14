@@ -23,7 +23,7 @@ export default function SearchPage() {
     }
   }
 
-  const serializeLesson = items.map((lesson) => ({
+  const serializeLesson = items?.map((lesson) => ({
     kind: "lesson" as const,
     data: lesson,
   }))
@@ -32,7 +32,7 @@ export default function SearchPage() {
   return (
     <>
     <PaginatedGrid
-      items={serializeLesson?.length ? serializeLesson : MockSerializedLessons}
+      items={serializeLesson?.length > 0 ? serializeLesson : MockSerializedLessons}
       loading={loading}
       limit={limit}
       currentPage={page}
