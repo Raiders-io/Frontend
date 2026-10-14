@@ -7,7 +7,7 @@ import ProfilePage, { PublicProfilePage } from "@/pages/user/ProfilePage"
 const LoginPage = lazy(() => import("@/pages/auth/login"))
 const SignupPage = lazy(() => import("@/pages/auth/signup"))
 const HomePage = lazy(() => import("@/pages/home"))
-const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
+const LessonPage = lazy(() => import("@/pages/lesson/LessonPage"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
 const Settings = lazy(() => import("@/pages/user/Settings"))
@@ -22,6 +22,8 @@ const TermsOfService = lazy(() => import("@/pages/legal/terms"))
 const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
+const LessonCreatePage = lazy(() => import("@/pages/lesson/lesson_create_page") )
+
 const SearchPage = lazy(() => import("@/pages/search"))
 const ChooseUsername = lazy(() => import("@/pages/user/ChooseUsername"))
 import { Toaster } from "@/components/ui/sonner"
@@ -170,6 +172,17 @@ export const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+      },
+      {
+        path: "/create/lesson",
+        element: <LessonCreatePage/>
+      },
+      // {
+      //   path: "/lesson/:author",
+      // },
+      {
+        path: "/lesson/:author/:slug",
+        element: <LessonPage />,
       },
       {
         path: "*",

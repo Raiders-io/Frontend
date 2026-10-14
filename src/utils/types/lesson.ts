@@ -1,6 +1,5 @@
 export interface file {
-  name: string
-  id: string
+  filename: string
 }
 
 export interface Tag {
@@ -12,12 +11,12 @@ export interface Lesson {
   title: string
   UUID: string
   slug: string
-  authorId: number
-  author: string
-  isPrivate: boolean
-  description: string
+  authorId: string
+  author?: string
+  isPrivate?: boolean
+  description?: string
   tags: Tag[]
-  files: file[]
+  files?: file[]
 }
 
 export interface PaginationMeta {

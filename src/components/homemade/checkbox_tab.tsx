@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button"
 
 type Key = string | number
 
-//TODO className is not working for the table, need to fix it
-
 interface CheckBoxTabProps<T, K extends Key> {
   data: T[]
   getKey: (item: T) => K
@@ -25,7 +23,6 @@ export default function CheckBoxTab<T, K extends Key>({
 }: CheckBoxTabProps<T, K>) {
   const handleSelectRow = (key: K, checked: boolean) => {
     const newSelected = new Set(selected)
-
     if (checked) {
       newSelected.add(key)
     } else {
@@ -38,34 +35,56 @@ export default function CheckBoxTab<T, K extends Key>({
     onSelectionChanged(new Set())
   }
 
+
   return (
-    <div className={className}>
-      <Button variant="outline" onClick={unselectAll}>
-        Clear selection
-      </Button>
-      <Table>
-        <TableBody>
-          {data.map((row) => {
-            const key = getKey(row)
-            const isSelected = selected.has(key)
-            return (
-              <TableRow
-                key={key}
-                data-state={isSelected ? "selected" : undefined}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  handleSelectRow(key, !isSelected)
-                }}
-              >
-                <TableCell>
-                  <Checkbox checked={isSelected} />
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <Button variant="outline" size="sm" onClick={unselectAll}>
+          Clear selection
+        </Button>
+        <span className="text-sm text-muted-foreground">
+          {selected.size} selected
+        </span>
+      </div>
+      
+      {/* Fixed: className is now applied to the Table, and wrapper ensures proper layout */}
+      <div className="rounded-md border">
+        <Table className={className}>
+          <TableBody>
+            {data.map((row) => {
+              const key = getKey(row)
+              const isSelected = selected.has(key)
+              return (
+                <TableRow
+                  key={key}
+                  data-state={isSelected ? "selected" : undefined}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    handleSelectRow(key, !isSelected)
+                  }}
+                >
+                  <TableCell className="w-12">
+                    <Checkbox 
+                      checked={isSelected} 
+                      onCheckedChange={(checked) => handleSelectRow(key, checked as boolean)}
+                      onClick={(e) => e.stopPropagation()} // Prevent double-firing
+                    />
+                  </TableCell>
+                  <TableCell>{getLabel(row)}</TableCell>
+                </TableRow>
+              )
+            })}
+            {data.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
+                  No data available
                 </TableCell>
-                <TableCell>{getLabel(row)}</TableCell>
               </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

@@ -37,7 +37,7 @@ export default function TagsSelector({
       <div className={cn("rounded-none")}>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-l-none">
+            <Button variant="outline" className={className}>
               <h1 className="font-bold">Select tag</h1>
             </Button>
           </PopoverTrigger>

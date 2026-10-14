@@ -5,7 +5,12 @@ import PaginatedGrid from "@/components/search/PaginatedGrid"
 
 import { useSearchLesson } from "@/utils/hooks/useSearch"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
+import { mockLesson } from "@/utils/mock"
 
+const MockSerializedLessons: SerializedSearchItem<Lesson>[] = mockLesson.map((lesson) => ({
+  kind: "lesson" as const,
+  data: lesson,
+}))
 
 export default function SearchPage() {
   const { items, total, loading } = useSearchLesson()
@@ -27,7 +32,7 @@ export default function SearchPage() {
   return (
     <>
     <PaginatedGrid
-      items={serializeLesson}
+      items={serializeLesson?.length ? serializeLesson : MockSerializedLessons}
       loading={loading}
       limit={limit}
       currentPage={page}

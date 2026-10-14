@@ -1,4 +1,3 @@
-import type { Tag } from "@/utils/types/lesson"
 import type {
   SearchResourceOption,
   SearchSortValue,
@@ -15,6 +14,7 @@ import { SearchIcon } from "lucide-react"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { useSearchController } from "@/utils/hooks/useSearchController"
 import { SearchPreview } from "./SearchPreview"
+import { mockTag } from "@/utils/mock"
 
 interface CustomSearchBarProps {
   className?: string
@@ -22,30 +22,6 @@ interface CustomSearchBarProps {
   sortOptions?: { label: string; value: SearchSortValue }[]
   children?: React.ReactNode
 }
-
-//TODO remove this hardcoded tags and fetch them from the backend
-const MOCK_TAGS: Tag[] = [
-  { id: 1, name: "React" },
-  { id: 2, name: "JavaScript" },
-  { id: 3, name: "TypeScript" },
-  { id: 4, name: "CSS" },
-  { id: 5, name: "HTML" },
-  { id: 11, name: "React" },
-  { id: 21, name: "JavaScript" },
-  { id: 31, name: "TypeScript" },
-  { id: 41, name: "CSS" },
-  { id: 51, name: "HTML" },
-  { id: 12, name: "React" },
-  { id: 22, name: "JavaScript" },
-  { id: 32, name: "TypeScript" },
-  { id: 42, name: "CSS" },
-  { id: 52, name: "HTML" },
-  { id: 121, name: "React" },
-  { id: 221, name: "JavaScript" },
-  { id: 321, name: "TypeScript" },
-  { id: 421, name: "CSS" },
-  { id: 521, name: "HTML" },
-]
 
 export default function CustomSearchBar({
   resources,
@@ -100,9 +76,10 @@ export default function CustomSearchBar({
       {currResource?.value === "lesson" && (
         <SearchBarAddons align="inline-end" className="p-0">
           <TagsSelector
-            tags={tagRef || MOCK_TAGS}
+            tags={tagRef.length > 0 ? tagRef : mockTag}
             selected={currTags}
             setSelection={onTagsChange}
+            className="rounded-l-none"
           />
         </SearchBarAddons>
       )}
