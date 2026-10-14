@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -35,7 +34,6 @@ function formatDay(iso: string, t: TFunction): string {
 export function MessageThread({ messages, currentUserId, hasMore, onLoadOlder }: MessageThreadProps) {
 	const { t } = useTranslation()
 	const containerRef = useRef<HTMLDivElement>(null)
-	const { t } = useTranslation()
 	const shouldRestoreRef = useRef(false)
 	const prevScrollHeightRef = useRef(0)
 	const loadingRef = useRef(false)
