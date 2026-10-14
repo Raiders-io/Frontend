@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { router } from "@/utils/router"
+import { useTranslation } from 'react-i18next'
 
 interface LessonCardProps {
   Lesson: Lesson
@@ -23,6 +24,7 @@ export default function LessonCard({
   maxLen = 80,
   className,
 }: LessonCardProps) {
+  const { t } = useTranslation()
   const [showMore, setShowMore] = useState(false)
   const text = Lesson.description
   const lessonAddr = `/${Lesson.author}/${Lesson.slug}/`
@@ -61,7 +63,7 @@ export default function LessonCard({
               )}
             </div>
           ) : (
-            <p className="text-center text-lg">No description</p>
+            <p className="text-center text-lg">{t('noDescription', 'No description')}</p>
           )}
         </CardDescription>
       </CardHeader>
@@ -77,7 +79,7 @@ export default function LessonCard({
         </div>
       </CardContent>
       <CardFooter className="mt-auto">
-        <h1>Lesson created by: </h1>
+        <h1>{t('lessonCreatedBy', 'Lesson created by:')} </h1>
         <Button
           type="button"
           variant="outline"

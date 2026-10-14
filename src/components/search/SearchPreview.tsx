@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import SkeletonCard from "../ui/skeletonCard"
 import LessonCard from "../lesson/LessonCard"
+import { useTranslation } from 'react-i18next'
 
 interface SearchPreviewProps {
   isFocus: boolean
@@ -13,6 +14,7 @@ interface SearchPreviewProps {
 }
 
 export function SearchPreview({ isFocus, query, children, className }: SearchPreviewProps) {
+  const { t } = useTranslation()
   const enabled = isFocus && query.trim().length >= 2
   const { items, total, loading } = useSearchLesson({ query, limit: 5, enabled })
   const isOpen = enabled && (loading || items.length > 0)
@@ -39,7 +41,7 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
           {loading ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (
-            `${total} Search Results`
+            t('totalSearchResults', '{{total}} Search Results', { total })
           )}
         </p>
         <div className="flex flex-col gap-2">

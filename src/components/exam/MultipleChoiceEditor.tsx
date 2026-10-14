@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { QuestionChoice } from '@/utils/types/exam'
+import { useTranslation } from 'react-i18next'
 
 type MultipleChoiceEditorProps = 
 {
@@ -21,13 +22,14 @@ export function MultipleChoiceEditor({
     onRemoveChoice,
 }: MultipleChoiceEditorProps)
 {
+    const { t } = useTranslation()
     return (
         <>
             <div className="flex gap-2">
                 <Input
                     value={currentChoice}
                     onChange={(event) => onCurrentChoiceChange(event.target.value)}
-                    placeholder="Ajouter un choix de réponse"
+                    placeholder={t('ajouterUnChoixDeRponse', 'Ajouter un choix de réponse')}
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
                             event.preventDefault()
@@ -40,7 +42,7 @@ export function MultipleChoiceEditor({
 
             {choices.length > 0 && (
                 <div className="border rounded-md p-2 bg-gray-50">
-                    <p className="font-semibold text-sm mb-2">Choix disponibles:</p>
+                    <p className="font-semibold text-sm mb-2">{t('choixDisponibles', 'Choix disponibles:')}</p>
                     {choices.map((choice) => (
                         <div key={choice.id} className="flex justify-between items-center gap-2 mb-2">
                             <label className="flex items-center gap-2 flex-1">
@@ -48,7 +50,7 @@ export function MultipleChoiceEditor({
                                 <span>{choice.text}</span>
                             </label>
                             <Button type="button" variant="outline" size="sm" onClick={() => onRemoveChoice(choice.id)}>
-                                Supprimer
+                                {t('supprimer', 'Supprimer')}
                             </Button>
                         </div>
                     ))}
@@ -56,7 +58,7 @@ export function MultipleChoiceEditor({
             )}
 
             <Button type="submit" disabled={choices.length < 2 || !choices.some((choice) => choice.isCorrect)}>
-                Submit
+                {t('submit', 'Submit')}
             </Button>
         </>
     )

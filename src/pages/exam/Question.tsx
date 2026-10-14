@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { ExactAnswerEditor } from '@/components/exam/ExactAnswerEditor'
 import { MultipleChoiceEditor } from '@/components/exam/MultipleChoiceEditor'
 import type { Question, QuestionChoice } from '@/utils/types/exam'
+import { useTranslation } from 'react-i18next'
 
 type CreateQuestionProps = { onAdd?: (question: Question) => void }
 
@@ -13,6 +14,7 @@ export default function Question({ onAdd }: CreateQuestionProps)
 
 export function CreateQuestion({ onAdd }: CreateQuestionProps)
 {
+    const { t } = useTranslation()
     const [text, setText] = useState('')
     const [type, setType] = useState<Question['type']>('multiple_choice')
     const [pos, setPos] = useState(1)
@@ -92,8 +94,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps)
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Input value={text} onChange={(event) => setText(event.target.value)} placeholder="Question" />
             <select className="border rounded-md p-2" value={type} onChange={(event) => handleTypeChange(event.target.value as Question['type'])}>
-                <option value="multiple_choice">Choix</option>
-                <option value="exact_answer">Réponses possibles</option>
+                <option value="multiple_choice">{t('choix', 'Choix')}</option>
+                <option value="exact_answer">{t('rponsesPossibles', 'Réponses possibles')}</option>
                 <option value="c_code">C</option>
             </select>
             {(() => {

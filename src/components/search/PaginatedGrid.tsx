@@ -2,6 +2,7 @@ import SkeletonCard from "@/components/ui/skeletonCard"
 import Pagination from "@/components/search/Pagination"
 import type { SerializedSearchItem } from "@/utils/types/component"
 import React from "react"
+import { useTranslation } from 'react-i18next'
 
 interface PaginatedGridProps<T> {
   items: SerializedSearchItem<T>[]
@@ -26,6 +27,7 @@ export default function PaginatedGrid<T>({
   getKey,
   onPageChange
 }: PaginatedGridProps<T>) {
+  const { t } = useTranslation()
   
   return (
     <div className={className}>
@@ -44,7 +46,7 @@ export default function PaginatedGrid<T>({
           })
         ) : (
           <div className="text-center font-bold text-2xl p-6">
-            <h1>No items found</h1>
+            <h1>{t('noItemsFound', 'No items found')}</h1>
           </div>
         )}
       </div>

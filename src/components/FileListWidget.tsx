@@ -311,7 +311,7 @@ export default function FileListWidget({
   }
 
   const containerClassName =
-    mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
+    mode === "compact" ? "w-full p-4" : t('mxautoWfullMaxw6xlP6', 'mx-auto w-full max-w-6xl p-6')
   
   const hasAnyActionButton = 
     actionSettings.showDownloadButton || 
@@ -319,7 +319,7 @@ export default function FileListWidget({
     actionSettings.showDeleteButton
   
   const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
-  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", "Created at"]
+  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", t('createdAt', 'Created at')]
   const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
   
   const visibleColumns: FileListTableColumn[] =
@@ -445,7 +445,7 @@ export default function FileListWidget({
                   type="button"
                   onClick={openFilePicker}
                   disabled={uploading}
-                  aria-label="Upload Files"
+                  aria-label={t('uploadFiles', 'Upload Files')}
                 >
                   {uploading ? t('uploadInProgress') : t('uploadFiles')}
                 </Button>
@@ -485,14 +485,14 @@ export default function FileListWidget({
               onComplete={async () => {
                 setConflictDialog(null)
                 setUploadSuccess(
-                  `${conflictDialog.originalFiles.length} file(s) replaced successfully.`,
+                  t('lengthFilesReplacedSuccessfully', '{{length}} file(s) replaced successfully.', { length: conflictDialog.originalFiles.length }),
                 )
                 await refreshFiles()
               }}
               onCancel={() => {
                 setConflictDialog(null)
                 setUploadSuccess(
-                  `${conflictDialog.originalFiles.length - conflictDialog.conflicts.length} file(s) uploaded successfully. ${conflictDialog.conflicts.length} file(s) skipped.`,
+                  t('valFilesUploadedSuccessfullyLengthFilesSkipped', '{{val}} file(s) uploaded successfully. {{length}} file(s) skipped.', { val: conflictDialog.originalFiles.length - conflictDialog.conflicts.length, length: conflictDialog.conflicts.length }),
                 )
               }}
             />
@@ -577,7 +577,7 @@ export default function FileListWidget({
                         {t('totalTotalfilesFiles', 'Total: {{totalFiles}} file(s)', { totalFiles })}
                       </TableCell>
                       <TableCell colSpan={3} className="text-right">
-                        Total space used: {formatFileSize(totalSize)}
+                        {t('totalSpaceUsed', 'Total space used:')} {formatFileSize(totalSize)}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
