@@ -1,5 +1,6 @@
 import LessonForm from "@/components/lesson/LessonForm"
-import type { LessonFormValues } from "@/utils/schema/lesson_form_schema"
+import { lessonService } from "@/services/lesson_service"
+import type { CreateLessonPayload } from "@/utils/schema/lessonSchema"
 // import FileListWidget from "@/components/FileListWidget"
 
 /**
@@ -7,9 +8,13 @@ import type { LessonFormValues } from "@/utils/schema/lesson_form_schema"
  * layout + what happens on submit.
  */
 export default function LessonCreationPage() {
-  const handleSubmit = async (values: LessonFormValues) => {
+  const handleSubmit = async (values: CreateLessonPayload) => {
     console.log("Submitting Lesson:", values)
-    // TODO: await lessonService.createLesson(values) then router.push(...)
+    try {
+      await lessonService.createLesson(values)
+    } catch (error) {
+      console.error("Error creating lesson:", error)
+    }
   }
 
   return (

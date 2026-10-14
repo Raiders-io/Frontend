@@ -48,7 +48,6 @@ export default function TagsField({
             <div className={disabled ? "pointer-events-none opacity-60" : undefined}>
               <TagsSelector
                 tags={tags}
-                variant="compact"
                 selected={value}
                 setSelection={onChange}
               />

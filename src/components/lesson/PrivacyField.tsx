@@ -1,8 +1,8 @@
 "use client"
 
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
-import { Switch } from "@/components/ui/switch"
 import { cn } from "@/utils/lib/shadcn"
+import { Globe, GlobeOff } from "lucide-react"
 
 interface PrivacyFieldProps {
   value: boolean
@@ -11,8 +11,9 @@ interface PrivacyFieldProps {
   className?: string
   /** Override the default copy if another page needs different wording */
   labels?: {
-    private: { title: string; description: string }
-    public: { title: string; description: string }
+    private: { title: string; description: string,icon: React.ReactNode}
+    public: { title: string; description: string,icon: React.ReactNode}
+    
   }
 }
 
@@ -20,10 +21,12 @@ const DEFAULT_LABELS: NonNullable<PrivacyFieldProps["labels"]> = {
   private: {
     title: "Private Lesson",
     description: "Only you and explicitly invited users can view this lesson.",
+    icon: <GlobeOff/>,
   },
   public: {
     title: "Public Lesson",
     description: "Everyone can see this lesson and create exams.",
+    icon: <Globe/>,
   },
 }
 
@@ -44,20 +47,20 @@ export default function PrivacyField({
         !disabled && "hover:bg-accent/20",
         className
       )}
+      onClick={() => !disabled && onChange(!value)}
     >
       <div className="flex flex-1 flex-col gap-0.5">
         <FieldLabel htmlFor="privacy" className="text-base">
-          {copy.title}
+          <div className="flex items-center gap-2">
+            {copy.icon}
+            <h1 className="text-lg font-medium">{copy.title}</h1>
+          </div>
         </FieldLabel>
-        <FieldDescription>{copy.description}</FieldDescription>
+        <FieldDescription>
+          {copy.description}
+          </FieldDescription>
       </div>
-      {/* A real switch: keyboard accessible, unlike the clickable <Field> */}
-      <Switch
-        id="privacy"
-        checked={value}
-        onCheckedChange={onChange}
-        disabled={disabled}
-      />
+
     </Field>
   )
 }
