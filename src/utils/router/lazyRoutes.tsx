@@ -16,9 +16,30 @@ const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
 const TermsOfService = lazy(() => import("@/pages/legal/terms"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
-const LessonCreatePage = lazy(() => import("@/pages/lesson/lesson_create_page") )
+const LessonCreatePage = lazy(() => import("@/pages/lesson/lesson_create_page"))
 const RootLayout = lazy(() => import("@/utils/router/RootLayout"))
 const SearchPage = lazy(() => import("@/pages/search"))
+const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 
 export {
-  LoginPage, SignupPage, HomePage, LessonPage, FileListPage, ChatPage, EditProfile, AboutPage, ContactPage, NotFound, ExamAuthoring, ExamPaper, PrivacyPolicy, TermsOfService, CookiesPage, DataRequestPage, LessonCreatePage, RootLayout, SearchPage}
+  LoginPage,
+  SignupPage,
+  HomePage,
+  LessonPage,
+  FileListPage,
+  ChatPage,
+  EditProfile,
+  AboutPage,
+  ContactPage,
+  NotFound,
+  ExamAuthoring,
+  ExamPaper,
+  PrivacyPolicy,
+  TermsOfService,
+  CookiesPage,
+  DataRequestPage,
+  LessonCreatePage,
+  RootLayout,
+  SearchPage,
+  GDPRPage,
+}

@@ -1,7 +1,6 @@
 import TopNavBar from "@/components/TopNavBar"
 import { Outlet } from "react-router-dom"
 
-
 export default function RootLayout() {
   return (
     <div>

@@ -21,6 +21,8 @@ export const useTagStore = create<tagState>() (set => ({
     set({ loading: true, Error: null })
     try {
       const tags = await lessonService.getAllTags()
+      if (tags?.length === 0) 
+        throw new Error(`getAllTags returned ${typeof tags}, expected an array`)
       set({ tags })
     } catch (error) {
       set({ Error: error as Error })
