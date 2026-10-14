@@ -8,6 +8,7 @@ import {
   ScrollText,
   Type,
 } from "lucide-react"
+import i18next from 'i18next'
 
 export const formatFileSize = (bytes?: number) => {
   if (!bytes || bytes <= 0) {
@@ -21,7 +22,7 @@ export const formatFileSize = (bytes?: number) => {
   )
   const size = bytes / 1024 ** index
 
-  return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`
+  return i18next.t('valVal2', '{{val}} {{val2}}', { val: size.toFixed(size >= 10 || index === 0 ? 0 : 1), val2: units[index] })
 }
 
 export const formatDate = (dateString?: string) => {

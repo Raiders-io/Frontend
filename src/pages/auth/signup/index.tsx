@@ -107,7 +107,7 @@ export default function SignupPage() {
               htmlFor="email"
               className="text-xs font-medium text-foreground"
             >
-              Email
+              {t('email', 'Email')}
             </Label>
             <Input
               id="email"
@@ -141,7 +141,7 @@ export default function SignupPage() {
                 errors.password ? "text-destructive" : "text-muted-foreground"
               }`}
             >
-              {errors.password?.message ?? "8 caractères minimum."}
+              {errors.password?.message ?? t('8CaractresMinimum', '8 caractères minimum.')}
             </p>
           </div>
 
@@ -150,7 +150,7 @@ export default function SignupPage() {
               htmlFor="passwordConfirmation"
               className="text-xs font-medium text-foreground"
             >
-              Confirmer le mot de passe
+              {t('confirmerLeMotDePasse', 'Confirmer le mot de passe')}
             </Label>
             <Input
               id="passwordConfirmation"
@@ -179,11 +179,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="age-confirmation">
-                I am at least 18 years old
+                {t('iAmAtLeast18YearsOld', 'I am at least 18 years old')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you confirm that you are at least 18
-                years old.
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouConfirmThatYouAreAtLeast18YearsOld', 'By clicking this checkbox, you confirm that you are at least 18\n                years old.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -196,10 +195,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="terms-checkbox-desc">
-                I agree to the terms and conditions
+                {t('iAgreeToTheTermsAndConditions', 'I agree to the terms and conditions')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you agree to the Terms of Service.
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouAgreeToTheTermsOfService', 'By clicking this checkbox, you agree to the Terms of Service.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -212,11 +211,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
-                I will not use this service for prohibited activities
+                {t('iWillNotUseThisServiceForProhibitedActivities', 'I will not use this service for prohibited activities')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you agree not to use this service for
-                any prohibited activities (listed in the Terms of Service).
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouAgreeNotToUseThisServiceForAnyProhibitedActivitiesListedInTheTermsOfService', 'By clicking this checkbox, you agree not to use this service for\n                any prohibited activities (listed in the Terms of Service).')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -225,9 +223,9 @@ export default function SignupPage() {
             type="submit"
             disabled={isSubmitting || !areCheckboxesValid}
             className="mt-2 h-11 w-full"
-            aria-label="Créer un compte"
+            aria-label={t('crerUnCompte', 'Créer un compte')}
           >
-            {isSubmitting ? "Création…" : "Créer un compte"}
+            {isSubmitting ? "Création…" : t('crerUnCompte', 'Créer un compte')}
           </Button>
         </form>
       </FieldGroup>

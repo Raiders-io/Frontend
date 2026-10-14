@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import type { SearchSort, SearchSortValue } from "@/utils/types/component"
 import { useState } from "react"
+import i18next from 'i18next'
 
 interface SearchBarSortingProps {
   placeholder?: string
@@ -54,7 +55,7 @@ export const SearchBarSorting = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <PopoverHeader className="font-bold">Sorting by</PopoverHeader>
+          <PopoverHeader className="font-bold">{i18next.t('sortingBy', 'Sorting by')}</PopoverHeader>
           <div className="flex inline-flex items-center justify-between">
             <Select value={sorting} onValueChange={handleSortChange}>
               <SelectTrigger className="w-[180px]">

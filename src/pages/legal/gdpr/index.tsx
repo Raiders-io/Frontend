@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 type Right = { title: string; description: string }
 
 const rights: Right[] = [
@@ -32,20 +33,20 @@ const rights: Right[] = [
 ]
 
 export default function GdprPage() {
+  const { t } = useTranslation()
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12 md:py-16">
       <header className="mb-12 space-y-4">
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Data Protection & GDPR
+          {t('dataProtectionGdpr', 'Data Protection & GDPR')}
         </h1>
         <p className="text-muted-foreground leading-7">
-          You have rights regarding your personal data under applicable data
-          protection laws, including the GDPR.
+          {t('youHaveRightsRegardingYourPersonalDataUnderApplicableDataProtectionLawsIncludingTheGdpr', 'You have rights regarding your personal data under applicable data\n          protection laws, including the GDPR.')}
         </p>
       </header>
       <section className="mb-12">
         <h2 className="mb-6 text-xl font-semibold tracking-tight">
-          Your Rights
+          {t('yourRights', 'Your Rights')}
         </h2>
         <ul className="divide-y">
           {rights.map((right) => (
@@ -63,12 +64,11 @@ export default function GdprPage() {
         
         <h2 className="text-xl font-semibold tracking-tight">
           
-          Exercising Your Rights
+          {t('exercisingYourRights', 'Exercising Your Rights')}
         </h2>
         <p className="text-sm leading-7 text-muted-foreground">
           
-          You may contact the data controller to exercise your rights under
-          applicable data protection laws.
+          {t('youMayContactTheDataControllerToExerciseYourRightsUnderApplicableDataProtectionLaws', 'You may contact the data controller to exercise your rights under\n          applicable data protection laws.')}
         </p>
       </section>
     </main>
