@@ -14,6 +14,7 @@ import {
 import { useState } from "react"
 import CheckBoxTab from "../homemade/checkbox_tab"
 import { cn } from "@/utils/lib/shadcn"
+import { mockTag } from "@/utils/mock"
 
 
 interface TagsTableProps {
@@ -62,9 +63,10 @@ export default function TagsSelector({
             <div className="max-h-[400px] overflow-y-auto">
             <CheckBoxTab
               className={className}
-              data={tags.filter((tag) =>
+              data={Array.isArray(tags) ? tags.filter((tag) =>
                 tag.name.toLowerCase().includes(draft.toLowerCase()),
-              )}
+              ): mockTag.filter((tag) =>
+                tag.name.toLowerCase().includes(draft.toLowerCase()))}
               getKey={(tag) => tag.id}
               getLabel={(tag) => tag.name}
               selected={new Set(selected.map((tag) => tag.id))}

@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field"
-import type { FileItem } from "@/utils/schema/lesson_form_schema"
+import type { FileItem } from "@/utils/schema/lessonSchema"
 
 export interface AttachmentPickerProps {
   value: FileItem[]
