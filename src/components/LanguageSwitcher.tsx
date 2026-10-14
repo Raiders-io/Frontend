@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import i18next from 'i18next'
 
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -13,13 +12,13 @@ export const LanguageSwitcher = () => {
   const currentLanguage = i18n.language || 'en';
 
   const languages = [
-    { code: 'en', name: i18next.t('english', 'English') },
-    { code: 'fr', name: i18next.t('french', 'Français') },
-    { code: 'de', name: i18next.t('german', 'Deutsch') },
-    { code: 'es', name: i18next.t('spanish', 'Español') },
+    { code: 'en', name: 'English' },
+    { code: 'fr', name: 'Français' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'es', name: 'Español' },
   ];
 
-  const currentLangName = languages.find(lang => lang.code === currentLanguage)?.name || 'Language';
+  const currentLangName = languages.find(lang => lang.code === currentLanguage)?.name || currentLanguage.toUpperCase();
 
   return (
     <DropdownMenu>
@@ -32,7 +31,7 @@ export const LanguageSwitcher = () => {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => { i18next.changeLanguage(lang.code); changeLanguage(lang.code); }}
+            onClick={() => changeLanguage(lang.code)}
           >
             {lang.name}
           </DropdownMenuItem>
