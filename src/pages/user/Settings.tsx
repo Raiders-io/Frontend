@@ -20,7 +20,7 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 
-export default function EditProfile() {
+export default function Settings() {
   return (
     <>
       <Card>

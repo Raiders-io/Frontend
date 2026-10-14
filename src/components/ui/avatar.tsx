@@ -5,7 +5,7 @@ import { cn } from "@/utils/lib/shadcn"
 
 function Avatar({
   className,
-  size = "default",
+  size,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Root> & {
   size?: "default" | "sm" | "lg"
@@ -15,7 +15,8 @@ function Avatar({
       data-slot="avatar"
       data-size={size}
       className={cn(
-        "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+        "group/avatar relative flex shrink-0 rounded-full select-none overflow-hidden after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten",
+        !className?.includes("size-") && !className?.includes("h-") && (size === "sm" ? "size-6" : size === "lg" ? "size-10" : "size-8"),
         className
       )}
       {...props}
