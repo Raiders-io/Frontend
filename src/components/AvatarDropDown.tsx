@@ -41,7 +41,7 @@ import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { UserAvatar } from "@/components/UserAvatar"
 import { useTranslation } from 'react-i18next'
-import i18next from 'i18next'
+import i18next from "i18next"
 
 export function AvatarDropdown() {
   const { t } = useTranslation()
