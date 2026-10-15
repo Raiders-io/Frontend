@@ -8,9 +8,10 @@ import { userService } from "@/services/user_service"
 import { ProfileHeader } from "./ProfileHeader"
 import { MyLearning } from "./MyLearning"
 import { CreatedContent } from "./CreatedContent"
-import { FriendsPanel } from "./FriendsPanel"
+import { FriendsPanel } from "../../components/user/FriendsPanel"
 import { EditProfileDialog } from "./EditProfileDialog"
 import { FriendButton } from "./FriendButton"
+import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -38,7 +39,7 @@ function useProfile(identifier?: string) {
       .catch((e) => {
         if (cancelled) return
         const notFound = e?.response?.status === 404
-        setError(notFound ? "Ce profil n'existe pas." : getErrorMessage(e, "Impossible de charger le profil"))
+        setError(notFound ? "This profile does not exist." : getErrorMessage(e, "Failed to load profile"))
       })
     return () => {
       cancelled = true
@@ -54,7 +55,7 @@ const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
 function ProfileSkeleton({ isOwner }: { isOwner: boolean }) {
   return (
-    <div className="space-y-10" aria-busy="true" aria-label="Chargement du profil">
+    <div className="space-y-10" aria-busy="true" aria-label="Loading profile">
       <div className="flex items-center gap-6">
         <Skeleton className="size-24 shrink-0 rounded-full" />
         <div className="flex-1 space-y-2">
@@ -90,7 +91,7 @@ function ProfileError({ message, onRetry }: { message: string; onRetry: () => vo
       </EmptyHeader>
       <EmptyContent>
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Réessayer
+          Retry
         </Button>
       </EmptyContent>
     </Empty>
@@ -100,48 +101,58 @@ function ProfileError({ message, onRetry }: { message: string; onRetry: () => vo
 export default function ProfilePage({ userId }: { userId?: string }) {
   const { user, setUser, isOwner, error, retry } = useProfile(userId)
 
+  const backgroundUrl = user ? userService.getBackground(user.id) : undefined
+
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
-      {error ? (
-        <ProfileError message={error} onRetry={retry} />
-      ) : !user ? (
-        <ProfileSkeleton isOwner={isOwner} />
-      ) : (
-        <div className="space-y-10">
-          <ProfileHeader
-            user={user}
-            actions={
-              isOwner ? (
-                <EditProfileDialog me={user as PrivateProfile} onSaved={setUser} />
-              ) : (
-                <FriendButton userId={user.id} username={user.username} />
-              )
-            }
-          />
+    <div className="relative min-h-screen w-full">
+      {/* Background Banner with improved fallback gradient */}
+      <div 
+        className="absolute inset-x-0 top-0 -z-10 h-64 w-full bg-cover bg-center border-b bg-linear-to-r from-primary/15 via-muted to-primary/15"
+        style={backgroundUrl ? { backgroundImage: `url(${backgroundUrl})` } : undefined}
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 bg-background/30 backdrop-blur-[2px]" />
+      </div>
 
-          {user.bio && (
-            <p className="text-foreground/80 max-h-24 max-w-2xl overflow-y-auto rounded-md border bg-muted/30 px-3 py-2 text-sm leading-relaxed wrap-break-word whitespace-pre-line sm:max-h-32">
-              {user.bio}
-            </p>
-          )}
+      <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
+        {error ? (
+          <ProfileError message={error} onRetry={retry} />
+        ) : !user ? (
+          <ProfileSkeleton isOwner={isOwner} />
+        ) : (
+          <div className="space-y-10">
+            <ProfileHeader
+              user={user}
+              actions={
+                isOwner ? (
+                  <EditProfileDialog me={user as PrivateProfile} onSaved={setUser} />
+                ) : (
+                  <FriendButton userId={user.id} username={user.username} />
+                )
+              }
+            />
 
-          {/* Profil connecté : apprentissage + créations, amis à droite. Public : créations seulement. */}
-          {isOwner ? (
-            <div className={OWNER_GRID}>
-              <div className="space-y-10">
-                <MyLearning />
+            {isOwner ? (
+              <div className={OWNER_GRID}>
+                <div className="space-y-8">
+                  <Biography bio={user.bio ?? ""} />
+                  <MyLearning />
+                  <CreatedContent userId={user.id} />
+                </div>
+                <aside aria-label="Friends">
+                  <FriendsPanel />
+                </aside>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                <Biography bio={user.bio ?? ""} />
                 <CreatedContent userId={user.id} />
               </div>
-              <aside aria-label="Amis">
-                <FriendsPanel />
-              </aside>
-            </div>
-          ) : (
-            <CreatedContent userId={user.id} />
-          )}
-        </div>
-      )}
-    </main>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
   )
 }
 

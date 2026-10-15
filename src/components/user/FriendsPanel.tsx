@@ -24,10 +24,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { UserAvatar } from "@/components/user/UserAvatar"
 import type { PublicProfile } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
-import { IconAction } from "./IconAction"
+import { IconAction } from "../../pages/user/IconAction"
 import { SectionCard } from "./SectionCard"
-import { UnfriendDialog } from "./UnfriendDialog"
-import { useFriendships } from "./useFriendships"
+import { UnfriendDialog } from "../../pages/user/UnfriendDialog"
+import { useFriendships } from "../../pages/user/useFriendships"
 
 interface FriendsPanelProps {
   onMessage?: (friend: PublicProfile) => void

@@ -25,14 +25,16 @@ export const userService = {
     return data
   },
 
-  updateMe: async (payload: UpdateMePayload): Promise<PrivateProfile> => {
+  async updateMe(payload: UpdateMePayload) {
     const form = new FormData()
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value !== undefined) form.append(key, value as string | Blob)
-    })
-    const { data } = await api.patch<PrivateProfile>(ME, form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+
+    for (const [key, value] of Object.entries(payload)) {
+      if (value === undefined) continue
+      if (value === null) form.append(key, "")
+      else form.append(key, value)
+    }
+
+    const { data } = await api.patch(ME, form)
     return data
   },
 
@@ -47,6 +49,7 @@ export const userService = {
   },
 
   getAvatar: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
+  getBackground: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/background`,
 
   searchUsers: async (
     q: string,

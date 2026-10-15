@@ -27,7 +27,7 @@ const NAV_COLUMNS = [
 	{
 		heading: "Compte",
 		links: [
-			{ label: "PublicProfile", onClick: changePageProfile },
+			{ label: "Profile", onClick: changePageProfile },
 			{ label: "Friends", onClick: changePageFriends },
 			{ label: "Messages", onClick: changePageChat },
 		],

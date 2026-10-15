@@ -19,9 +19,9 @@ export type Profile = PrivateProfile | PublicProfile
 
 export interface UpdateMePayload {
   username?: string
-  firstname?: string
-  lastname?: string
-  bio?: string
+  firstname?: string | null
+  lastname?: string | null
+  bio?: string | null
   avatar?: File | Blob
 }
 

@@ -22,21 +22,20 @@ import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
 import { getErrorMessage } from "./utils"
 
-// Règles alignées sur le backend (USER_CONSTRAINTS / AVATAR_CONSTRAINTS)
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
 const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"]
-const BIO_MAX_LENGTH = 255
+const BIO_MAX_LENGTH = 1000
 
 const schema = z.object({
   username: z
     .string()
     .trim()
-    .min(1, "Requis")
-    .max(20, "20 caractères maximum")
-    .regex(/^[a-zA-Z0-9_]+$/, "Lettres, chiffres et _ uniquement"),
-  firstname: z.string().trim().max(30, "30 caractères maximum"),
-  lastname: z.string().trim().max(30, "30 caractères maximum"),
-  bio: z.string().trim().max(BIO_MAX_LENGTH, `${BIO_MAX_LENGTH} caractères maximum`),
+    .min(1, "Required")
+    .max(20, "Maximum 20 characters")
+    .regex(/^[a-zA-Z0-9_]+$/, "Letters, numbers, and _ only"),
+  firstname: z.string().trim().max(30, "Maximum 30 characters").optional().or(z.literal("")),
+  lastname: z.string().trim().max(30, "Maximum 30 characters").optional().or(z.literal("")),
+  bio: z.string().trim().max(BIO_MAX_LENGTH, `Maximum ${BIO_MAX_LENGTH} characters`).optional().or(z.literal("")),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -91,11 +90,11 @@ export function EditProfileDialog({ me, onSaved }: Props) {
   function handleFile(file?: File) {
     if (!file) return
     if (!AVATAR_TYPES.includes(file.type)) {
-      setAvatarError("Formats acceptés : JPG, PNG, WebP")
+      setAvatarError("Accepted extensions: JPG, PNG, WebP")
       return
     }
     if (file.size > AVATAR_MAX_BYTES) {
-      setAvatarError("2 Mo maximum")
+      setAvatarError("Maximum 2 MB")
       return
     }
     if (preview) URL.revokeObjectURL(preview)
@@ -104,14 +103,25 @@ export function EditProfileDialog({ me, onSaved }: Props) {
     setPreview(URL.createObjectURL(file))
   }
 
+
   const onSubmit = async (values: FormValues) => {
-    // On n'envoie que les champs modifiés (et non vides) :
-    // le validateur d'unicité du username rejetterait le pseudo actuel.
     const payload: UpdateMePayload = {}
-    ;(Object.keys(dirtyFields) as (keyof FormValues)[]).forEach((key) => {
-      if (values[key]) payload[key] = values[key]
-    })
-    if (avatar) payload.avatar = avatar
+
+    const nullableFields = ["firstname", "lastname", "bio"] as const
+
+    for (const key of nullableFields) {
+      if (dirtyFields[key]) {
+        payload[key] = values[key] === "" ? null : values[key]
+      }
+    }
+
+    if (dirtyFields.username) {
+      payload.username = values.username
+    }
+
+    if (avatar) {
+      payload.avatar = avatar
+    }
 
     if (Object.keys(payload).length === 0) {
       handleOpenChange(false)
@@ -123,23 +133,26 @@ export function EditProfileDialog({ me, onSaved }: Props) {
       onSaved(updated)
       handleOpenChange(false)
     } catch (e) {
-      setError("root", { message: getErrorMessage(e, "Mise à jour impossible") })
+      setError("root", {
+        message: getErrorMessage(e, "Failed to update profile"),
+      })
     }
   }
+
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Pencil />
-          Modifier
+          Edit
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Modifier le profil</DialogTitle>
-          <DialogDescription>Ces informations sont visibles par les autres utilisateurs.</DialogDescription>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription>This information is visible to other users.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -148,7 +161,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
               <div className="flex items-center gap-4">
                 {preview ? (
                   <Avatar className="size-18 shrink-0">
-                    <AvatarImage src={preview} alt="Aperçu de la photo de profil" className="object-cover" />
+                    <AvatarImage src={preview} alt="Profile picture preview" className="object-cover" />
                   </Avatar>
                 ) : (
                   <UserAvatar user={me} className="size-18 shrink-0" />
@@ -157,7 +170,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
                   <Button type="button" variant="outline" size="sm" asChild>
                     <label className="cursor-pointer">
                       <Camera />
-                      Changer la photo
+                      Change photo
                       <input
                         type="file"
                         accept={AVATAR_TYPES.join(",")}
@@ -169,14 +182,14 @@ export function EditProfileDialog({ me, onSaved }: Props) {
                       />
                     </label>
                   </Button>
-                  <FieldDescription>JPG, PNG ou WebP · 2 Mo · min. 200×200</FieldDescription>
+                  <FieldDescription>JPG, PNG, or WebP · Max 2 MB · Min. 200×200</FieldDescription>
                   {avatarError && <FieldError>{avatarError}</FieldError>}
                 </div>
               </div>
             </Field>
 
             <Field data-invalid={!!errors.username}>
-              <FieldLabel htmlFor="username">Nom d'utilisateur</FieldLabel>
+              <FieldLabel htmlFor="username">Username</FieldLabel>
               <Input
                 id="username"
                 autoComplete="off"
@@ -188,12 +201,12 @@ export function EditProfileDialog({ me, onSaved }: Props) {
 
             <div className="grid grid-cols-2 gap-3">
               <Field data-invalid={!!errors.firstname}>
-                <FieldLabel htmlFor="firstname">Prénom</FieldLabel>
+                <FieldLabel htmlFor="firstname">First name</FieldLabel>
                 <Input id="firstname" aria-invalid={!!errors.firstname} {...register("firstname")} />
                 <FieldError errors={[errors.firstname]} />
               </Field>
               <Field data-invalid={!!errors.lastname}>
-                <FieldLabel htmlFor="lastname">Nom</FieldLabel>
+                <FieldLabel htmlFor="lastname">Last name</FieldLabel>
                 <Input id="lastname" aria-invalid={!!errors.lastname} {...register("lastname")} />
                 <FieldError errors={[errors.lastname]} />
               </Field>
@@ -225,10 +238,10 @@ export function EditProfileDialog({ me, onSaved }: Props) {
 
           <DialogFooter className="mt-6">
             <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
-              Annuler
+              Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Enregistrement…" : "Enregistrer"}
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </form>
