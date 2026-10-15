@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { Check, Clock, MessageCircle, Users, X } from "lucide-react"
+
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -21,28 +22,50 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Skeleton } from "@/components/ui/skeleton"
+
 import { UserAvatar } from "@/components/user/UserAvatar"
+import { UserAvatarButton } from "@/components/user/UserAvatarButton"
+
 import type { PublicProfile } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
+import { router } from "@/utils/router"
+
 import { IconAction } from "../../pages/user/IconAction"
 import { SectionCard } from "./SectionCard"
 import { UnfriendDialog } from "../../pages/user/UnfriendDialog"
 import { useFriendships } from "../../pages/user/useFriendships"
+import { changePageUser } from "@/utils/router/changePage"
 
 interface FriendsPanelProps {
   onMessage?: (friend: PublicProfile) => void
 }
 
-function PersonItem({ user, children }: { user: PublicProfile; children?: ReactNode }) {
+function PersonItem({
+  user,
+  children,
+}: {
+  user: PublicProfile
+  children?: ReactNode
+}) {
   return (
     <Item size="sm">
       <ItemMedia>
-        <UserAvatar user={user} className="size-10" />
+        <UserAvatarButton
+          label={`View ${user.username}'s profile`}
+          className="size-10"
+          onClick={() => changePageUser(user.id)}
+        >
+          <UserAvatar user={user} className="size-10" />
+        </UserAvatarButton>
       </ItemMedia>
+
       <ItemContent>
         <ItemTitle>{user.username}</ItemTitle>
-        <ItemDescription className="mt-0!">@{user.username}</ItemDescription>
+        <ItemDescription className="mt-0!">
+          @{user.username}
+        </ItemDescription>
       </ItemContent>
+
       {children && <ItemActions>{children}</ItemActions>}
     </Item>
   )
@@ -61,7 +84,11 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
               <EmptyDescription>{error}</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button variant="outline" size="sm" onClick={() => void load()}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void load()}
+              >
                 Réessayer
               </Button>
             </EmptyContent>
@@ -86,23 +113,35 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       )}
 
       {data.received.length > 0 && (
-        <SectionCard title="Demandes reçues" count={data.received.length}>
+        <SectionCard
+          title="Demandes reçues"
+          count={data.received.length}
+        >
           <ItemGroup className="divide-y">
             {data.received.map((req) => (
               <PersonItem key={req.id} user={req.user}>
                 <Button
                   size="sm"
                   disabled={busyId === req.user.id}
-                  onClick={() => run(req.user.id, () => userService.acceptFriendRequest(req.user.id))}
+                  onClick={() =>
+                    run(req.user.id, () =>
+                      userService.acceptFriendRequest(req.user.id),
+                    )
+                  }
                 >
                   <Check />
                   Accepter
                 </Button>
+
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={busyId === req.user.id}
-                  onClick={() => run(req.user.id, () => userService.declineFriendRequest(req.user.id))}
+                  onClick={() =>
+                    run(req.user.id, () =>
+                      userService.declineFriendRequest(req.user.id),
+                    )
+                  }
                 >
                   <X />
                   Refuser
@@ -121,7 +160,9 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                 <Users />
               </EmptyMedia>
               <EmptyTitle>Aucun ami pour le moment</EmptyTitle>
-              <EmptyDescription>Recherchez un utilisateur pour lui envoyer une demande.</EmptyDescription>
+              <EmptyDescription>
+                Recherchez un utilisateur pour lui envoyer une demande.
+              </EmptyDescription>
             </EmptyHeader>
           </Empty>
         ) : (
@@ -131,14 +172,23 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                 <IconAction
                   icon={MessageCircle}
                   label={`Écrire à ${friend.username}`}
-                  tooltip={onMessage ? "Envoyer un message" : "Messagerie bientôt disponible"}
+                  tooltip={
+                    onMessage
+                      ? "Envoyer un message"
+                      : "Messagerie bientôt disponible"
+                  }
                   disabled={!onMessage}
                   onClick={() => onMessage?.(friend)}
                 />
+
                 <UnfriendDialog
                   username={friend.username}
                   disabled={busyId === friend.id}
-                  onConfirm={() => run(friend.id, () => userService.unfriend(friend.id))}
+                  onConfirm={() =>
+                    run(friend.id, () =>
+                      userService.unfriend(friend.id),
+                    )
+                  }
                 />
               </PersonItem>
             ))}
@@ -147,7 +197,10 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       </SectionCard>
 
       {data.sent.length > 0 && (
-        <SectionCard title="Demandes envoyées" count={data.sent.length}>
+        <SectionCard
+          title="Demandes envoyées"
+          count={data.sent.length}
+        >
           <ItemGroup className="divide-y">
             {data.sent.map((req) => (
               <PersonItem key={req.id} user={req.friend}>
@@ -155,11 +208,16 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   <Clock />
                   En attente
                 </Badge>
+
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={busyId === req.friend.id}
-                  onClick={() => run(req.friend.id, () => userService.cancelFriendRequest(req.friend.id))}
+                  onClick={() =>
+                    run(req.friend.id, () =>
+                      userService.cancelFriendRequest(req.friend.id),
+                    )
+                  }
                 >
                   Annuler
                 </Button>

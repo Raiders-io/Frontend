@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { ComponentType } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { UserAvatarButton } from "./UserAvatarButton"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ import { userService } from "@/services/user_service"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
-import { UserAvatar } from "./user/UserAvatar"
+import { UserAvatar } from "./UserAvatar"
 import type { PrivateProfile } from "@/utils/types/user"
 
 type MenuEntry = {
@@ -101,17 +101,19 @@ export function UserMenu() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="h-9 w-9 cursor-pointer rounded-full p-0 transition-shadow hover:ring-2 hover:ring-ring/40 focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:ring-2 data-[state=open]:ring-ring"
-            aria-label={
-              user ? `Open user menu (${user.username})` : "Open account menu"
+          <UserAvatarButton
+            label={
+              user
+                ? `Open user menu (${user.username})`
+                : "Open account menu"
             }
           >
-            <MenuAvatar isAuthenticated={isAuthenticated} user={user} />
-          </Button>
+            <MenuAvatar
+              isAuthenticated={isAuthenticated}
+              user={user}
+            />
+          </UserAvatarButton>
         </DropdownMenuTrigger>
-
         <DropdownMenuContent align="end" className="w-44">
           {groups.map((group, index) => (
             <div key={index}>

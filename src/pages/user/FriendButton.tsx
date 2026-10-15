@@ -6,11 +6,9 @@ import { userService } from "@/services/user_service"
 import { getRelation, useFriendships } from "./useFriendships"
 import { UnfriendDialog } from "./UnfriendDialog"
 
-/** Relation d'amitié avec `userId` + actions possibles (profil public). */
 export function FriendButton({ userId, username }: { userId: string; username: string }) {
   const { data, error, busyId, run } = useFriendships()
 
-  // Échec du chargement (ex. visiteur non connecté) : pas de bouton.
   if (!data) return error ? null : <Skeleton className="h-8 w-28" />
 
   const relation = getRelation(data, userId)
