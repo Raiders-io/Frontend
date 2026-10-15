@@ -40,12 +40,12 @@ export default function SignupPage() {
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
 
-  const [isAgeChecked, setIsAgeChecked] = useState(true)
-  const [isTermsChecked, setIsTermsChecked] = useState(true)
+  const [isAgeChecked, setIsAgeChecked] = useState(false)
+  const [isTermsChecked, setIsTermsChecked] = useState(false)
   const [
     isTermsProhibitedActivitiesChecked,
     setIsTermsProhibitedActivitiesChecked,
-  ] = useState(true)
+  ] = useState(false)
 
   const areCheckboxesValid =
     isAgeChecked && isTermsChecked && isTermsProhibitedActivitiesChecked
@@ -199,7 +199,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="age-confirmation">
                 I am at least 18 years old
               </FieldLabel>
-              <FieldDescription>
+              <FieldDescription className="!mt-0">
                 By clicking this checkbox, you confirm that you are at least 18
                 years old.
               </FieldDescription>
@@ -216,7 +216,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="terms-checkbox-desc">
                 I agree to the terms and conditions
               </FieldLabel>
-              <FieldDescription>
+              <FieldDescription className="!mt-0">
                 By clicking this checkbox, you agree to the Terms of Service.
               </FieldDescription>
             </FieldContent>
@@ -232,7 +232,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
                 I will not use this service for prohibited activities
               </FieldLabel>
-              <FieldDescription>
+              <FieldDescription className="!mt-0">
                 By clicking this checkbox, you agree not to use this service for
                 any prohibited activities (listed in the Terms of Service).
               </FieldDescription>
