@@ -20,7 +20,7 @@ import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { useState, useEffect } from "react"
-import { toast } from 'sonner'
+import { toast } from "sonner"
 
 export default function EditProfile() {
   return (
@@ -73,12 +73,12 @@ export default function EditProfile() {
 }
 
 export const DeleteAccountDialog = () => {
-	const { logout } = useAuthStore()
-	const [ isDisabled , setIsDisabled] = useState(true)
-	const [ countdown, setCountdown ] = useState(5)
-	const [ isOpen, setIsOpen ] = useState(false)
-	let toastId: string | number
-
+  const { logout, user } = useAuthStore()
+  const [isDisabled, setIsDisabled] = useState(true)
+  const [countdown, setCountdown] = useState(5)
+  const [confirmationInput, setConfirmationInput] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
+  let toastId: string | number
   // Timer pour désactiver le bouton
   useEffect(() => {
     if (!isOpen || !isDisabled) return
@@ -97,25 +97,31 @@ export const DeleteAccountDialog = () => {
     return () => clearInterval(timer)
   }, [isOpen, isDisabled])
 
-	const handleDeleteAccount = async () => {
-		try {
-			toast.success("Account deleted successfully.", { id: toastId })
-			await authService.deleteAccount()
-			logout()
-			router.navigate('/login')
-		} catch (error) {
-			console.error('Error deleting account:', error)
-		}
-	}
+  const handleDeleteAccount = async () => {
+    try {
+      await authService.deleteAccount()
+      toast.success("Account deleted successfully.", { id: toastId })
+      logout()
+      router.navigate("/login")
+    } catch (error) {
+      console.error("Error deleting account:", error)
+    }
+  }
 
-	const handleOpenChange = (open: boolean) => {
-		setIsOpen(open)
-		toastId = toast.warning("Are you sure you want to delete your account? This action cannot be undone.", { duration: 5000 })
-		if (open) {
-			setIsDisabled(true)
-			setCountdown(5)
-		}
-	}
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open)
+    toastId = toast.warning(
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      { duration: 5000 },
+    )
+    if (!open) {
+      setIsDisabled(true)
+      setCountdown(5)
+      setConfirmationInput("")
+    }
+  }
+
+  const isConfirmed = confirmationInput === user?.id
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -138,12 +144,24 @@ export const DeleteAccountDialog = () => {
           <AlertDialogDescription>
             Your account will be permanently deleted and you will be logged out.
             This action cannot be undone.
+            <br />
+            <br />
+            To confirm, please type your id: <strong>{user?.id}</strong>
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <div className="px-4 pb-4">
+          <input
+            type="text"
+            value={confirmationInput}
+            onChange={(e) => setConfirmationInput(e.target.value)}
+            placeholder="Enter your id"
+            className="w-full p-2 border rounded"
+          />
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={isDisabled}
+            disabled={isDisabled || !isConfirmed}
             variant="destructive"
             onClick={handleDeleteAccount}
           >
