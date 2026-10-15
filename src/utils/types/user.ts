@@ -33,20 +33,6 @@ export interface UserSearchResult {
   avatar_url: string | null
 }
 
-export interface UserModel {
-  id: string
-  username: string
-  firstname: string | null
-  lastname: string | null
-  bio: string | null
-  avatar_url: string | null
-  current_streak: number
-  longest_streak: number
-  last_activity_date: string | null
-  created_at: string | null
-  updated_at: string | null
-}
-
 export type FriendshipStatus = "pending" | "accepted"
 
 export interface Friendship {
@@ -59,11 +45,11 @@ export interface Friendship {
 }
 
 export interface ReceivedFriendRequest extends Friendship {
-  user: UserModel
+  user: PublicProfile
 }
 
 export interface SentFriendRequest extends Friendship {
-  friend: UserModel
+  friend: PublicProfile
 }
 
 export type LessonStatus = "none" | "ongoing" | "completed"
@@ -85,3 +71,16 @@ export interface LessonOngoing {
   created_at: string | null
   updated_at: string | null
 }
+
+export interface CreatedLesson {
+  id: string
+  title: string
+  created_at: string
+}
+
+export interface CreatedExam {
+  id: string
+  title: string
+  created_at: string
+}
+
