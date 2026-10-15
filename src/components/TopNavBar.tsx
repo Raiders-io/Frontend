@@ -5,7 +5,7 @@ import type {
   SearchResourceOption,
   SearchSortValue,
 } from "@/utils/types/component"
-import { UserMenu } from "./UserMenu"
+import { UserMenu } from "./user/UserMenu"
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
