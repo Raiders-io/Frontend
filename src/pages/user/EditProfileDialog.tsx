@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Camera, Pencil } from "lucide-react"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,14 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { UserAvatar } from "@/components/user/UserAvatar"
 import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
 import { userService } from "@/services/user_service"
-import { UserAvatar } from "@/components/user/UserAvatar"
 import { getErrorMessage } from "./utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
 
 // Règles alignées sur le backend (USER_CONSTRAINTS / AVATAR_CONSTRAINTS)
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
@@ -36,18 +36,23 @@ const schema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, "Lettres, chiffres et _ uniquement"),
   firstname: z.string().trim().max(30, "30 caractères maximum"),
   lastname: z.string().trim().max(30, "30 caractères maximum"),
-  bio: z.string().trim().max(BIO_MAX_LENGTH , `${BIO_MAX_LENGTH} caractères maximum`),
+  bio: z.string().trim().max(BIO_MAX_LENGTH, `${BIO_MAX_LENGTH} caractères maximum`),
 })
 
 type FormValues = z.infer<typeof schema>
 
+function toDefaults(user: PrivateProfile): FormValues {
+  return {
+    username: user.username,
+    firstname: user.firstname ?? "",
+    lastname: user.lastname ?? "",
+    bio: user.bio ?? "",
+  }
+}
+
 interface Props {
   me: PrivateProfile
   onSaved: (me: PrivateProfile) => void
-}
-
-function FieldError({ message }: { message?: string }) {
-  return message ? <p className="text-destructive text-xs">{message}</p> : null
 }
 
 export function EditProfileDialog({ me, onSaved }: Props) {
@@ -69,15 +74,6 @@ export function EditProfileDialog({ me, onSaved }: Props) {
   })
 
   const bioLength = watch("bio")?.length ?? 0
-
-  function toDefaults(user: PrivateProfile): FormValues {
-    return {
-      username: user.username,
-      firstname: user.firstname ?? "",
-      lastname: user.lastname ?? "",
-      bio: user.bio ?? "",
-    }
-  }
 
   function clearAvatar() {
     if (preview) URL.revokeObjectURL(preview)
@@ -135,7 +131,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <Pencil className="size-3.5" />
+          <Pencil />
           Modifier
         </Button>
       </DialogTrigger>
@@ -146,78 +142,88 @@ export function EditProfileDialog({ me, onSaved }: Props) {
           <DialogDescription>Ces informations sont visibles par les autres utilisateurs.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex items-center gap-4">
-            {preview ? (
-              <Avatar className="size-18 shrink-0">
-                <AvatarImage src={preview} alt="Aperçu de la photo de profil" className="object-cover" />
-              </Avatar>
-            ) : (
-              <UserAvatar user={me} className="size-18 shrink-0" />
-            )}
-            <div className="space-y-1">
-              <Button type="button" variant="outline" size="sm" asChild>
-                <label className="cursor-pointer">
-                  <Camera className="size-3.5" />
-                  Changer la photo
-                  <input
-                    type="file"
-                    accept={AVATAR_TYPES.join(",")}
-                    className="sr-only"
-                    onChange={(e) => {
-                      handleFile(e.target.files?.[0])
-                      e.target.value = ""
-                    }}
-                  />
-                </label>
-              </Button>
-              <p className="text-muted-foreground text-xs">JPG, PNG ou WebP · 2 Mo · min. 200×200</p>
-              <FieldError message={avatarError ?? undefined} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Field data-invalid={!!avatarError}>
+              <div className="flex items-center gap-4">
+                {preview ? (
+                  <Avatar className="size-18 shrink-0">
+                    <AvatarImage src={preview} alt="Aperçu de la photo de profil" className="object-cover" />
+                  </Avatar>
+                ) : (
+                  <UserAvatar user={me} className="size-18 shrink-0" />
+                )}
+                <div className="space-y-1">
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <label className="cursor-pointer">
+                      <Camera />
+                      Changer la photo
+                      <input
+                        type="file"
+                        accept={AVATAR_TYPES.join(",")}
+                        className="sr-only"
+                        onChange={(e) => {
+                          handleFile(e.target.files?.[0])
+                          e.target.value = ""
+                        }}
+                      />
+                    </label>
+                  </Button>
+                  <FieldDescription>JPG, PNG ou WebP · 2 Mo · min. 200×200</FieldDescription>
+                  {avatarError && <FieldError>{avatarError}</FieldError>}
+                </div>
+              </div>
+            </Field>
+
+            <Field data-invalid={!!errors.username}>
+              <FieldLabel htmlFor="username">Nom d'utilisateur</FieldLabel>
+              <Input
+                id="username"
+                autoComplete="off"
+                aria-invalid={!!errors.username}
+                {...register("username")}
+              />
+              <FieldError errors={[errors.username]} />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field data-invalid={!!errors.firstname}>
+                <FieldLabel htmlFor="firstname">Prénom</FieldLabel>
+                <Input id="firstname" aria-invalid={!!errors.firstname} {...register("firstname")} />
+                <FieldError errors={[errors.firstname]} />
+              </Field>
+              <Field data-invalid={!!errors.lastname}>
+                <FieldLabel htmlFor="lastname">Nom</FieldLabel>
+                <Input id="lastname" aria-invalid={!!errors.lastname} {...register("lastname")} />
+                <FieldError errors={[errors.lastname]} />
+              </Field>
             </div>
-          </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="username">Nom d'utilisateur</Label>
-            <Input id="username" autoComplete="off" {...register("username")} />
-            <FieldError message={errors.username?.message} />
-          </div>
+            <Field data-invalid={!!errors.bio}>
+              <div className="flex items-center justify-between">
+                <FieldLabel htmlFor="bio">Bio</FieldLabel>
+                <span
+                  className={`text-xs tabular-nums ${
+                    bioLength > BIO_MAX_LENGTH ? "text-destructive font-medium" : "text-muted-foreground"
+                  }`}
+                >
+                  {bioLength}/{BIO_MAX_LENGTH}
+                </span>
+              </div>
+              <Textarea
+                id="bio"
+                rows={4}
+                aria-invalid={!!errors.bio}
+                className="max-h-32 resize-none overflow-y-auto"
+                {...register("bio")}
+              />
+              <FieldError errors={[errors.bio]} />
+            </Field>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="firstname">Prénom</Label>
-              <Input id="firstname" {...register("firstname")} />
-              <FieldError message={errors.firstname?.message} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="lastname">Nom</Label>
-              <Input id="lastname" {...register("lastname")} />
-              <FieldError message={errors.lastname?.message} />
-            </div>
-          </div>
+            <FieldError errors={[errors.root]} />
+          </FieldGroup>
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="bio">Bio</Label>
-              <span
-                className={`text-xs tabular-nums ${
-                  bioLength > BIO_MAX_LENGTH ? "text-destructive font-medium" : "text-muted-foreground"
-                }`}
-              >
-                {bioLength}/{BIO_MAX_LENGTH}
-              </span>
-            </div>
-            <Textarea
-              id="bio"
-              rows={4}
-              className="max-h-32 resize-none overflow-y-auto"
-              {...register("bio")}
-            />
-            <FieldError message={errors.bio?.message} />
-          </div>
-
-          <FieldError message={errors.root?.message} />
-
-          <DialogFooter>
+          <DialogFooter className="mt-6">
             <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
               Annuler
             </Button>

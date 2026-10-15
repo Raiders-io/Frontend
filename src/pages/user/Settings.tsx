@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react"
+import { Loader2, UserX } from "lucide-react"
 import { ThemeDropDown } from "@/components/themeDropDown"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,40 +14,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { UserX, Loader2 } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
-import { useState, useEffect } from "react"
 import { toast } from "sonner"
 
 export default function Settings() {
   return (
-    <>
-      <Card>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+
+      <Card className="max-w-md">
         <CardHeader>
-          <h1>Settings</h1>
+          <CardTitle>Preferences</CardTitle>
+          <CardDescription>Here you can edit your preferences.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Here you can edit your preferences.</h2>
-            </CardHeader>
-            <CardContent>
-              <ThemeDropDown />
-            </CardContent>
-          </Card>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Account Data</h2>
-            </CardHeader>
-            <CardContent>
-              <DeleteAccountDialog />
-            </CardContent>
-          </Card>
+          <ThemeDropDown />
         </CardContent>
       </Card>
-    </>
+
+      <Card className="max-w-md">
+        <CardHeader>
+          <CardTitle>Account Data</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DeleteAccountDialog />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
@@ -59,21 +56,10 @@ export const DeleteAccountDialog = () => {
   let toastId: string | number
   // Timer pour désactiver le bouton
   useEffect(() => {
-    if (!isOpen || !isDisabled) return
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          setIsDisabled(false)
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [isOpen, isDisabled])
+    if (!isOpen || countdown <= 0) return
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [isOpen, countdown])
 
   const handleDeleteAccount = async () => {
     try {
@@ -104,11 +90,7 @@ export const DeleteAccountDialog = () => {
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="destructive"
-          className="cursor-pointer"
-          aria-label="Delete Account"
-        >
+        <Button variant="destructive" aria-label="Delete Account">
           <UserX />
           Delete Account
         </Button>

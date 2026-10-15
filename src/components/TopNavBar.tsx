@@ -1,14 +1,11 @@
 import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
-import { AvatarDropdown } from "./AvatarDropDown"
-import { LogOutDropDown } from "./LogOutDropDown"
-import { useAuthStore } from "@/utils/stores/auth_store"
 import { changePageHome } from "@/utils/router/changePage"
 import CustomSearchBar from "./search/CustomSearchBar"
 import type {
   SearchResourceOption,
   SearchSortValue,
 } from "@/utils/types/component"
+import { UserMenu } from "./UserMenu"
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -18,42 +15,40 @@ const resources: SearchResourceOption[] = [
 ]
 
 const sortOptions: { label: string; value: SearchSortValue }[] = [
-  {label: "Title", value: "title"},
-  {label: "Creation Date", value: "created_at"},
-  {label: "Updated Date", value: "updated_at"},
-  // {label: "Relevance", value: "relevance"},
+  { label: "Title", value: "title" },
+  { label: "Creation Date", value: "created_at" },
+  { label: "Updated Date", value: "updated_at" },
+  // { label: "Relevance", value: "relevance" },
 ]
 
 const TopNavBar = () => {
-
   return (
-    <nav className="flex items-center justify-between p-4 border-b">
-      <div className="flex items-center gap-3">
-        <ButtonGroup>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
-            onClick={changePageHome}
-            aria-label="Go to Home Page"
-          >
-            <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-lg font-semibold"
-            onClick={changePageHome}
-            aria-label="Go to Home Page"
-          >
-            Raiders.io
-          </Button>
-        </ButtonGroup>
-      </div>
-      <CustomSearchBar resources={resources} sortOptions={sortOptions} className="max-w-2/3"/>
+    <nav className="flex items-center justify-between gap-6 border-b p-4">
+      <Button
+        variant="ghost"
+        className="h-10 shrink-0 cursor-pointer gap-2.5 rounded-full py-0 pr-4 pl-1.5 transition-colors"
+        onClick={changePageHome}
+        aria-label="Raiders.io, go to home page"
+      >
+        <img
+          src="/favicon.png"
+          alt=""
+          aria-hidden="true"
+          className="h-8 w-8 rounded-full object-cover"
+        />
+        <span className="hidden text-lg font-semibold tracking-tight sm:inline">
+          Raiders.io
+        </span>
+      </Button>
 
+      <CustomSearchBar
+        resources={resources}
+        sortOptions={sortOptions}
+        className="max-w-2/3"
+      />
 
-      <div className="flex items-center">
-        {useAuthStore().user ? <AvatarDropdown /> : <LogOutDropDown />}
+      <div className="flex shrink-0 items-center">
+        <UserMenu />
       </div>
     </nav>
   )

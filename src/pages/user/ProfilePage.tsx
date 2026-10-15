@@ -1,47 +1,17 @@
-import { useCallback, useEffect, useState, type ComponentType } from "react"
-import { BookOpen, Users, type LucideIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ProfileHeader } from "./ProfileHeader"
-import { LessonsTab } from "./LessonsTab"
-import { FriendsTab } from "./FriendsTab"
-import { EditProfileDialog } from "./EditProfileDialog"
-import { getErrorMessage } from "./utils"
-import type { PrivateProfile, Profile, PublicProfile } from "@/utils/types/user"
-import { userService } from "@/services/user_service"
+import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-
-/* -------------------------------------------------------------------------- */
-/* Types                                                                      */
-/* -------------------------------------------------------------------------- */
-
-/** Props reçues par chaque onglet : même composant en privé et en public. */
-export type ProfileTabProps = {
-  user: Profile
-  isOwner: boolean
-}
-
-type ProfileTabDef = {
-  value: string
-  label: string
-  icon: LucideIcon
-  component: ComponentType<ProfileTabProps>
-  /** Masqué sur le profil public. */
-  ownerOnly?: boolean
-}
-
-/* -------------------------------------------------------------------------- */
-/* Config des onglets : pour en ajouter un, ajouter une entrée ici.           */
-/* -------------------------------------------------------------------------- */
-
-const PROFILE_TABS: ProfileTabDef[] = [
-  { value: "lessons", label: "Leçons", icon: BookOpen, component: LessonsTab },
-  { value: "friends", label: "Amis", icon: Users, component: FriendsTab },
-]
-
-const visibleTabs = (isOwner: boolean) =>
-  PROFILE_TABS.filter((t) => isOwner || !t.ownerOnly)
+import { Button } from "@/components/ui/button"
+import { Empty, EmptyContent, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
+import { Skeleton } from "@/components/ui/skeleton"
+import type { PrivateProfile, PublicProfile } from "@/utils/types/user"
+import { userService } from "@/services/user_service"
+import { ProfileHeader } from "./ProfileHeader"
+import { MyLearning } from "./MyLearning"
+import { CreatedContent } from "./CreatedContent"
+import { FriendsPanel } from "./FriendsPanel"
+import { EditProfileDialog } from "./EditProfileDialog"
+import { FriendButton } from "./FriendButton"
+import { getErrorMessage } from "./utils"
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -68,11 +38,7 @@ function useProfile(identifier?: string) {
       .catch((e) => {
         if (cancelled) return
         const notFound = e?.response?.status === 404
-        setError(
-          notFound
-            ? "Ce profil n'existe pas."
-            : getErrorMessage(e, "Impossible de charger le profil"),
-        )
+        setError(notFound ? "Ce profil n'existe pas." : getErrorMessage(e, "Impossible de charger le profil"))
       })
     return () => {
       cancelled = true
@@ -84,13 +50,9 @@ function useProfile(identifier?: string) {
   return { user, setUser, isOwner, error, retry }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Skeleton                                                                   */
-/* -------------------------------------------------------------------------- */
+const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
 function ProfileSkeleton({ isOwner }: { isOwner: boolean }) {
-  const tabs = visibleTabs(isOwner)
-
   return (
     <div className="space-y-10" aria-busy="true" aria-label="Chargement du profil">
       <div className="flex items-center gap-6">
@@ -102,85 +64,44 @@ function ProfileSkeleton({ isOwner }: { isOwner: boolean }) {
         {isOwner && <Skeleton className="h-9 w-24 rounded-md" />}
       </div>
 
-      <div className="flex gap-8">
-        <div className="flex w-auto shrink-0 flex-col gap-1 sm:w-44">
-          {tabs.map((tab) => (
-            <Skeleton key={tab.value} className="h-9 w-10 rounded-md sm:w-full" />
-          ))}
-        </div>
-        <div className="min-w-0 flex-1 space-y-3">
+      <div className={isOwner ? OWNER_GRID : undefined}>
+        <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 w-full rounded-lg" />
+            <Skeleton key={i} className="h-14 w-full rounded-lg" />
           ))}
         </div>
+        {isOwner && (
+          <div className="space-y-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full rounded-lg" />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/* Erreur                                                                     */
-/* -------------------------------------------------------------------------- */
-
 function ProfileError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-3 py-20 text-center">
-      <p className="text-muted-foreground text-sm">{message}</p>
-      <Button variant="outline" size="sm" onClick={onRetry}>
-        Réessayer
-      </Button>
-    </div>
+    <Empty>
+      <EmptyHeader>
+        <EmptyTitle>{message}</EmptyTitle>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="outline" size="sm" onClick={onRetry}>
+          Réessayer
+        </Button>
+      </EmptyContent>
+    </Empty>
   )
 }
-
-/* -------------------------------------------------------------------------- */
-/* Tabs verticaux                                                             */
-/* -------------------------------------------------------------------------- */
-
-function ProfileTabs({ user, isOwner }: ProfileTabProps) {
-  const tabs = visibleTabs(isOwner)
-
-  return (
-    <Tabs
-      defaultValue={tabs[0].value}
-      orientation="vertical"
-      className="flex-row items-start gap-8"
-    >
-      <TabsList
-        variant="line"
-        className="h-auto w-auto shrink-0 flex-col items-stretch justify-start gap-1 sm:w-44"
-      >
-        {tabs.map(({ value, label, icon: Icon }) => (
-          <TabsTrigger
-            key={value}
-            value={value}
-            aria-label={label}
-            className="justify-start gap-2 px-3 py-2"
-          >
-            <Icon className="size-4 shrink-0" />
-            <span className="hidden sm:inline">{label}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-
-      {tabs.map(({ value, component: Content }) => (
-        <TabsContent key={value} value={value} className="min-w-0 flex-1">
-          <Content user={user} isOwner={isOwner} />
-        </TabsContent>
-      ))}
-    </Tabs>
-  )
-}
-
-/* -------------------------------------------------------------------------- */
-/* Page                                                                       */
-/* -------------------------------------------------------------------------- */
 
 export default function ProfilePage({ userId }: { userId?: string }) {
   const { user, setUser, isOwner, error, retry } = useProfile(userId)
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
+    <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
       {error ? (
         <ProfileError message={error} onRetry={retry} />
       ) : !user ? (
@@ -192,10 +113,32 @@ export default function ProfilePage({ userId }: { userId?: string }) {
             actions={
               isOwner ? (
                 <EditProfileDialog me={user as PrivateProfile} onSaved={setUser} />
-              ) : undefined
+              ) : (
+                <FriendButton userId={user.id} username={user.username} />
+              )
             }
           />
-          <ProfileTabs user={user} isOwner={isOwner} />
+
+          {user.bio && (
+            <p className="text-foreground/80 max-h-24 max-w-2xl overflow-y-auto rounded-md border bg-muted/30 px-3 py-2 text-sm leading-relaxed wrap-break-word whitespace-pre-line sm:max-h-32">
+              {user.bio}
+            </p>
+          )}
+
+          {/* Profil connecté : apprentissage + créations, amis à droite. Public : créations seulement. */}
+          {isOwner ? (
+            <div className={OWNER_GRID}>
+              <div className="space-y-10">
+                <MyLearning />
+                <CreatedContent userId={user.id} />
+              </div>
+              <aside aria-label="Amis">
+                <FriendsPanel />
+              </aside>
+            </div>
+          ) : (
+            <CreatedContent userId={user.id} />
+          )}
         </div>
       )}
     </main>
@@ -203,6 +146,6 @@ export default function ProfilePage({ userId }: { userId?: string }) {
 }
 
 export function PublicProfilePage() {
-  const { id } = useParams<{ id: string }>()
-  return <ProfilePage userId={id} />
+  const { identifier } = useParams<{ identifier: string }>()
+  return <ProfilePage userId={identifier} />
 }

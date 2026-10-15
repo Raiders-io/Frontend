@@ -1,6 +1,8 @@
 import api from "@/utils/lib/axios"
 import type { PaginationParams, Paginated } from "@/utils/types/common"
 import type {
+  CreatedExam,
+  CreatedLesson,
   Friendship,
   LessonCompleted,
   LessonOngoing,
@@ -10,16 +12,16 @@ import type {
   ReceivedFriendRequest,
   SentFriendRequest,
   UpdateMePayload,
-  UserModel,
   UserSearchResult } from "@/utils/types/user"
 
 const PROFILE = "/api/v1/profile"
-const FRIENDS = "/api/v1/friends/me"
-const LESSONS = `${PROFILE}/me/lessons`
+const ME = `${PROFILE}/me`
+const FRIENDS = `${ME}/friends`
+const LESSONS = `${ME}/lessons`
 
 export const userService = {
   fetchMe: async (): Promise<PrivateProfile> => {
-    const { data } = await api.get<PrivateProfile>(`${PROFILE}/me`)
+    const { data } = await api.get<PrivateProfile>(ME)
     return data
   },
 
@@ -28,7 +30,7 @@ export const userService = {
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== undefined) form.append(key, value as string | Blob)
     })
-    const { data } = await api.patch<PrivateProfile>(`${PROFILE}/me`, form, {
+    const { data } = await api.patch<PrivateProfile>(ME, form, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     return data
@@ -40,7 +42,7 @@ export const userService = {
   },
 
   fetchByUsername: async (username: string) => {
-    const { data } = await api.get<PublicProfile>(`/profile/u/${encodeURIComponent(username)}`)
+    const { data } = await api.get<PublicProfile>(`${PROFILE}/u/${encodeURIComponent(username)}`)
     return data
   },
 
@@ -56,8 +58,8 @@ export const userService = {
     return data
   },
 
-  fetchFriends: async (): Promise<UserModel[]> => {
-    const { data } = await api.get<UserModel[]>(FRIENDS)
+  fetchFriends: async (): Promise<PublicProfile[]> => {
+    const { data } = await api.get<PublicProfile[]>(FRIENDS)
     return data
   },
 
@@ -119,5 +121,21 @@ export const userService = {
 
   unsubscribeLesson: async (lessonId: string): Promise<void> => {
     await api.delete(`${LESSONS}/${lessonId}/unsubscribe`)
+  },
+
+  fetchCreatedLessons: async (
+    userId: string,
+    params: PaginationParams = {}
+  ): Promise<Paginated<CreatedLesson>> => {
+    const { data } = await api.get<Paginated<CreatedLesson>>(`${PROFILE}/${userId}/lessons`, { params })
+    return data
+  },
+
+  fetchCreatedExams: async (
+    userId: string,
+    params: PaginationParams = {}
+  ): Promise<Paginated<CreatedExam>> => {
+    const { data } = await api.get<Paginated<CreatedExam>>(`${PROFILE}/${userId}/exams`, { params })
+    return data
   },
 }
