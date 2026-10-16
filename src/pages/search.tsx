@@ -5,12 +5,13 @@ import PaginatedGrid from "@/components/search/PaginatedGrid"
 
 import { useSearchLesson } from "@/utils/hooks/useSearch"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
-import { mockLesson } from "@/utils/mock"
+import { useMemo } from "react"
+// import { mockLesson } from "@/utils/mock"
 
-const MockSerializedLessons: SerializedSearchItem<Lesson>[] = mockLesson.map((lesson) => ({
-  kind: "lesson" as const,
-  data: lesson,
-}))
+// const MockSerializedLessons: SerializedSearchItem<Lesson>[] = mockLesson.map((lesson) => ({
+//   kind: "lesson" as const,
+//   data: lesson,
+// }))
 
 export default function SearchPage() {
   const { items, total, loading } = useSearchLesson()
@@ -20,29 +21,34 @@ export default function SearchPage() {
     switch (item.kind) {
       case "lesson":
         return <LessonCard Lesson={item.data} />
+      default:
+        return <></>
     }
   }
 
-  const serializeLesson = items?.map((lesson) => ({
-    kind: "lesson" as const,
-    data: lesson,
-  }))
+  const serializedLessons = useMemo(() => {
+    if (!items) return []
+    return items.map((lesson) => ({
+      kind: "lesson" as const,
+      data: lesson,
+    }))
+  }, [items])
 
-  
+
   return (
     <>
-    <PaginatedGrid
-      items={serializeLesson?.length > 0 ? serializeLesson : MockSerializedLessons}
-      loading={loading}
-      limit={limit}
-      currentPage={page}
-      totalPages={Math.ceil(total / limit)}
-      renderItem={renderItem}
-      getKey={(item) => item.data.UUID}
-      onPageChange={setPage}
+      <PaginatedGrid
+        items={serializedLessons}
+        loading={loading}
+        limit={limit}
+        currentPage={page}
+        totalPages={Math.ceil(total / limit)}
+        renderItem={renderItem}
+        getKey={(item) => item.data.UUID}
+        onPageChange={setPage}
       >
 
-    </PaginatedGrid>
+      </PaginatedGrid>
     </>
   )
 }

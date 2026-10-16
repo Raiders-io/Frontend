@@ -26,7 +26,7 @@ export default function LessonCard({
   const navigate = useNavigate()
   const [showMore, setShowMore] = useState(false)
   const text = Lesson.description
-  const lessonAddr = `/lesson/${Lesson.author}/${Lesson.slug}/`
+  const lessonAddr = `/lesson/${Lesson.author.username}/${Lesson.slug}/`
   return (
     <Card className={`flex h-full flex-col overflow-hidden ${className}`}>
       <CardHeader className="flex-1">
@@ -78,16 +78,19 @@ export default function LessonCard({
         </div>
       </CardContent>
       <CardFooter className="mt-auto">
-        <h1>Lesson created by: </h1>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            return navigate(`/profile/${Lesson.author}`)
-          }}
-        >
-          {Lesson.author}
-        </Button>
+        <span className="flex ">
+          <span className="font-bold border">Created by: </span>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              return navigate(`/users/${Lesson.author.username}/`)
+            }}
+            className="border"
+          >
+            {Lesson.author.username}
+          </Button>
+        </span>
       </CardFooter>
     </Card>
   )

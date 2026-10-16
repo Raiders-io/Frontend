@@ -14,10 +14,7 @@ import type {
 } from "@/utils/schema/lessonSchema" // Adjust path to your schemas file
 
 export const lessonService = {
-  // ==========================================
-  // Lessons
-  // ==========================================
-  
+
   getAllLessons: async (): Promise<Lesson[]> => {
     const { data } = await api.get<Lesson[]>("/api/v1/lessons")
     return data
@@ -66,10 +63,6 @@ export const lessonService = {
     const { data } = await api.delete<string>(`/api/v1/lessons/cnt/${author}/${content}`)
     return data
   },
-
-  // ==========================================
-  // Search & Tags
-  // ==========================================
 
   searchLessons: async (
     params: LessonSearchParams = {},

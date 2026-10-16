@@ -20,7 +20,7 @@ import {
 
 import PrivacyField from "@/components/lesson/PrivacyField"
 import TagsField from "./TagsField"
-import AttachmentsField, { type AttachmentPickerProps } from "./AttachmentsField"
+// import AttachmentsField, { type AttachmentPickerProps } from "./AttachmentsField"
 import {
   EMPTY_LESSON_VALUES,
   CreateLessonSchema,
@@ -38,7 +38,7 @@ export interface LessonFormProps {
   heading?: string
   description?: string
   submitLabel?: string
-  renderAttachmentPicker?: (props: AttachmentPickerProps) => ReactNode
+  // renderAttachmentPicker?: (props: AttachmentPickerProps) => ReactNode
   footerActions?: ReactNode
 }
 
@@ -67,7 +67,7 @@ export default function LessonForm({
   heading,
   description,
   submitLabel,
-  renderAttachmentPicker,
+  // renderAttachmentPicker,
   footerActions,
 }: LessonFormProps) {
   const copy = COPY[mode]
@@ -182,7 +182,7 @@ export default function LessonForm({
             </Field>
           </div>
 
-          <Controller
+          {/* <Controller
             name="files"
             control={control}
             render={({ field }) => (
@@ -193,7 +193,7 @@ export default function LessonForm({
                 renderPicker={renderAttachmentPicker}
               />
             )}
-          />
+          /> */}
         </FieldGroup>
       </FieldSet>
 

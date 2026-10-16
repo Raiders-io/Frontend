@@ -29,7 +29,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-1",
     authorId: "dam-03",
     tags: mockTag,
-    author: "dam"
+    author: {username: "dam", id: "dam-03"}
   },
   {
     title: "Sample Lesson 2",
@@ -37,7 +37,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-2",
     authorId: "dam-03",
     tags: mockTag,
-    author: "dam"
+    author: {username: "dam", id: "dam-03"}
 
   },
   {
@@ -46,7 +46,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-3",
     authorId: "enz-03",
     tags: mockTag,
-    author: "enz"
+    author: {username: "enz", id: "enz-03"}
 
   },
   {
@@ -55,7 +55,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-4",
     authorId: "enz-03",
     tags: mockTag,
-    author: "enz"
+    author: {username: "enz", id: "enz-03"}
 
   }
 ]

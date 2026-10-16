@@ -47,14 +47,15 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
             ? Array.from({ length: 5 }).map((_, i) => (
                 <SkeletonCard key={i} className="w-full max-h-20" />
               ))
-            : items?.map((item) => (
+            : items?.length > 0 ? items.map((item) => (
                 <LessonCard
                   key={item.UUID}
                   Lesson={item}
                   maxLen={20}
                   className="w-full max-h-20"
                 />
-              ))}
+              ))
+              : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
         </div>
       </PopoverContent>
     </Popover>
