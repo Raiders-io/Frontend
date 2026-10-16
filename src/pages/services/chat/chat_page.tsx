@@ -96,7 +96,7 @@ export default function ChatPage() {
 										{initials(activeLabel)}
 									</AvatarFallback>
 								</Avatar>
-								<div className="min-w-0">
+								<div className="min-w-0 [&>p]:mt-0">
 									<p className="truncate text-sm font-medium text-foreground">
 										{activeLabel}
 									</p>
