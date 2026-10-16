@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Camera, Pencil } from "lucide-react"
+import { Camera, Pencil, X } from "lucide-react"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,17 +18,13 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/c
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { UserAvatar } from "@/components/user/UserAvatar"
+
 import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
 import { useUpdateMe } from "@/services/user/user_queries"
 import { getErrorMessage } from "./utils"
+import { UserBackground } from "@/components/user/UserBackground"
 
-const AVATAR_MAX_BYTES = 2 * 1024 * 1024
-const AVATAR_MIN_SIZE = 200
-// Miroir de BACKGROUND_CONSTRAINTS côté backend
-const BACKGROUND_MAX_BYTES = 2 * 1024 * 1024
-const BACKGROUND_MIN_WIDTH = 600
-const BACKGROUND_MIN_HEIGHT = 200
-const BACKGROUND_MAX_DIMENSION = 5000
+const IMAGE_MAX_BYTES = 2 * 1024 * 1024
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
 const BIO_MAX_LENGTH = 5000
 
@@ -55,23 +51,7 @@ function toDefaults(user: PrivateProfile): FormValues {
   }
 }
 
-interface ImageRules {
-  maxBytes: number
-  minWidth?: number
-  minHeight?: number
-  maxDimension?: number
-}
-
-function readDimensions(url: string) {
-  return new Promise<{ width: number; height: number }>((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
-    img.onerror = reject
-    img.src = url
-  })
-}
-
-function useImageField({ maxBytes, minWidth, minHeight, maxDimension }: ImageRules) {
+function useImagePicker() {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -83,43 +63,25 @@ function useImageField({ maxBytes, minWidth, minHeight, maxDimension }: ImageRul
     setError(null)
   }
 
-  async function select(f?: File) {
-    if (!f) return
-    if (!IMAGE_TYPES.includes(f.type)) {
+  function pick(next?: File) {
+    if (!next) return
+    if (!IMAGE_TYPES.includes(next.type)) {
+      clear()
       setError("Accepted extensions: JPG, PNG, WebP")
       return
     }
-    if (f.size > maxBytes) {
-      setError(`Maximum ${maxBytes / 1024 / 1024} MB`)
+    if (next.size > IMAGE_MAX_BYTES) {
+      clear()
+      setError("Maximum 2 MB")
       return
     }
-
-    const url = URL.createObjectURL(f)
-    try {
-      const { width, height } = await readDimensions(url)
-      if ((minWidth && width < minWidth) || (minHeight && height < minHeight)) {
-        URL.revokeObjectURL(url)
-        setError(`Minimum ${minWidth ?? 0}×${minHeight ?? 0} px`)
-        return
-      }
-      if (maxDimension && (width > maxDimension || height > maxDimension)) {
-        URL.revokeObjectURL(url)
-        setError(`Maximum ${maxDimension}×${maxDimension} px`)
-        return
-      }
-    } catch {
-      URL.revokeObjectURL(url)
-      setError("Invalid image")
-      return
-    }
-
     if (preview) URL.revokeObjectURL(preview)
     setError(null)
-    setFile(f)
-    setPreview(url)
+    setFile(next)
+    setPreview(URL.createObjectURL(next))
   }
 
-  return { file, preview, error, select, clear }
+  return { file, preview, error, pick, clear }
 }
 
 interface Props {
@@ -129,17 +91,8 @@ interface Props {
 export function EditProfileDialog({ me }: Props) {
   const updateMe = useUpdateMe()
   const [open, setOpen] = useState(false)
-  const avatar = useImageField({
-    maxBytes: AVATAR_MAX_BYTES,
-    minWidth: AVATAR_MIN_SIZE,
-    minHeight: AVATAR_MIN_SIZE,
-  })
-  const background = useImageField({
-    maxBytes: BACKGROUND_MAX_BYTES,
-    minWidth: BACKGROUND_MIN_WIDTH,
-    minHeight: BACKGROUND_MIN_HEIGHT,
-    maxDimension: BACKGROUND_MAX_DIMENSION,
-  })
+  const avatar = useImagePicker()
+  const background = useImagePicker()
 
   const {
     register,
@@ -157,9 +110,8 @@ export function EditProfileDialog({ me }: Props) {
 
   function handleOpenChange(next: boolean) {
     setOpen(next)
-    if (next) {
-      reset(toDefaults(me))
-    } else {
+    if (next) reset(toDefaults(me))
+    else {
       avatar.clear()
       background.clear()
     }
@@ -167,7 +119,6 @@ export function EditProfileDialog({ me }: Props) {
 
   const onSubmit = async (values: FormValues) => {
     const payload: UpdateMePayload = {}
-
     const nullableFields = ["firstname", "lastname", "bio"] as const
 
     for (const key of nullableFields) {
@@ -180,8 +131,13 @@ export function EditProfileDialog({ me }: Props) {
       payload.username = values.username
     }
 
-    if (avatar.file) payload.avatar = avatar.file
-    if (background.file) payload.background = background.file
+    if (avatar.file) {
+      payload.avatar = avatar.file
+    }
+
+    if (background.file) {
+      payload.background = background.file
+    }
 
     if (Object.keys(payload).length === 0) {
       handleOpenChange(false)
@@ -197,8 +153,6 @@ export function EditProfileDialog({ me }: Props) {
       })
     }
   }
-
-  const backgroundSrc = background.preview ?? null
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -217,18 +171,18 @@ export function EditProfileDialog({ me }: Props) {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
+            {/* Background */}
             <Field data-invalid={!!background.error}>
-              <div className="bg-muted relative aspect-3/1 w-full overflow-hidden rounded-md">
-                {backgroundSrc && (
-                  <img src={backgroundSrc} alt="Background preview" className="size-full object-cover" />
-                )}
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  asChild
-                  className="absolute right-2 bottom-2"
-                >
+              <FieldLabel>Background</FieldLabel>
+              {background.preview ? (
+                <div className="aspect-3/1 w-full overflow-hidden rounded-lg bg-muted">
+                  <img src={background.preview} alt="Background preview" className="h-full w-full object-cover" />
+                </div>
+              ) : (
+                <UserBackground userId={me.id} className="aspect-3/1 w-full rounded-lg" />
+              )}
+              <div className="flex items-center gap-2 mt-2">
+                <Button type="button" variant="outline" size="sm" asChild>
                   <label className="cursor-pointer">
                     <Camera />
                     Change background
@@ -237,19 +191,24 @@ export function EditProfileDialog({ me }: Props) {
                       accept={IMAGE_TYPES.join(",")}
                       className="sr-only"
                       onChange={(e) => {
-                        background.select(e.target.files?.[0])
+                        background.pick(e.target.files?.[0])
                         e.target.value = ""
                       }}
                     />
                   </label>
                 </Button>
+                {background.file && (
+                  <Button type="button" variant="ghost" size="sm" onClick={background.clear}>
+                    <X />
+                    Cancel
+                  </Button>
+                )}
               </div>
-              <FieldDescription>
-                JPG, PNG, or WebP · Max 2 MB · Min. {BACKGROUND_MIN_WIDTH}×{BACKGROUND_MIN_HEIGHT}
-              </FieldDescription>
+              <FieldDescription>JPG, PNG, or WebP · Max 2 MB · Min. 600×200 · Ratio 3:1</FieldDescription>
               {background.error && <FieldError>{background.error}</FieldError>}
             </Field>
 
+            {/* Avatar */}
             <Field data-invalid={!!avatar.error}>
               <div className="flex items-center gap-4">
                 {avatar.preview ? (
@@ -269,7 +228,7 @@ export function EditProfileDialog({ me }: Props) {
                         accept={IMAGE_TYPES.join(",")}
                         className="sr-only"
                         onChange={(e) => {
-                          avatar.select(e.target.files?.[0])
+                          avatar.pick(e.target.files?.[0])
                           e.target.value = ""
                         }}
                       />

@@ -58,8 +58,17 @@ export const userService = {
       : userService.fetchUserByUsername(identifier)
   },
 
-  getAvatar: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
-  getBackground: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/background`,
+  fetchAvatar: async (identifier?: string): Promise<string> => {
+    const url = identifier ? `${PROFILE}/${identifier}/avatar` : `${ME}/avatar`
+    const { data } = await api.get(url, { responseType: "blob" })
+    return URL.createObjectURL(data)
+  },
+
+  fetchBackground: async (identifier?: string): Promise<string> => {
+    const url = identifier ? `${PROFILE}/${identifier}/background` : `${ME}/background`
+    const { data } = await api.get(url, { responseType: "blob" })
+    return URL.createObjectURL(data)
+  },
 
   searchUsers: async (
     q: string,

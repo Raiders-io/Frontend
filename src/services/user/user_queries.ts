@@ -18,6 +18,11 @@ export const userKeys = {
   profiles: () => [...userKeys.all, "profile"] as const,
   profile: (identifier: string) => [...userKeys.profiles(), identifier] as const,
 
+  avatar: (identifier?: string) => 
+    identifier === undefined ? [...userKeys.me(), "avatar"] as const : [...userKeys.profile(identifier), "avatar"] as const,
+  background: (identifier?: string) => 
+    identifier === undefined ? [...userKeys.me(), "background"] as const : [...userKeys.profile(identifier), "background"] as const,
+
   friendships: () => [...userKeys.all, "friendships"] as const,
   relationship: (userId: string) => [...userKeys.all, "relationship", userId] as const,
 
@@ -33,8 +38,26 @@ export function useUpdateMe() {
     mutationFn: (payload: UpdateMePayload) => userService.updateMe(payload),
     onSuccess: (me: PrivateProfile) => {
       qc.setQueryData(userKeys.me(), me)
-      qc.invalidateQueries({ queryKey: userKeys.profiles() }) // si le username a changé
+      qc.invalidateQueries({ queryKey: userKeys.profiles() })
+      qc.invalidateQueries({ queryKey: userKeys.avatar() })
+      qc.invalidateQueries({ queryKey: userKeys.background() })
     },
+  })
+}
+
+export function useAvatar(identifier?: string) {
+  return useQuery({
+    queryKey: userKeys.avatar(identifier),
+    queryFn: () => userService.fetchAvatar(identifier),
+    staleTime: 1000 * 60 * 10, 
+  })
+}
+
+export function useBackground(identifier?: string) {
+  return useQuery({
+    queryKey: userKeys.background(identifier),
+    queryFn: () => userService.fetchBackground(identifier),
+    staleTime: 1000 * 60 * 10,
   })
 }
 
