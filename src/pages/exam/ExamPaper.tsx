@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
-import { DisplayResult } from "@/components/exam/DisplayResult"
 
 type ExamOption = { id: string; title: string | null }
 
