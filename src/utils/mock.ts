@@ -25,19 +25,21 @@ export const mockFiles: { filename: string }[] = [
 export const mockLesson: Lesson[] = [
   {
     title: "Sample Lesson 1",
+    description: "Hello here is some desctiption",
     UUID: "uuid-1",
     slug: "sample-lesson-1",
     authorId: "dam-03",
     tags: mockTag,
-    author: {username: "dam", id: "dam-03"}
+    author: { username: "dam", id: "dam-03" }
   },
   {
     title: "Sample Lesson 2",
+    description: "Hello here is some veeeeeeeee rrryyyyyya yyyyyyyyy looooooa oooooooooooooooo oooooooooooog desctiption",
     UUID: "uuid-2",
     slug: "sample-lesson-2",
     authorId: "dam-03",
     tags: mockTag,
-    author: {username: "dam", id: "dam-03"}
+    author: { username: "dam", id: "dam-03" }
 
   },
   {
@@ -46,7 +48,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-3",
     authorId: "enz-03",
     tags: mockTag,
-    author: {username: "enz", id: "enz-03"}
+    author: { username: "enz", id: "enz-03" }
 
   },
   {
@@ -55,7 +57,7 @@ export const mockLesson: Lesson[] = [
     slug: "sample-lesson-4",
     authorId: "enz-03",
     tags: mockTag,
-    author: {username: "enz", id: "enz-03"}
+    author: { username: "enz", id: "enz-03" }
 
   }
 ]
