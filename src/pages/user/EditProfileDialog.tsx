@@ -24,7 +24,7 @@ import { getErrorMessage } from "./utils"
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
 const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"]
-const BIO_MAX_LENGTH = 1000
+const BIO_MAX_LENGTH = 5000
 
 const schema = z.object({
   username: z
