@@ -1,5 +1,7 @@
 import LessonCard from "@/components/lesson/LessonCard"
+import { Button } from "@/components/ui/button"
 import { mockLesson } from "@/utils/mock"
+import { ToolboxIcon } from "lucide-react"
 
 export default function TestPage() {
   const lesson = mockLesson
@@ -7,8 +9,18 @@ export default function TestPage() {
   return (
     <div>
       <h1> This is a test page it should be removed from the final project</h1>
-      <div className="flex">
-        <LessonCard Lesson={lesson[0]} />
+      <div className="flex flex-wrap">
+        <LessonCard lesson={lesson[0]} />
+        <LessonCard lesson={lesson[1]} variant="small" />
+        <LessonCard lesson={lesson[0]} variant="preview" />
+        <LessonCard lesson={lesson[1]} actions={<>
+          <Button
+            variant="outline"
+            onClick={() => console.log("prout")}
+          >
+            <ToolboxIcon />
+          </Button>
+        </>} />
       </div>
     </div>
   )
