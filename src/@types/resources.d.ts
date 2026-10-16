@@ -92,7 +92,6 @@ export default interface Resources {
     "dropYourFilesHere": "Drop your files here",
     "editProfile": "Edit Profile",
     "edit_preferences": "Modify preferences",
-    "edit_profile": "edit_profile",
     "edit_profile_info_1": "Edit your profile information 1 here...",
     "edit_profile_info_2": "Edit your profile information 2 here...",
     "edit_profile_info_3": "Edit your profile information 3 here...",
