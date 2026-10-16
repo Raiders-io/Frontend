@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Empty, EmptyContent, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { PrivateProfile } from "@/utils/types/user"
-import { userService } from "@/services/user/user_service"
 import { useProfile } from "@/services/user/user_queries"
 import { ProfileHeader } from "./ProfileHeader"
 import { MyLearning } from "./MyLearning"
@@ -13,6 +12,7 @@ import { EditProfileDialog } from "./EditProfileDialog"
 import { FriendButton } from "./FriendButton"
 import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
+import { UserBackground } from "@/components/user/UserBackground"
 
 const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
@@ -65,8 +65,6 @@ export default function ProfilePage({ userId }: { userId?: string }) {
   const isOwner = !userId
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
-  const backgroundUrl = user ? userService.getBackground(user.id) : undefined
-
   const errorMessage = error
     ? (error as any)?.response?.status === 404
       ? "This profile does not exist."
@@ -76,13 +74,7 @@ export default function ProfilePage({ userId }: { userId?: string }) {
   return (
     <div className="relative min-h-screen w-full">
       {/* Background Banner with improved fallback gradient */}
-      <div
-        className="absolute inset-x-0 top-0 -z-10 h-64 w-full bg-cover bg-center border-b bg-linear-to-r from-primary/15 via-muted to-primary/15"
-        style={backgroundUrl ? { backgroundImage: `url(${backgroundUrl})` } : undefined}
-        aria-hidden="true"
-      >
-        <div className="absolute inset-0 bg-background/30 backdrop-blur-[2px]" />
-      </div>
+      <UserBackground></UserBackground>
 
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
         {errorMessage ? (
