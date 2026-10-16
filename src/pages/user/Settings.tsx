@@ -28,14 +28,15 @@ import { toast } from "sonner"
 import { useTranslation } from 'react-i18next'
 
 export default function Settings() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
 
       <Card className="max-w-md">
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
-          <CardDescription>Here you can edit your preferences.</CardDescription>
+          <h2>{t('editProfile')}</h2>
         </CardHeader>
         <CardContent>
           <ThemeDropDown />
