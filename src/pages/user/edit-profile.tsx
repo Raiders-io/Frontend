@@ -38,7 +38,7 @@ export default function EditProfile() {
     <CardContent>
       <Card className="w-full max-w-md p-4">
         <CardHeader>
-          <h2>{t('edit_profile')}</h2>
+          <h2>{t('editProfile')}</h2>
         </CardHeader>
         <CardContent>
           <Textarea placeholder={t('edit_profile_info_1')} className="w-full h-12 p-2 border rounded" />
