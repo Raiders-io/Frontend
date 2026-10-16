@@ -48,20 +48,28 @@ export default function Settings() {
 }
 
 export const DeleteAccountDialog = () => {
-  const { logout, user } = useAuthStore()
+  const { logout } = useAuthStore()
   const [isDisabled, setIsDisabled] = useState(true)
   const [countdown, setCountdown] = useState(5)
   const [confirmationInput, setConfirmationInput] = useState("")
   const [isOpen, setIsOpen] = useState(false)
-  let toastId: string | number
-  // Timer pour désactiver le bouton
+
+  const REQUIRED_PHRASE = "delete my account"
+  const isConfirmed = confirmationInput.trim().toLowerCase() === REQUIRED_PHRASE
+
+  // Timer: Se lance seulement quand la phrase de confirmation est valide
   useEffect(() => {
-    if (!isOpen || countdown <= 0) return
+    if (!isOpen || !isConfirmed || countdown <= 0) {
+      if (countdown <= 0) setIsDisabled(false)
+      return
+    }
+
     const timer = setTimeout(() => setCountdown((c) => c - 1), 1000)
     return () => clearTimeout(timer)
-  }, [isOpen, countdown])
+  }, [isOpen, isConfirmed, countdown])
 
   const handleDeleteAccount = async () => {
+    const toastId = toast.loading("Deleting your account...")
     try {
       await authService.deleteAccount()
       toast.success("Account deleted successfully.", { id: toastId })
@@ -69,23 +77,19 @@ export const DeleteAccountDialog = () => {
       router.navigate("/login")
     } catch (error) {
       console.error("Error deleting account:", error)
+      toast.error("Failed to delete account. Please try again.", { id: toastId })
     }
   }
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open)
-    toastId = toast.warning(
-      "Are you sure you want to delete your account? This action cannot be undone.",
-      { duration: 5000 },
-    )
-    if (!open) {
+    if (open) {
+      // Reinitialiser les etats a l'ouverture
       setIsDisabled(true)
       setCountdown(5)
       setConfirmationInput("")
     }
   }
-
-  const isConfirmed = confirmationInput === user?.id
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -106,16 +110,29 @@ export const DeleteAccountDialog = () => {
             This action cannot be undone.
             <br />
             <br />
-            To confirm, please type your id: <strong>{user?.id}</strong>
+            To confirm, please type:{" "}
+            <strong
+              className="select-none pointer-events-none"
+              onContextMenu={(e) => e.preventDefault()}
+            >
+              {REQUIRED_PHRASE}
+            </strong>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="px-4 pb-4">
           <input
             type="text"
             value={confirmationInput}
-            onChange={(e) => setConfirmationInput(e.target.value)}
-            placeholder="Enter your id"
-            className="w-full p-2 border rounded"
+            onChange={(e) => {
+              setConfirmationInput(e.target.value)
+              // Reset du countdown et du statut si l'utilisateur modifie la saisie
+              if (e.target.value.trim().toLowerCase() !== REQUIRED_PHRASE) {
+                setCountdown(5)
+                setIsDisabled(true)
+              }
+            }}
+            placeholder={`Type "${REQUIRED_PHRASE}"`}
+            className="w-full p-2 border rounded bg-background text-foreground"
           />
         </div>
         <AlertDialogFooter>
@@ -125,7 +142,7 @@ export const DeleteAccountDialog = () => {
             variant="destructive"
             onClick={handleDeleteAccount}
           >
-            {isDisabled ? (
+            {isConfirmed && isDisabled ? (
               <>
                 <Loader2 className="animate-spin" size={16} />
                 Please wait {countdown}s
