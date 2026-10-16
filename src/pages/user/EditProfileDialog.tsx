@@ -23,7 +23,13 @@ import { useUpdateMe } from "@/services/user/user_queries"
 import { getErrorMessage } from "./utils"
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
-const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"]
+const AVATAR_MIN_SIZE = 200
+// Miroir de BACKGROUND_CONSTRAINTS côté backend
+const BACKGROUND_MAX_BYTES = 2 * 1024 * 1024
+const BACKGROUND_MIN_WIDTH = 600
+const BACKGROUND_MIN_HEIGHT = 200
+const BACKGROUND_MAX_DIMENSION = 5000
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
 const BIO_MAX_LENGTH = 5000
 
 const schema = z.object({
@@ -49,6 +55,73 @@ function toDefaults(user: PrivateProfile): FormValues {
   }
 }
 
+interface ImageRules {
+  maxBytes: number
+  minWidth?: number
+  minHeight?: number
+  maxDimension?: number
+}
+
+function readDimensions(url: string) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    img.onerror = reject
+    img.src = url
+  })
+}
+
+function useImageField({ maxBytes, minWidth, minHeight, maxDimension }: ImageRules) {
+  const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  function clear() {
+    if (preview) URL.revokeObjectURL(preview)
+    setFile(null)
+    setPreview(null)
+    setError(null)
+  }
+
+  async function select(f?: File) {
+    if (!f) return
+    if (!IMAGE_TYPES.includes(f.type)) {
+      setError("Accepted extensions: JPG, PNG, WebP")
+      return
+    }
+    if (f.size > maxBytes) {
+      setError(`Maximum ${maxBytes / 1024 / 1024} MB`)
+      return
+    }
+
+    const url = URL.createObjectURL(f)
+    try {
+      const { width, height } = await readDimensions(url)
+      if ((minWidth && width < minWidth) || (minHeight && height < minHeight)) {
+        URL.revokeObjectURL(url)
+        setError(`Minimum ${minWidth ?? 0}×${minHeight ?? 0} px`)
+        return
+      }
+      if (maxDimension && (width > maxDimension || height > maxDimension)) {
+        URL.revokeObjectURL(url)
+        setError(`Maximum ${maxDimension}×${maxDimension} px`)
+        return
+      }
+    } catch {
+      URL.revokeObjectURL(url)
+      setError("Invalid image")
+      return
+    }
+
+    if (preview) URL.revokeObjectURL(preview)
+    setError(null)
+    setFile(f)
+    setPreview(url)
+  }
+
+  return { file, preview, error, select, clear }
+}
+
 interface Props {
   me: PrivateProfile
 }
@@ -56,9 +129,17 @@ interface Props {
 export function EditProfileDialog({ me }: Props) {
   const updateMe = useUpdateMe()
   const [open, setOpen] = useState(false)
-  const [avatar, setAvatar] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [avatarError, setAvatarError] = useState<string | null>(null)
+  const avatar = useImageField({
+    maxBytes: AVATAR_MAX_BYTES,
+    minWidth: AVATAR_MIN_SIZE,
+    minHeight: AVATAR_MIN_SIZE,
+  })
+  const background = useImageField({
+    maxBytes: BACKGROUND_MAX_BYTES,
+    minWidth: BACKGROUND_MIN_WIDTH,
+    minHeight: BACKGROUND_MIN_HEIGHT,
+    maxDimension: BACKGROUND_MAX_DIMENSION,
+  })
 
   const {
     register,
@@ -74,35 +155,15 @@ export function EditProfileDialog({ me }: Props) {
 
   const bioLength = watch("bio")?.length ?? 0
 
-  function clearAvatar() {
-    if (preview) URL.revokeObjectURL(preview)
-    setAvatar(null)
-    setPreview(null)
-    setAvatarError(null)
-  }
-
   function handleOpenChange(next: boolean) {
     setOpen(next)
-    if (next) reset(toDefaults(me))
-    else clearAvatar()
-  }
-
-  function handleFile(file?: File) {
-    if (!file) return
-    if (!AVATAR_TYPES.includes(file.type)) {
-      setAvatarError("Accepted extensions: JPG, PNG, WebP")
-      return
+    if (next) {
+      reset(toDefaults(me))
+    } else {
+      avatar.clear()
+      background.clear()
     }
-    if (file.size > AVATAR_MAX_BYTES) {
-      setAvatarError("Maximum 2 MB")
-      return
-    }
-    if (preview) URL.revokeObjectURL(preview)
-    setAvatarError(null)
-    setAvatar(file)
-    setPreview(URL.createObjectURL(file))
   }
-
 
   const onSubmit = async (values: FormValues) => {
     const payload: UpdateMePayload = {}
@@ -119,9 +180,8 @@ export function EditProfileDialog({ me }: Props) {
       payload.username = values.username
     }
 
-    if (avatar) {
-      payload.avatar = avatar
-    }
+    if (avatar.file) payload.avatar = avatar.file
+    if (background.file) payload.background = background.file
 
     if (Object.keys(payload).length === 0) {
       handleOpenChange(false)
@@ -138,6 +198,7 @@ export function EditProfileDialog({ me }: Props) {
     }
   }
 
+  const backgroundSrc = background.preview ?? null
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -156,11 +217,44 @@ export function EditProfileDialog({ me }: Props) {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
-            <Field data-invalid={!!avatarError}>
+            <Field data-invalid={!!background.error}>
+              <div className="bg-muted relative aspect-3/1 w-full overflow-hidden rounded-md">
+                {backgroundSrc && (
+                  <img src={backgroundSrc} alt="Background preview" className="size-full object-cover" />
+                )}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  asChild
+                  className="absolute right-2 bottom-2"
+                >
+                  <label className="cursor-pointer">
+                    <Camera />
+                    Change background
+                    <input
+                      type="file"
+                      accept={IMAGE_TYPES.join(",")}
+                      className="sr-only"
+                      onChange={(e) => {
+                        background.select(e.target.files?.[0])
+                        e.target.value = ""
+                      }}
+                    />
+                  </label>
+                </Button>
+              </div>
+              <FieldDescription>
+                JPG, PNG, or WebP · Max 2 MB · Min. {BACKGROUND_MIN_WIDTH}×{BACKGROUND_MIN_HEIGHT}
+              </FieldDescription>
+              {background.error && <FieldError>{background.error}</FieldError>}
+            </Field>
+
+            <Field data-invalid={!!avatar.error}>
               <div className="flex items-center gap-4">
-                {preview ? (
+                {avatar.preview ? (
                   <Avatar className="size-18 shrink-0">
-                    <AvatarImage src={preview} alt="Profile picture preview" className="object-cover" />
+                    <AvatarImage src={avatar.preview} alt="Profile picture preview" className="object-cover" />
                   </Avatar>
                 ) : (
                   <UserAvatar user={me} className="size-18 shrink-0" />
@@ -172,17 +266,17 @@ export function EditProfileDialog({ me }: Props) {
                       Change photo
                       <input
                         type="file"
-                        accept={AVATAR_TYPES.join(",")}
+                        accept={IMAGE_TYPES.join(",")}
                         className="sr-only"
                         onChange={(e) => {
-                          handleFile(e.target.files?.[0])
+                          avatar.select(e.target.files?.[0])
                           e.target.value = ""
                         }}
                       />
                     </label>
                   </Button>
                   <FieldDescription>JPG, PNG, or WebP · Max 2 MB · Min. 200×200</FieldDescription>
-                  {avatarError && <FieldError>{avatarError}</FieldError>}
+                  {avatar.error && <FieldError>{avatar.error}</FieldError>}
                 </div>
               </div>
             </Field>

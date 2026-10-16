@@ -5,7 +5,6 @@ export interface PublicProfile {
   firstname: string | null
   lastname: string | null
   bio: string | null
-  avatarUrl: string | null
   currentStreak: number
   lessonsCompletedCount: number
   longestStreak: number
@@ -23,6 +22,7 @@ export interface UpdateMePayload {
   lastname?: string | null
   bio?: string | null
   avatar?: File | Blob
+  background?: File | Blob
 }
 
 export interface UserSearchResult {
