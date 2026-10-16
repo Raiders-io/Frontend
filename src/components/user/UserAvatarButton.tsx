@@ -1,19 +1,17 @@
-import type { MouseEventHandler, ReactNode } from "react"
+import type { ComponentProps } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/lib/shadcn"
 
-interface UserAvatarButtonProps {
-  children: ReactNode
+interface UserAvatarButtonProps
+  extends Omit<ComponentProps<typeof Button>, "aria-label"> {
   label: string
-  className?: string
-  onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
 export function UserAvatarButton({
   children,
   label,
   className,
-  onClick
+  ...props
 }: UserAvatarButtonProps) {
   return (
     <Button
@@ -26,7 +24,7 @@ export function UserAvatarButton({
         className,
       )}
       aria-label={label}
-	  onClick={onClick}
+      {...props}
     >
       {children}
     </Button>

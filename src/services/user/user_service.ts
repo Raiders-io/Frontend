@@ -10,6 +10,7 @@ import type {
   PrivateProfile,
   PublicProfile,
   ReceivedFriendRequest,
+  RelationshipStatus,
   SentFriendRequest,
   UpdateMePayload,
   UserSearchResult } from "@/utils/types/user"
@@ -18,6 +19,8 @@ const PROFILE = "/api/v1/profile"
 const ME = `${PROFILE}/me`
 const FRIENDS = `${ME}/friends`
 const LESSONS = `${ME}/lessons`
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export const userService = {
   fetchMe: async (): Promise<PrivateProfile> => {
@@ -38,14 +41,21 @@ export const userService = {
     return data
   },
 
-  fetchUser: async (id: string): Promise<PublicProfile> => {
+  fetchUserById: async (id: string): Promise<PublicProfile> => {
     const { data } = await api.get<PublicProfile>(`${PROFILE}/${id}`)
     return data
   },
 
-  fetchByUsername: async (username: string) => {
+  fetchUserByUsername: async (username: string) => {
     const { data } = await api.get<PublicProfile>(`${PROFILE}/u/${encodeURIComponent(username)}`)
     return data
+  },
+
+  fetchProfile: (identifier?: string) => {
+    if (!identifier) return userService.fetchMe()
+    return UUID_RE.test(identifier)
+      ? userService.fetchUserById(identifier)
+      : userService.fetchUserByUsername(identifier)
   },
 
   getAvatar: (id: string): string => `${api.defaults.baseURL ?? ""}${PROFILE}/${id}/avatar`,
@@ -58,6 +68,11 @@ export const userService = {
     const { data } = await api.get<Paginated<UserSearchResult>>(`${PROFILE}/search`, {
       params: { q, page, limit },
     })
+    return data
+  },
+
+  fetchRelationshipStatus: async (friendId: string): Promise<RelationshipStatus> => {
+    const { data } = await api.get<RelationshipStatus>(`${FRIENDS}/${friendId}`)
     return data
   },
 

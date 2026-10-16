@@ -35,6 +35,8 @@ export interface UserSearchResult {
 
 export type FriendshipStatus = "pending" | "accepted"
 
+export type RelationshipStatus = 'self' | 'none' | 'friends' | 'pending_sent' | 'pending_received'
+
 export interface Friendship {
   id: number
   user_id: string

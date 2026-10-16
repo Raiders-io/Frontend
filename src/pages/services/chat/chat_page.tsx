@@ -25,7 +25,7 @@ export default function ChatPage() {
 	const [messagesError, setMessagesError] = useState(false)
 
 	useEffect(() => {
-		authService.fetchUsers()
+		authService.fetchUserByIds()
 			.then((users: Credentials[]) => {
 				const map: Record<string, string> = {}
 				for (const u of users)

@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { BookOpen, ClipboardList } from "lucide-react"
-import { userService } from "@/services/user_service"
+import { userService } from "@/services/user/user_service"
 import type { PaginationParams } from "@/utils/types/common"
 import { formatDate } from "./utils"
 import { ItemRow, PaginatedSection } from "../../components/user/PaginatedSection"

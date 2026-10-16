@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { userService } from "@/services/user_service";
+import { userService } from "@/services/user/user_service";
 import { cn } from "@/utils/lib/shadcn";
 import { avatarColor, getInitials } from "@/utils/lib/user"
 import type { PublicProfile } from "@/utils/types/user"

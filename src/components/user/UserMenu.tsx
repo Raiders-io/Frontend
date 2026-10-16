@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
 import type { ComponentType } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { UserAvatarButton } from "./UserAvatarButton"
 import {
@@ -43,7 +43,7 @@ import {
   changePageProfile,
   changePageSignup,
 } from "@/utils/router/changePage"
-import { userService } from "@/services/user_service"
+import { useMe } from "@/services/user/user_queries"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
@@ -78,7 +78,8 @@ const GUEST_GROUPS: MenuEntry[][] = [
 
 export function UserMenu() {
   const isAuthenticated = useAuthStore((state) => !!state.user)
-  const user = useCurrentUser(isAuthenticated)
+  const { data } = useMe()
+  const user = isAuthenticated ? data : undefined
 
   const groups = isAuthenticated ? AUTHENTICATED_GROUPS : GUEST_GROUPS
 
@@ -147,37 +148,12 @@ export function UserMenu() {
   )
 }
 
-function useCurrentUser(enabled: boolean) {
-  const [user, setUser] = useState<PrivateProfile | null>(null)
-
-  useEffect(() => {
-    if (!enabled) {
-      setUser(null)
-      return
-    }
-
-    let cancelled = false
-    userService
-      .fetchMe()
-      .then((data) => {
-        if (!cancelled) setUser(data)
-      })
-      .catch((e) => console.error("Unable to load profile", e))
-
-    return () => {
-      cancelled = true
-    }
-  }, [enabled])
-
-  return user
-}
-
 function MenuAvatar({
   isAuthenticated,
   user,
 }: {
   isAuthenticated: boolean
-  user: PrivateProfile | null
+  user?: PrivateProfile
 }) {
   if (isAuthenticated && user) {
     return <UserAvatar user={user} className="h-9 w-9 shrink-0" />
@@ -199,6 +175,7 @@ function MenuAvatar({
 
 function LogOutItem() {
   const logout = useAuthStore((state) => state.logout)
+  const qc = useQueryClient()
 
   const handleLogout = async () => {
     try {
@@ -207,6 +184,7 @@ function LogOutItem() {
       console.error("Error during logout:", error)
     }
     logout()
+    qc.clear() // évite de garder les données de l'utilisateur en cache
     router.navigate("/login")
   }
 
