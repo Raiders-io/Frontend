@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { IconAction } from "./IconAction"
+import { IconAction } from "../../components/homemade/IconAction"
 
 interface UnfriendDialogProps {
   username: string

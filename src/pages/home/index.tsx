@@ -13,7 +13,7 @@ export default function UsersList()
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		authService.fetchUsers()
+		authService.fetchUserByIds()
 			.then(setMembers)
 			.catch(console.error)
 			.finally(() => setIsLoading(false))

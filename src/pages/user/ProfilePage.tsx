@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Empty, EmptyContent, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { PrivateProfile, PublicProfile } from "@/utils/types/user"
-import { userService } from "@/services/user_service"
+import type { PrivateProfile } from "@/utils/types/user"
+import { userService } from "@/services/user/user_service"
+import { useProfile } from "@/services/user/user_queries"
 import { ProfileHeader } from "./ProfileHeader"
 import { MyLearning } from "./MyLearning"
 import { CreatedContent } from "./CreatedContent"
@@ -13,43 +13,6 @@ import { EditProfileDialog } from "./EditProfileDialog"
 import { FriendButton } from "./FriendButton"
 import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
-function fetchProfile(identifier?: string) {
-  if (!identifier) return userService.fetchMe()
-  return UUID_RE.test(identifier)
-    ? userService.fetchUser(identifier)
-    : userService.fetchByUsername(identifier)
-}
-
-function useProfile(identifier?: string) {
-  const isOwner = !identifier
-  const [user, setUser] = useState<PublicProfile | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [attempt, setAttempt] = useState(0)
-
-  useEffect(() => {
-    let cancelled = false
-    setUser(null)
-    setError(null)
-
-    fetchProfile(identifier)
-      .then((data) => !cancelled && setUser(data))
-      .catch((e) => {
-        if (cancelled) return
-        const notFound = e?.response?.status === 404
-        setError(notFound ? "This profile does not exist." : getErrorMessage(e, "Failed to load profile"))
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [identifier, attempt])
-
-  const retry = useCallback(() => setAttempt((n) => n + 1), [])
-
-  return { user, setUser, isOwner, error, retry }
-}
 
 const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
@@ -99,14 +62,21 @@ function ProfileError({ message, onRetry }: { message: string; onRetry: () => vo
 }
 
 export default function ProfilePage({ userId }: { userId?: string }) {
-  const { user, setUser, isOwner, error, retry } = useProfile(userId)
+  const isOwner = !userId
+  const { data: user, error, isPending, refetch } = useProfile(userId)
 
   const backgroundUrl = user ? userService.getBackground(user.id) : undefined
+
+  const errorMessage = error
+    ? (error as any)?.response?.status === 404
+      ? "This profile does not exist."
+      : getErrorMessage(error, "Failed to load profile")
+    : null
 
   return (
     <div className="relative min-h-screen w-full">
       {/* Background Banner with improved fallback gradient */}
-      <div 
+      <div
         className="absolute inset-x-0 top-0 -z-10 h-64 w-full bg-cover bg-center border-b bg-linear-to-r from-primary/15 via-muted to-primary/15"
         style={backgroundUrl ? { backgroundImage: `url(${backgroundUrl})` } : undefined}
         aria-hidden="true"
@@ -115,9 +85,9 @@ export default function ProfilePage({ userId }: { userId?: string }) {
       </div>
 
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
-        {error ? (
-          <ProfileError message={error} onRetry={retry} />
-        ) : !user ? (
+        {errorMessage ? (
+          <ProfileError message={errorMessage} onRetry={() => refetch()} />
+        ) : isPending || !user ? (
           <ProfileSkeleton isOwner={isOwner} />
         ) : (
           <div className="space-y-10">
@@ -125,7 +95,7 @@ export default function ProfilePage({ userId }: { userId?: string }) {
               user={user}
               actions={
                 isOwner ? (
-                  <EditProfileDialog me={user as PrivateProfile} onSaved={setUser} />
+                  <EditProfileDialog me={user as PrivateProfile} />
                 ) : (
                   <FriendButton userId={user.id} username={user.username} />
                 )

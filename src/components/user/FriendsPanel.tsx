@@ -27,13 +27,18 @@ import { UserAvatar } from "@/components/user/UserAvatar"
 import { UserAvatarButton } from "@/components/user/UserAvatarButton"
 
 import type { PublicProfile } from "@/utils/types/user"
-import { userService } from "@/services/user_service"
-import { router } from "@/utils/router"
+import {
+  useAcceptFriendRequest,
+  useCancelFriendRequest,
+  useDeclineFriendRequest,
+  useFriendships,
+  useRemoveFriend,
+} from "@/services/user/user_queries"
 
-import { IconAction } from "../../pages/user/IconAction"
+import { IconAction } from "../homemade/IconAction"
 import { SectionCard } from "./SectionCard"
 import { UnfriendDialog } from "../../pages/user/UnfriendDialog"
-import { useFriendships } from "../../pages/user/useFriendships"
+import { getErrorMessage } from "../../pages/user/utils"
 import { changePageUser } from "@/utils/router/changePage"
 
 interface FriendsPanelProps {
@@ -72,7 +77,23 @@ function PersonItem({
 }
 
 export function FriendsPanel({ onMessage }: FriendsPanelProps) {
-  const { data, error, busyId, load, run } = useFriendships()
+  const { data, error: loadError, refetch } = useFriendships()
+
+  const accept = useAcceptFriendRequest()
+  const decline = useDeclineFriendRequest()
+  const cancel = useCancelFriendRequest()
+  const remove = useRemoveFriend()
+
+  const mutations = [accept, decline, cancel, remove]
+  const isBusy = (userId: string) =>
+    mutations.some((m) => m.isPending && m.variables === userId)
+
+  const failedMutation = mutations.find((m) => m.isError)
+  const error = loadError
+    ? getErrorMessage(loadError, "Impossible de charger les amis")
+    : failedMutation
+      ? getErrorMessage(failedMutation.error, "Une erreur est survenue")
+      : null
 
   if (!data) {
     return (
@@ -84,11 +105,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
               <EmptyDescription>{error}</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => void load()}
-              >
+              <Button variant="outline" size="sm" onClick={() => void refetch()}>
                 Réessayer
               </Button>
             </EmptyContent>
@@ -113,21 +130,14 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       )}
 
       {data.received.length > 0 && (
-        <SectionCard
-          title="Demandes reçues"
-          count={data.received.length}
-        >
+        <SectionCard title="Demandes reçues" count={data.received.length}>
           <ItemGroup className="divide-y">
             {data.received.map((req) => (
               <PersonItem key={req.id} user={req.user}>
                 <Button
                   size="sm"
-                  disabled={busyId === req.user.id}
-                  onClick={() =>
-                    run(req.user.id, () =>
-                      userService.acceptFriendRequest(req.user.id),
-                    )
-                  }
+                  disabled={isBusy(req.user.id)}
+                  onClick={() => accept.mutate(req.user.id)}
                 >
                   <Check />
                   Accepter
@@ -136,12 +146,8 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  disabled={busyId === req.user.id}
-                  onClick={() =>
-                    run(req.user.id, () =>
-                      userService.declineFriendRequest(req.user.id),
-                    )
-                  }
+                  disabled={isBusy(req.user.id)}
+                  onClick={() => decline.mutate(req.user.id)}
                 >
                   <X />
                   Refuser
@@ -183,12 +189,8 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
 
                 <UnfriendDialog
                   username={friend.username}
-                  disabled={busyId === friend.id}
-                  onConfirm={() =>
-                    run(friend.id, () =>
-                      userService.unfriend(friend.id),
-                    )
-                  }
+                  disabled={isBusy(friend.id)}
+                  onConfirm={() => remove.mutate(friend.id)}
                 />
               </PersonItem>
             ))}
@@ -197,10 +199,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       </SectionCard>
 
       {data.sent.length > 0 && (
-        <SectionCard
-          title="Demandes envoyées"
-          count={data.sent.length}
-        >
+        <SectionCard title="Demandes envoyées" count={data.sent.length}>
           <ItemGroup className="divide-y">
             {data.sent.map((req) => (
               <PersonItem key={req.id} user={req.friend}>
@@ -212,12 +211,8 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  disabled={busyId === req.friend.id}
-                  onClick={() =>
-                    run(req.friend.id, () =>
-                      userService.cancelFriendRequest(req.friend.id),
-                    )
-                  }
+                  disabled={isBusy(req.friend.id)}
+                  onClick={() => cancel.mutate(req.friend.id)}
                 >
                   Annuler
                 </Button>

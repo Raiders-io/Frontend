@@ -1,5 +1,5 @@
 import { BookCheck, BookOpen } from "lucide-react"
-import { userService } from "@/services/user_service"
+import { userService } from "@/services/user/user_service"
 import { formatDate } from "./utils"
 import { ItemRow, PaginatedSection } from "../../components/user/PaginatedSection"
 

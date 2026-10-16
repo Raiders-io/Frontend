@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { UserAvatar } from "@/components/user/UserAvatar"
 import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
-import { userService } from "@/services/user_service"
+import { useUpdateMe } from "@/services/user/user_queries"
 import { getErrorMessage } from "./utils"
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024
@@ -51,10 +51,10 @@ function toDefaults(user: PrivateProfile): FormValues {
 
 interface Props {
   me: PrivateProfile
-  onSaved: (me: PrivateProfile) => void
 }
 
-export function EditProfileDialog({ me, onSaved }: Props) {
+export function EditProfileDialog({ me }: Props) {
+  const updateMe = useUpdateMe()
   const [open, setOpen] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -129,8 +129,7 @@ export function EditProfileDialog({ me, onSaved }: Props) {
     }
 
     try {
-      const updated = await userService.updateMe(payload)
-      onSaved(updated)
+      await updateMe.mutateAsync(payload)
       handleOpenChange(false)
     } catch (e) {
       setError("root", {
