@@ -1,6 +1,6 @@
 "use client"
 
-import type { Tag, file as FileItem } from "@/utils/types/lesson"
+import type { file as FileItem } from "@/utils/types/lesson"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -26,17 +26,7 @@ import {
   User,
 } from "lucide-react"
 
-// --- Types ---
-export interface Lesson {
-  id?: string | number
-  title: string
-  isPrivate?: boolean
-  description?: string
-  tags: Tag[]
-  files?: FileItem[]
-  createdAt?: string
-  author?: string
-}
+import type { Lesson } from "@/utils/types/lesson"
 
 interface LessonDisplayProps {
   lesson: Lesson
@@ -56,7 +46,7 @@ export default function LessonDisplay({
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       {/* Top Action Bar */}
-      <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
@@ -121,10 +111,10 @@ export default function LessonDisplay({
                 </FieldTitle>
                 {(lesson.author || lesson.createdAt) && (
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                    {lesson.author && (
+                    {lesson.author.username && (
                       <div className="flex items-center gap-1.5">
                         <User className="h-4 w-4" />
-                        <span>{lesson.author}</span>
+                        <span>{lesson.author.username}</span>
                       </div>
                     )}
                     {lesson.createdAt && (
@@ -146,7 +136,7 @@ export default function LessonDisplay({
             <FieldLabel className="text-lg font-semibold">Description</FieldLabel>
             <FieldContent>
               {lesson.description ? (
-                <ScrollArea className="max-h-[400px] rounded-md border p-4">
+                <ScrollArea className="max-h-100 rounded-md border p-4">
                   <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
                     {lesson.description}
                   </p>

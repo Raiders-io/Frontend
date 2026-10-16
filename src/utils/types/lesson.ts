@@ -12,11 +12,16 @@ export interface Lesson {
   UUID: string
   slug: string
   authorId: string
-  author?: string
+  author: {
+    username: string,
+    id: string,
+  }
   isPrivate?: boolean
   description?: string
   tags: Tag[]
   files?: file[]
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface PaginationMeta {

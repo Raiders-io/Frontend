@@ -7,21 +7,41 @@ import {
   CustomResizablePanelHandle,
 } from "@/components/CustomResizablePanel"
 import LessonDisplay from "@/components/lesson/LessonDisplay"
-import { mockFiles, mockLesson } from "@/utils/mock"
+import { mockFiles } from "@/utils/mock"
+import { lessonService } from "@/services/lesson_service"
 import { useParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import type { Lesson } from "@/utils/types/lesson"
 
 interface lessonProps {
   className?: string
 }
 
-export default function LessonPage( { className }: lessonProps) {
+export default function LessonPage({ className }: lessonProps) {
   // const [files, setFiles] = useState(mockFiles)
   const files = mockFiles
   const { author, slug } = useParams<{ author: string; slug: string }>()
-  const lesson = mockLesson.find(
-    (lesson) => lesson.author === author && lesson.slug === slug
-  )
-  
+  const [lesson, setLesson] = useState<Lesson | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (!author || !slug) return
+
+    const fetchLesson = async () => {
+      setLoading(true)
+      try {
+        const lesson = await lessonService.getLessonByAuthorAndContent(author, slug)
+        setLesson(lesson)
+      } catch (error) {
+        console.error("Error fetching lesson:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLesson()
+  }, [author, slug])
+
   if (!lesson) {
     return <p>Lesson not found.</p>
   }
@@ -32,9 +52,12 @@ export default function LessonPage( { className }: lessonProps) {
         <CustomResizablePanelLeftZoneToggle />
         <CustomResizablePanelLeftZone>
           {
-            lesson 
-            ? <LessonDisplay lesson={lesson} />
-            : <p>No lesson available.</p>
+            loading
+              ? <p>Loading lesson...</p>
+              :
+              lesson
+                ? <LessonDisplay lesson={lesson} />
+                : <p>No lesson available.</p>
           }
         </CustomResizablePanelLeftZone>
         <CustomResizablePanelHandle />
