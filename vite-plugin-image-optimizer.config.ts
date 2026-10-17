@@ -1,4 +1,26 @@
-export const default_config_image_opti = {
+import type { PngOptions, JpegOptions, TiffOptions, GifOptions, WebpOptions, AvifOptions } from 'sharp';
+import type { Config as SVGOConfig } from 'svgo';
+
+interface Options {
+  test?: RegExp;
+  include?: RegExp | string | string[];
+  exclude?: RegExp | string | string[];
+  includePublic?: boolean;
+  ansiColors?: boolean;
+  logStats?: boolean;
+  svg?: SVGOConfig;
+  png?: PngOptions;
+  jpeg?: JpegOptions;
+  jpg?: JpegOptions;
+  tiff?: TiffOptions;
+  gif?: GifOptions;
+  webp?: WebpOptions;
+  avif?: AvifOptions;
+  cache?: boolean;
+  cacheLocation?: string;
+}
+
+export const default_config_image_opti: Options = {
   logStats: true,
   ansiColors: true,
   test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,

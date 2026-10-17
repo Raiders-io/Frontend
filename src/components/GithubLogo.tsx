@@ -5,14 +5,14 @@ export const GithubLogo = () => {
     <img
       height="32"
       width="32"
-      src="https://cdn.simpleicons.org/github/white"
+      src="/github_white.svg"
       alt="GitHub Logo"
     />
   ) : (
     <img
       height="32"
       width="32"
-      src="https://cdn.simpleicons.org/github/black"
+      src="/github_black.svg"
       alt="GitHub Logo"
     />
   )
