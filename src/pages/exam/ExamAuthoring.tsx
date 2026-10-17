@@ -111,7 +111,7 @@ export default function ExamAuthoring() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <h1 className="text-3xl font-bold">Exam Authoring</h1>
+      <h1 className="text-3xl font-bold">Create an exam</h1>
       <InitExam
         title={title}
         setTitle={setTitle}

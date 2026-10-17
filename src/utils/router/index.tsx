@@ -111,15 +111,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "/exam/authoring",
-        element: (<ProtectedRoute>
+        element: (
+        //<ProtectedRoute>
           <ExamAuthoring />
-        </ProtectedRoute>),
+        //</ProtectedRoute>
+        ),
       },
       {
         path: "/exam/paper",
-        element: (<ProtectedRoute>
+        element: (
+        //<ProtectedRoute>
           <ExamPaper />
-        </ProtectedRoute>),
+        //</ProtectedRoute>
+      ),
       },
       {
         path: "/search",
