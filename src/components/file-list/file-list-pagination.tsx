@@ -30,7 +30,7 @@ export default function FileListPagination({
   onLimitChange,
 }: FileListPaginationProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-end md:justify-between">
+    <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-end md:justify-between text-center">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="space-y-2">
           <Label htmlFor="limit">Files per page</Label>
@@ -45,7 +45,7 @@ export default function FileListPagination({
         </div>
 
         <Pagination>
-          <PaginationContent>
+          <PaginationContent className="justify-center">
             <PaginationItem>
               <PaginationPrevious
                 onClick={onPreviousPage}
@@ -53,8 +53,8 @@ export default function FileListPagination({
               />
             </PaginationItem>
             <PaginationItem>
-              <p className="text-sm text-muted-foreground">
-                Page {currentPage} sur {lastPage}
+              <p className="!mt-0 text-sm text-muted-foreground">
+                Page <span className="text-foreground">{currentPage}</span> sur {lastPage}
               </p>
             </PaginationItem>
             <PaginationItem>
