@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
 import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
 
@@ -7,7 +6,6 @@ type ExamOption = { id: string; title: string | null }
 
 export default function ExamPaper() {
   const [exams, setExams] = useState<ExamOption[]>([])
-  const [selectedExam, setSelectedExam] = useState("")
   const [paper, setPaper] = useState<ExamPaperData | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [message, setMessage] = useState("")
@@ -19,10 +17,9 @@ export default function ExamPaper() {
       .catch(() => setMessage("Unable to load exams."))
   }, [])
 
-  async function startExam() {
-    if (!selectedExam) return
+  async function startExam(examId: string) {
     try {
-      const { data } = await examApi.startPaper(selectedExam)
+      const { data } = await examApi.startPaper(examId)
       const paperResponse = await examApi.getPaper(data.id)
       setPaper(paperResponse.data)
       setMessage("")
@@ -59,24 +56,19 @@ export default function ExamPaper() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <h1 className="text-3xl font-bold">Exam Paper</h1>
+      <h1 className="text-3xl font-bold">Exams</h1>
       {!paper && (
-        <div className="flex gap-3">
-          <select
-            className="rounded-md border p-2"
-            value={selectedExam}
-            onChange={(event) => setSelectedExam(event.target.value)}
-          >
-            <option value="">Choose an exam</option>
-            {exams.map((exam) => (
-              <option key={exam.id} value={exam.id}>
-                {exam.title}
-              </option>
-            ))}
-          </select>
-          <Button type="button" onClick={startExam} disabled={!selectedExam}>
-            Start
-          </Button>
+        <div className="divide-y divide-gray-300/50 rounded-md border">
+          {exams.map((exam) => (
+            <button
+              className="block w-full px-4 py-3 text-left transition-colors first:rounded-t-md last:rounded-b-md hover:bg-muted/50"
+              key={exam.id}
+              type="button"
+              onClick={() => startExam(exam.id)}
+            >
+              {exam.title || "Untitled exam"}
+            </button>
+          ))}
         </div>
       )}
       {paper && (
