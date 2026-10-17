@@ -1,33 +1,32 @@
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
 
-type ExamOption = { id: string; title: string | null }
-
 export default function ExamPaper() {
-  const [exams, setExams] = useState<ExamOption[]>([])
+  const { id } = useParams<{ id: string }>()
   const [paper, setPaper] = useState<ExamPaperData | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [message, setMessage] = useState("")
 
   useEffect(() => {
-    examApi
-      .listExams()
-      .then(({ data }) => setExams(data))
-      .catch(() => setMessage("Unable to load exams."))
-  }, [])
+    if (!id) return
 
-  async function startExam(examId: string) {
-    try {
-      const { data } = await examApi.startPaper(examId)
-      const paperResponse = await examApi.getPaper(data.id)
-      setPaper(paperResponse.data)
-      setMessage("")
-    } catch {
-      setMessage(
-        "Unable to start the exam. Check your authentication.",
-      )
-    }
+    examApi
+      .getPaper(id)
+      .then(({ data }) => {
+        setPaper(data)
+        setAnswers(
+          Object.fromEntries(
+            data.answers.map((answer) => [answer.id, answer.answer ?? ""]),
+          ),
+        )
+      })
+      .catch(() => setMessage("Unable to load this exam paper."))
+  }, [id])
+
+  if (!id) {
+    return <p role="alert">No exam paper ID provided.</p>
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -42,12 +41,6 @@ export default function ExamPaper() {
           answer: answers[answer.id] ?? "",
         })),
       )
-      const goodAnswersId = data.goodAnswersId
-      const totalPoints = data.totalPoints
-      setMessage("Answers submitted.")
-      setMessage(
-        `You got ${goodAnswersId.length} correct answers out of ${totalPoints}.`,
-      )
       setMessage(`Your score is ${data.score.toFixed(0)}%.`)
     } catch {
       setMessage("Failed to submit answers.")
@@ -56,21 +49,7 @@ export default function ExamPaper() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <h1 className="text-3xl font-bold">Exams</h1>
-      {!paper && (
-        <div className="divide-y divide-gray-300/50 rounded-md border">
-          {exams.map((exam) => (
-            <button
-              className="block w-full px-4 py-3 text-left transition-colors first:rounded-t-md last:rounded-b-md hover:bg-muted/50"
-              key={exam.id}
-              type="button"
-              onClick={() => startExam(exam.id)}
-            >
-              {exam.title || "Untitled exam"}
-            </button>
-          ))}
-        </div>
-      )}
+      {!paper && !message && <p>Loading exam paper...</p>}
       {paper && (
         <ExamPaperView
           paper={paper}
