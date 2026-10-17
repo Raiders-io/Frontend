@@ -14,6 +14,7 @@ const AboutPage = lazy(() => import("@/pages/about"))
 const ContactPage = lazy(() => import("@/pages/contact"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
 const ExamAuthoring = lazy(() => import("@/pages/exam/ExamAuthoring"))
+const ExamPaperList = lazy(() => import("@/pages/exam/ExamPaperList"))
 const ExamPaper = lazy(() => import("@/pages/exam/ExamPaper"))
 const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
 const TermsOfService = lazy(() => import("@/pages/legal/terms"))
@@ -119,6 +120,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "/exam/paper",
+        element: (
+        //<ProtectedRoute>
+          <ExamPaperList />
+        //</ProtectedRoute>
+      ),
+      },
+      {
+        path: "/exam/paper/:id",
         element: (
         //<ProtectedRoute>
           <ExamPaper />
