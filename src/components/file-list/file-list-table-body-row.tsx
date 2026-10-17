@@ -21,6 +21,7 @@ type FileListTableBodyRowProps = {
     visibility?: FileObject["visibility"],
   ) => void
   isSelected: boolean
+  onRowClick?: (file: FileObject) => void
   actionSettings?: {
     showDownloadButton?: boolean
     showVisibilityButton?: boolean
@@ -40,6 +41,7 @@ export default function FileListTableBodyRow({
   onDelete,
   onChangeVisibility,
   isSelected,
+  onRowClick,
   actionSettings = {},
 }: FileListTableBodyRowProps) {
   const {
@@ -52,9 +54,11 @@ export default function FileListTableBodyRow({
     <TableRow
       key={file.name}
       className="border-b last:border-0 hover:bg-muted/30"
+      onClick={() => onRowClick?.(file)}
+      style={{ cursor: onRowClick ? "pointer" : "default" }}
     >
       {columns.includes("Select") && (
-        <TableCell className="px-4 py-3">
+        <TableCell className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
           <CustomCheckbox
             checked={isSelected}
             onCheckedChange={() => onSelect(file.name)}
@@ -96,7 +100,10 @@ export default function FileListTableBodyRow({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onDownload(file.name)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDownload(file.name);
+                }}
                 title={`Download ${file.name}`}
                 aria-label={`Download ${file.name}`}
               >
@@ -107,12 +114,13 @@ export default function FileListTableBodyRow({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() =>
+                onClick={(e) => {
+                  e.stopPropagation();
                   onChangeVisibility(
                     file.name,
                     file.visibility === "public" ? "private" : "public",
-                  )
-                }
+                  );
+                }}
                 title={`Change visibility of ${file.name}`}
                 aria-label={`Change visibility of ${file.name}`}
               >
@@ -130,6 +138,7 @@ export default function FileListTableBodyRow({
                   size="sm"
                   title={`Delete ${file.name}`}
                   aria-label={`Delete ${file.name}`}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <TrashIcon className="h-4 w-4" />
                 </Button>

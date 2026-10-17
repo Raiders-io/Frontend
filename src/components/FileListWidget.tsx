@@ -46,19 +46,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  AudioLines,
-  FileArchiveIcon,
-  FileImageIcon,
-  FileJsonIcon,
-  FileText,
-  MonitorPlay,
-  ScrollText,
-  Type,
-} from "lucide-react"
 import { TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
-import { formatFileSize, formatDate } from "@/utils/utils/object"
+import { formatFileSize, formatDate, getFileIcon } from "@/utils/utils/object"
 import { type ObjectSuccess } from "@/utils/types/object"
 import { toast } from "sonner"
 import { withTimeout } from "@/utils/utils/timeout"
@@ -68,8 +58,10 @@ export default function FileListWidget({
   showPagination = true,
   showUpload = true,
   showActionSettings = true,
+  showSelectColumn = true,
   initialLimit = 10,
   maxHeight,
+  onFileSelect,
 }: FileListWidgetProps & { showActionSettings?: boolean }) {
   const [files, setFiles] = useState<FileObject[]>([])
   const [loading, setLoading] = useState(true)
@@ -170,26 +162,6 @@ export default function FileListWidget({
       setPage(currentPage + 1)
     }
     toast.info("Going to the next page.")
-  }
-
-  const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
-
-    if (label.includes("image")) 
-      return <FileImageIcon className="h-4 w-4" />
-    if (label.includes("video")) 
-      return <MonitorPlay className="h-4 w-4" />
-    if (label.includes("audio")) 
-      return <AudioLines className="h-4 w-4" />
-    if (label.includes("pdf")) 
-      return <ScrollText className="h-4 w-4" />
-    if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
-      return <FileArchiveIcon className="h-4 w-4" />
-    if (label.includes("json")) 
-      return <FileJsonIcon className="h-4 w-4" />
-    if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
-      return <FileText className="h-4 w-4" />
-    return <Type className="h-4 w-4" />
   }
 
   const uploadFiles = async (
@@ -320,14 +292,13 @@ export default function FileListWidget({
   const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", "Created at"]
   const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
   
-  const visibleColumns: FileListTableColumn[] =
+  const visibleColumns: FileListTableColumn[] = (
     mode === "compact"
-      ? hasAnyActionButton 
-        ? [...baseColumns, "Actions"] 
-        : baseColumns
+      ? baseColumns
       : hasAnyActionButton 
         ? columnsWithActions 
         : fullColumns
+  ).filter((col) => showSelectColumn || col !== "Select")
 
   const toggleFileSelection = (fileName: string) => {
     setSelectedFiles((prev) => {
@@ -497,7 +468,7 @@ export default function FileListWidget({
             />
           )}
 
-          {showPagination && mode === "full" && (
+          {showPagination && (
             <FileListPagination
               currentPage={currentPage}
               lastPage={lastPage}
@@ -549,6 +520,7 @@ export default function FileListWidget({
                       onDelete={handleDelete}
                       onChangeVisibility={changeVisibility}
                       isSelected={selectedFiles.has(file.name)}
+                      onRowClick={onFileSelect}
                       actionSettings={{
                         showDownloadButton: actionSettings.showDownloadButton,
                         showVisibilityButton: actionSettings.showVisibilityButton,

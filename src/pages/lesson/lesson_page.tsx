@@ -18,6 +18,17 @@ import { useState, useRef } from "react"
 import ReactMarkdown from "react-markdown"
 import { ReactMarkdownStyle } from "@/utils/style/ReactMarkdown"
 import remarkGfm from "remark-gfm"
+import type { FileObject } from "@/utils/types/object"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
+import { getFileIcon } from "@/utils/utils/object"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 export default function LessonPage() {
   const [fileData, setFileData] = useState<{
@@ -94,6 +105,7 @@ export default function LessonPage() {
     if (!fileName) return
     await loadFile(fileName)
   }
+  const [selectedFiles, setSelectedFiles] = useState<FileObject[]>([])
 
   return (
     <>
@@ -121,12 +133,51 @@ export default function LessonPage() {
         <CustomResizablePanelHandle />
         <CustomResizablePanelRightZoneToggle />
         <CustomResizablePanelRightZone>
-          <FileListWidget
-            mode="full"
-            showPagination={true}
-            showUpload={true}
-            initialLimit={5}
-          />
+          <p className="font-medium mb-2 text-center">Click directly on a row of a file you want for your Lesson</p>
+          <ScrollArea className="h-[600] w-[600px] rounded-md border p-4">
+            <FileListWidget
+              mode="compact"
+              showActionSettings={false}
+              showPagination={true}
+              showUpload={true}
+              showSelectColumn={false}
+              initialLimit={25}
+              onFileSelect={(file) => {
+                if (!selectedFiles.some(f => f.name === file.name)) {
+                  setSelectedFiles([...selectedFiles, file]);
+                }
+              }}
+            />
+          </ScrollArea>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 overflow-y-auto max-h-[60vh]">
+            {selectedFiles.map((file) => (
+              <Card
+                key={file.name}
+                className="w-full max-w-xs flex flex-col overflow-hidden"
+              >
+                <CardHeader className="flex-1 items-center justify-center">
+                  <div className="flex items-center gap-2">
+                    {getFileIcon(file.mimeType, file.name)}
+                    <CardTitle className="text-center text-lg font-semibold">
+                      {file.name}
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-sm text-muted-foreground">{file.mimeType || "Unknown type"}</p>
+                </CardContent>
+                <CardFooter className="justify-center">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setSelectedFiles(selectedFiles.filter(f => f.name !== file.name))}
+                  >
+                    Remove from list
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </CustomResizablePanelRightZone>
       </CustomResizablePanelGroup>
     </>

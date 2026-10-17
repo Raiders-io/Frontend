@@ -70,6 +70,8 @@ export type FileListWidgetProps = {
   showUpload?: boolean
   initialLimit?: number
   maxHeight?: string
+  onFileSelect?: (file: FileObject) => void
+  showSelectColumn?: boolean
 }
 
 export type QuotaResponse = {
