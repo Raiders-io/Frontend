@@ -47,7 +47,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     setType(nextType)
     setAnswer("")
     setCurrentAnswer("")
-    if (nextType === "exact_answer") {
+    if (nextType === "written_answer") {
       setChoices([])
       setCurrentChoice("")
     } else {
@@ -60,20 +60,20 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     if (type === "multiple_choice") {
       if (choices.length < 2 || !choices.some((choice) => choice.isCorrect))
         return
-    } else if (type === "exact_answer" && answers.length === 0) {
+    } else if (type === "written_answer" && answers.length === 0) {
       return
     }
     onAdd?.({
       id: Date.now().toString(),
       pos,
-      text: text.trim(),
+      title: text.trim(),
       type,
       points: currentPoints,
       starterCode: type === "c_function" ? codeAnswer.trim() || undefined : undefined,
       referenceCode:
         type === "c_function" ? referenceCode.trim() || undefined : undefined,
       answers:
-        type === "exact_answer" && answers.length > 0 ? answers : undefined,
+        type === "written_answer" && answers.length > 0 ? answers : undefined,
       choices:
         type === "multiple_choice" && choices.length > 0 ? choices : undefined,
     })
@@ -156,7 +156,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
         }
       >
         <option value="multiple_choice">Multiple choice question</option>
-        <option value="exact_answer">Written answer</option>
+        <option value="written_answer">Written answer</option>
         <option value="c_function">C function</option>
       </select>
       {(() => {
@@ -184,7 +184,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
                 }
               />
             )
-          case "exact_answer":
+          case "written_answer":
             return (
               <ExactAnswerEditor
                 answers={answers}
