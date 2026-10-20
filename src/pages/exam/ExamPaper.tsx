@@ -2,12 +2,14 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
+import { DisplayResult } from "@/components/exam/DisplayResult"
 
 export default function ExamPaper() {
   const { id } = useParams<{ id: string }>()
   const [paper, setPaper] = useState<ExamPaperData | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [message, setMessage] = useState("")
+  const [goodAnswersId, setGoodAnswersId] = useState<string[] | null>(null)
 
   useEffect(() => {
     if (!id) return
@@ -34,13 +36,27 @@ export default function ExamPaper() {
     if (!paper) return
 
     try {
-      const { data } = await examApi.updatePaper(
-        paper.id,
-        paper.answers.map((answer) => ({
-          id: answer.id,
-          answer: answers[answer.id] ?? "",
-        })),
+      const submittedAnswers = paper.answers.map((answer) => ({
+        id: answer.id,
+        answer: answers[answer.id] ?? "",
+      }))
+      const { data } = await examApi.updatePaper(paper.id, submittedAnswers)
+      setPaper((currentPaper) =>
+        currentPaper
+          ? {
+              ...currentPaper,
+              status: "submitted",
+              answers: currentPaper.answers.map((answer) => ({
+                ...answer,
+                answer:
+                  submittedAnswers.find(
+                    (submittedAnswer) => submittedAnswer.id === answer.id,
+                  )?.answer ?? answer.answer,
+              })),
+            }
+          : currentPaper,
       )
+      setGoodAnswersId(data.goodAnswersId)
       setMessage(`Your score is ${data.score.toFixed(0)}%.`)
     } catch {
       setMessage("Failed to submit answers.")
@@ -59,6 +75,9 @@ export default function ExamPaper() {
           }
           onSubmit={handleSubmit}
         />
+      )}
+      {paper && goodAnswersId && (
+        <DisplayResult examPaper={paper} goodAnswersIds={goodAnswersId} />
       )}
       {message && <p role="status">{message}</p>}
     </main>
