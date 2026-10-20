@@ -12,7 +12,7 @@ type BackendQuestion = {
   points: number
 }
 
-type BackendExam = {
+export type BackendExam = {
   id: string
   title: string | null
   description: string | null
@@ -22,10 +22,20 @@ type BackendExam = {
 type BackendPaperAnswer = {
   id: string
   answer: string | null
-  examsQuestion?: { question?: BackendQuestion }
+  examsQuestion?: {
+    position?: number | null
+    question?: BackendQuestion
+  }
 }
 
 type BackendError = { error: string }
+
+export type ExamPaperSubmissionResult = {
+  success: boolean
+  score: number
+  totalPoints: number
+  goodAnswersId: string[]
+}
 
 export type ExamPaper = {
   id: string
@@ -153,6 +163,17 @@ export const examApi = {
         ...response,
         data: rejectBackendError(response.data),
       })),
-  updatePaper: (paperId: string, answers: { id: string; answer: string }[]) =>
-    api.patch(`/exam-papers/${paperId}`, { answers, submit: true }),
+  updatePaper: (
+    paperId: string,
+    answers: { id: string; answer: string }[],
+  ) =>
+    api
+      .patch<ExamPaperSubmissionResult>(`/exam-papers/${paperId}`, {
+        answers,
+        submit: true,
+      })
+      .then((response) => ({
+        ...response,
+        data: rejectBackendError(response.data),
+      })),
 }
