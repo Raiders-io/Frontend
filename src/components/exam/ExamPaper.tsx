@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button"
 import CodeEditor from "@/components/exam/CodeEditor"
-import {
-  toQuestion,
-  type ExamPaper as ExamPaperData,
-} from "@/utils/lib/exam_api"
+import { toQuestion } from "@/utils/lib/exam_api/utils"
+import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
 
 type ExamPaperProps = {
   paper: ExamPaperData
@@ -37,14 +35,16 @@ export default function ExamPaper({
       {paper.answers.map((answer, index) => {
         const backendQuestion = answer.examsQuestion?.question
         if (!backendQuestion) return null
+        const examQuestion = answer.examsQuestion
+        if (!examQuestion) return null
 
-        const question = toQuestion(backendQuestion, index + 1)
+        const question = toQuestion(backendQuestion, index + 1, examQuestion.points)
         const currentAnswer = answers[answer.id] ?? ""
 
         return (
           <fieldset className="flex flex-col gap-2" key={answer.id}>
             <legend className="font-semibold">
-              {index + 1}. {question.text}
+              {index + 1}. {question.title}
             </legend>
             {question.type === "multiple_choice" &&
               question.choices?.map((choice) => (
@@ -69,7 +69,7 @@ export default function ExamPaper({
                   <span>{choice.text}</span>
                 </label>
               ))}
-            {question.type === "exact_answer" && (
+            {question.type === "written_answer" && (
               <input
                 className="rounded-md border p-2"
                 type="text"
