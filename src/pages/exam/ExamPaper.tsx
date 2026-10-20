@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import ExamPaperView from "@/components/exam/ExamPaper"
-import { examApi, type ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
+import { examApi } from "@/utils/lib/exam_api/requests"
+import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
 import { DisplayResult } from "@/components/exam/DisplayResult"
 
 export default function ExamPaper() {
