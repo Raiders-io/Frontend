@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { examApi } from "@/utils/lib/exam_api"
+import { examApi } from "@/utils/lib/exam_api/requests"
 
 type ExamOption = {
   id: string

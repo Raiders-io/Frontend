@@ -7,7 +7,7 @@ type DisplayQuestionProps = {
 export function DisplayQuestion({ question }: DisplayQuestionProps) {
   return (
     <div>
-      <strong>Question:</strong> {question.text}
+      <strong>Question:</strong> {question.title}
       <br />
       <strong>Type:</strong> {question.type}
       <br />
@@ -23,7 +23,7 @@ export function DisplayQuestion({ question }: DisplayQuestionProps) {
           </ul>
         </>
       )}
-      {question.type === "exact_answer" && (
+      {question.type === "written_answer" && (
         <>
           <strong>Accepted answers:</strong>
           <ul className="ml-4 list-disc">

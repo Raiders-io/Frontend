@@ -1,4 +1,4 @@
-import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api"
+import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
 
 type DisplayResultProps = {
   examPaper: ExamPaperData

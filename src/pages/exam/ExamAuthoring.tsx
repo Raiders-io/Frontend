@@ -2,7 +2,8 @@ import { CreateQuestion } from "@/pages/exam/Question"
 import { DisplayQuestion } from "@/components/exam/DisplayQuestion"
 import { DeleteQuestion } from "@/components/exam/DeleteQuestion"
 import type { Question } from "@/utils/types/exam"
-import { examApi, toQuestion } from "@/utils/lib/exam_api"
+import { examApi } from "@/utils/lib/exam_api/requests"
+import { toQuestion } from "@/utils/lib/exam_api/utils"
 import { GripVertical } from "lucide-react"
 import { useState } from "react"
 import { InitExam } from "@/components/exam/InitExam"
@@ -19,11 +20,11 @@ export default function ExamAuthoring() {
   async function handleAddQuestion(question: Question) {
     try {
       const { data } = await examApi.createQuestion({
-        title: question.text,
+        title: question.title,
         questionType:
           question.type === "multiple_choice"
             ? "MCQ"
-            : question.type === "exact_answer"
+            : question.type === "written_answer"
               ? "TEXT"
               : "C_FUNCTION",
         goodAnswers:
@@ -31,7 +32,7 @@ export default function ExamAuthoring() {
             ? (question.choices
                 ?.filter((choice) => choice.isCorrect)
                 .map((choice) => choice.text) ?? [])
-            : question.type === "exact_answer"
+            : question.type === "written_answer"
               ? (question.answers ?? [])
               : [],
         badAnswers:
@@ -42,9 +43,8 @@ export default function ExamAuthoring() {
             : [],
         starterCode: question.starterCode ?? "",
         referenceCode: question.referenceCode ?? "",
-        points: question.points,
       })
-      const createdQuestion = toQuestion(data, questions.length + 1)
+      const createdQuestion = toQuestion(data, questions.length + 1, question.points)
       setQuestions((previousQuestions) => [
         ...previousQuestions,
         { ...createdQuestion, points: question.points },
@@ -139,7 +139,7 @@ export default function ExamAuthoring() {
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <div>
-                  <strong>Question {question.pos}:</strong> {question.text}
+                  <strong>Question {question.pos}:</strong> {question.title}
                 </div>
 
                 <DeleteQuestion
