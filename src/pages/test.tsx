@@ -10,10 +10,10 @@ export default function TestPage() {
     <div>
       <h1> This is a test page it should be removed from the final project</h1>
       <div className="flex flex-wrap">
-        <LessonCard lesson={lesson[0]} />
-        <LessonCard lesson={lesson[1]} variant="small" />
-        <LessonCard lesson={lesson[0]} variant="preview" />
-        <LessonCard lesson={lesson[1]} actions={<>
+        <LessonCard lesson={lesson[9]} />
+        <LessonCard lesson={lesson[9]} variant="small" />
+        <LessonCard lesson={lesson[3]} variant="preview" />
+        <LessonCard lesson={lesson[9]} actions={<>
           <Button
             variant="outline"
             onClick={() => console.log("prout")}
