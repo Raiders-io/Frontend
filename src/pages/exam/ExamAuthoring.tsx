@@ -17,7 +17,7 @@ export default function ExamAuthoring() {
     number | null
   >(null)
 
-  async function handleAddQuestion(question: Question) {
+  async function handleAddQuestion(question: Question) : Promise<boolean> {
     try {
       const { data } = await examApi.createQuestion({
         title: question.title,
@@ -50,8 +50,10 @@ export default function ExamAuthoring() {
         { ...createdQuestion, points: question.points },
       ])
       setMessage("Question created.")
+      return true
     } catch {
       setMessage("Failed to create question.")
+      return false
     }
   }
 
