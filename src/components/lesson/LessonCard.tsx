@@ -27,6 +27,25 @@ interface LessonCardProps {
 }
 
 /**
+ * Shared look for every variant.
+ *
+ *  - Contrast: solid card surface + visible border + shadow, so the card
+ *    stands out from the (tinted) panel behind it.
+ *  - Reading overlay: a soft tint (::after) and a primary-coloured border/ring
+ *    appear on hover and keyboard focus, so the card being read is obvious.
+ *    The overlay ignores pointer events, so links and buttons still work.
+ */
+const cardSurface = [
+  "group/card border border-border bg-card shadow-sm",
+  "transition-[box-shadow,border-color,opacity] duration-200",
+  "hover:border-primary/50 hover:shadow-md",
+  "focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/30",
+  "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit]",
+  "after:bg-primary/5 after:opacity-0 after:transition-opacity after:duration-200",
+  "hover:after:opacity-100 focus-within:after:opacity-100",
+].join(" ")
+
+/**
  * One entry per slot, one class string per variant.
  *
  *  ① Title  – no dashed border / rounded box / hover shadow
@@ -41,11 +60,17 @@ interface LessonCardProps {
  *  ⑩ Actions – reserved right-hand column, stacked vertically (no overlap)
  */
 const lessonStyle = {
+  /*
+   * Widths: cards are `w-full` so they always fit the grid cell they are
+   * placed in (fixed widths like w-80 overflowed narrow cells and overlapped
+   * their neighbours). `min-w-0` lets them shrink inside flex/grid parents.
+   * The preview card spans the entire line.
+   */
   base: {
-    default: "relative w-80 h-80 flex-col gap-2 overflow-hidden py-3",
+    default: "relative w-full min-w-0 h-80 flex-col gap-2 overflow-hidden py-3",
     preview:
-      "relative w-full max-w-3xl min-h-20 flex-row flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3",
-    small: "relative w-64 h-64 flex-col gap-1.5 overflow-hidden py-2.5",
+      "relative w-full min-w-0 min-h-20 flex-row flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3",
+    small: "relative w-full max-w-64 min-w-0 h-64 flex-col gap-1.5 overflow-hidden py-2.5",
   },
 
   /* ⑩ right-hand column; alignment of the stacked buttons inside it */
@@ -98,9 +123,9 @@ const lessonStyle = {
   /* ⑥ subtle divider + quieter type */
   Footer: {
     default:
-      "mt-auto shrink-0 flex-col items-start gap-1 border-t border-border/40 px-4 py-2",
+      "mt-auto shrink-0 flex-col items-start gap-1 border-t border-border/60 px-4 py-2",
     preview: "",
-    small: "mt-auto shrink-0 border-t border-border/40 px-3 py-1.5",
+    small: "mt-auto shrink-0 border-t border-border/60 px-3 py-1.5",
   },
 
   /* ⑧ author label is muted, the username is the visible part */
@@ -163,7 +188,7 @@ export default function LessonCard({
   const actionsColumn = actions && (
     <div
       className={cn(
-        "flex shrink-0 flex-col gap-1",
+        "relative z-10 flex shrink-0 flex-col gap-1",
         lessonStyle.Actions[variant]
       )}
     >
@@ -171,10 +196,16 @@ export default function LessonCard({
     </div>
   )
 
-  /* ① no wrapper styles – the Link itself is the interactive element */
+  /* ① the Link is the interactive element. Its ::after stretches over the
+     whole card (nearest positioned ancestor = the Card), making the entire
+     card clickable. Other interactive elements use `relative z-10` to stay
+     above it. The title underlines whenever the card is hovered. */
   const titleNode = (
     <CardTitle className={lessonStyle.Title[variant]}>
-      <Link to={lessonUrl} className="underline-offset-4 hover:underline">
+      <Link
+        to={lessonUrl}
+        className="underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
+      >
         {title}
       </Link>
     </CardTitle>
@@ -221,7 +252,7 @@ export default function LessonCard({
       <span>By:</span>
       <Link
         to={`/users/${author.username}/`}
-        className={lessonStyle.AuthorLink[variant]}
+        className={cn("relative z-10", lessonStyle.AuthorLink[variant])}
       >
         {author.username}
       </Link>
@@ -253,7 +284,7 @@ export default function LessonCard({
       <Button
         variant="link"
         size="sm"
-        className="h-auto w-fit gap-1 p-0 text-xs text-muted-foreground/70 hover:text-foreground"
+        className="relative z-10 h-auto w-fit gap-1 p-0 text-xs text-muted-foreground/70 hover:text-foreground"
       >
         {open ? "Show less" : "Show more"}
         <ChevronDown
@@ -267,7 +298,7 @@ export default function LessonCard({
 
   const headerVariant = () => {
     if (isPreview) {
-      /* ⑦ one flat, wrappable row:
+      /* ⑦ one flat, wrappable row spanning the whole line:
          icon | title+summary | tags | metadata | actions(right) */
       return (
         <>
@@ -298,7 +329,12 @@ export default function LessonCard({
           <Collapsible
             open={open}
             onOpenChange={setOpen}
-            className={lessonStyle.DescriptionScroll[variant]}
+            // When expanded the description can scroll, so lift it above the
+            // stretched link to let the mouse wheel reach it
+            className={cn(
+              lessonStyle.DescriptionScroll[variant],
+              open && "relative z-10"
+            )}
           >
             {descriptionNode}
             {expandTrigger}
@@ -349,13 +385,7 @@ export default function LessonCard({
   }
 
   return (
-    <Card
-      className={cn(
-        lessonStyle.base[variant],
-        "transition-shadow hover:shadow-md",
-        className
-      )}
-    >
+    <Card className={cn(lessonStyle.base[variant], cardSurface, className)}>
       {headerVariant()}
       {contentVariant()}
       {footerVariant()}

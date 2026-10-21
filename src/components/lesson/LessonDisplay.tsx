@@ -1,260 +1,234 @@
-"use client"
-
 import type { file as FileItem } from "@/utils/types/lesson"
+import type { Lesson } from "@/utils/types/lesson"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-  FieldTitle,
-} from "@/components/ui/field"
 import {
   Lock,
   Globe,
   FileText,
   Download,
-  Edit,
-  MoreHorizontal,
-  Share2,
-  Trash2,
   Calendar,
   User,
+  Paperclip,
+  ArrowLeft,
 } from "lucide-react"
-
-import type { Lesson } from "@/utils/types/lesson"
+import { Link } from "react-router-dom"
+import { cn } from "@/utils/lib/shadcn"
 
 interface LessonDisplayProps {
   lesson: Lesson
-  onEdit?: () => void
-  onDelete?: () => void
-  onShare?: () => void
+  files?: FileItem[]
   onFileDownload?: (file: FileItem) => void
+  onBack?: () => void
+}
+
+// Shared surface — same language as LessonCard so the page feels cohesive.
+const sectionCard =
+  "rounded-xl border border-border bg-card shadow-sm transition-colors"
+
+const formatDate = (value: string | Date | undefined) => {
+  if (!value) return null
+  try {
+    return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(
+      new Date(value)
+    )
+  } catch {
+    return null
+  }
 }
 
 export default function LessonDisplay({
   lesson,
-  onEdit,
-  onDelete,
-  onShare,
+  files,
   onFileDownload,
+  onBack,
 }: LessonDisplayProps) {
+  const createdLabel = formatDate(lesson.createdAt)
+  const updatedLabel = formatDate(lesson.updatedAt)
+  const mergedFiles = files ?? lesson.files ?? []
+
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      {/* Top Action Bar */}
-      <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
-              ← Back
-            </Button>
-          </div>
-          <div className="flex items-center gap-2">
-            {onShare && (
-              <Button variant="outline" size="sm" onClick={onShare}>
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
+    <article className="mx-auto w-full max-w-4xl px-6 py-10">
+      {/* ---------- Header ---------- */}
+      <header className="space-y-4">
+        {onBack && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="gap-1.5 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to lesson
+          </Button>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant={lesson.isPrivate ? "secondary" : "default"}
+            className="gap-1.5"
+          >
+            {lesson.isPrivate ? (
+              <>
+                <Lock className="h-3 w-3" />
+                Private
+              </>
+            ) : (
+              <>
+                <Globe className="h-3 w-3" />
+                Public
+              </>
             )}
-            {onEdit && (
-              <Button variant="outline" size="sm" onClick={onEdit}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
-            )}
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+          </Badge>
+          {lesson.tags.slice(0, 4).map((tag) => (
+            <Badge key={tag.id} variant="outline" className="text-[0.7rem]">
+              {tag.name}
+            </Badge>
+          ))}
+          {lesson.tags.length > 4 && (
+            <Badge variant="outline" className="text-[0.7rem]">
+              +{lesson.tags.length - 4}
+            </Badge>
+          )}
+        </div>
+
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">
+          {lesson.title}
+        </h1>
+
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+          {lesson.author?.username && (
+            <div className="flex items-center gap-1.5">
+              <User className="h-4 w-4" />
+              <Link
+                to={`/users/${lesson.author.username}/`}
+                className="font-semibold text-foreground underline-offset-2 hover:underline"
+              >
+                {lesson.author.username}
+              </Link>
+            </div>
+          )}
+          {createdLabel && (
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              <span>Created {createdLabel}</span>
+            </div>
+          )}
+          {updatedLabel && updatedLabel !== createdLabel && (
+            <div className="flex items-center gap-1.5">
+              <span>Updated {updatedLabel}</span>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* ---------- Description ---------- */}
+      <section className={cn("mt-8 p-6", sectionCard)}>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Description
+        </h2>
+        {lesson.description?.trim() ? (
+          <ScrollArea className="mt-3 max-h-96">
+            <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
+              {lesson.description}
+            </p>
+          </ScrollArea>
+        ) : (
+          <p className="mt-3 text-sm italic text-muted-foreground">
+            No description provided.
+          </p>
+        )}
+      </section>
+
+      {/* ---------- Tags ---------- */}
+      {lesson.tags.length > 0 && (
+        <section className={cn("mt-6 p-6", sectionCard)}>
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Tags
+            </h2>
+            <span className="text-xs text-muted-foreground/70">
+              {lesson.tags.length} {lesson.tags.length === 1 ? "tag" : "tags"}
+            </span>
           </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {lesson.tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="secondary"
+                className="cursor-pointer text-[0.75rem] transition-colors hover:bg-secondary/70"
+              >
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---------- Files (inline) ---------- */}
+      <section className={cn("mt-6 p-6", sectionCard)}>
+        <div className="flex items-baseline justify-between">
+          <div className="flex items-center gap-2">
+            <Paperclip className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Attachments
+            </h2>
+          </div>
+          <span className="text-xs text-muted-foreground/70">
+            {mergedFiles.length} {mergedFiles.length === 1 ? "file" : "files"}
+          </span>
+        </div>
+
+        {mergedFiles.length > 0 ? (
+          <ul className="mt-4 space-y-2">
+            {mergedFiles.map((file, index) => (
+              <li key={index}>
+                <FileCard file={file} onDownload={onFileDownload} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm italic text-muted-foreground">
+            No files attached to this lesson.
+          </p>
+        )}
+      </section>
+    </article>
+  )
+}
+
+/* ---------- File card ---------- */
+function FileCard({
+  file,
+  onDownload,
+}: {
+  file: FileItem
+  onDownload?: (file: FileItem) => void
+}) {
+  const ext = file.filename.split(".").pop()?.toUpperCase() ?? "FILE"
+  return (
+    <div className="group flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 transition-colors hover:border-primary/40 hover:bg-muted/40">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
+          {ext.slice(0, 4)}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium text-foreground">{file.filename}</p>
+          <p className="text-xs text-muted-foreground">
+            Click to download
+          </p>
         </div>
       </div>
-
-      {/* Main Content */}
-      <div className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">
-        <FieldGroup>
-          {/* Title & Privacy Section */}
-          <Field>
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-3 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge
-                    variant={lesson.isPrivate ? "secondary" : "default"}
-                    className="gap-1.5"
-                  >
-                    {lesson.isPrivate ? (
-                      <>
-                        <Lock className="h-3 w-3" />
-                        Private
-                      </>
-                    ) : (
-                      <>
-                        <Globe className="h-3 w-3" />
-                        Public
-                      </>
-                    )}
-                  </Badge>
-                  {lesson.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag.id} variant="outline">
-                      {tag.name}
-                    </Badge>
-                  ))}
-                  {lesson.tags.length > 3 && (
-                    <Badge variant="outline">+{lesson.tags.length - 3}</Badge>
-                  )}
-                </div>
-                <FieldTitle className="text-4xl font-bold tracking-tight">
-                  {lesson.title}
-                </FieldTitle>
-                {(lesson.author || lesson.createdAt) && (
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                    {lesson.author.username && (
-                      <div className="flex items-center gap-1.5">
-                        <User className="h-4 w-4" />
-                        <span>{lesson.author.username}</span>
-                      </div>
-                    )}
-                    {lesson.createdAt && (
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4" />
-                        <span>{lesson.createdAt}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </Field>
-
-          <FieldSeparator />
-
-          {/* Description Section */}
-          <Field>
-            <FieldLabel className="text-lg font-semibold">Description</FieldLabel>
-            <FieldContent>
-              {lesson.description ? (
-                <ScrollArea className="max-h-100 rounded-md border p-4">
-                  <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
-                    {lesson.description}
-                  </p>
-                </ScrollArea>
-              ) : (
-                <p className="text-muted-foreground italic">
-                  No description provided.
-                </p>
-              )}
-            </FieldContent>
-          </Field>
-
-          <FieldSeparator />
-
-          {/* Tags Section */}
-          <Field>
-            <div className="flex items-baseline justify-between">
-              <FieldLabel className="text-lg font-semibold">Tags</FieldLabel>
-              <FieldDescription>
-                {lesson.tags.length} {lesson.tags.length === 1 ? "tag" : "tags"}
-              </FieldDescription>
-            </div>
-            <FieldContent>
-              {lesson.tags.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {lesson.tags.map((tag) => (
-                    <Badge
-                      key={tag.id}
-                      variant="secondary"
-                      className="cursor-pointer transition-colors hover:bg-secondary/80"
-                    >
-                      {tag.name}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground italic">
-                  No tags assigned to this lesson.
-                </p>
-              )}
-            </FieldContent>
-          </Field>
-
-          <FieldSeparator />
-
-          {/* Files Section */}
-          <Field>
-            <div className="flex items-baseline justify-between">
-              <FieldLabel className="text-lg font-semibold">Attachments</FieldLabel>
-              <FieldDescription>
-                {lesson.files?.length ?? 0}{" "}
-                {lesson.files?.length === 1 ? "file" : "files"}
-              </FieldDescription>
-            </div>
-            <FieldContent>
-              {lesson.files && lesson.files.length > 0 ? (
-                <div className="space-y-2">
-                  {lesson.files.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-4 py-3 transition-colors hover:bg-muted/50"
-                    >
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate font-medium">{file.filename}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Click to download
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onFileDownload?.(file)}
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground italic">
-                  No files attached to this lesson.
-                </p>
-              )}
-            </FieldContent>
-          </Field>
-
-          {/* Danger Zone */}
-          {onDelete && (
-            <>
-              <FieldSeparator />
-              <Field>
-                <FieldLabel className="text-lg font-semibold text-destructive">
-                  Danger Zone
-                </FieldLabel>
-                <FieldDescription>
-                  Permanently delete this lesson. This action cannot be undone.
-                </FieldDescription>
-                <FieldContent>
-                  <Button
-                    variant="destructive"
-                    onClick={onDelete}
-                    className="w-fit"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Lesson
-                  </Button>
-                </FieldContent>
-              </Field>
-            </>
-          )}
-        </FieldGroup>
-      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onDownload?.(file)}
+        className="gap-1.5 text-muted-foreground group-hover:text-foreground"
+      >
+        <FileText className="h-4 w-4" />
+        <Download className="h-4 w-4" />
+      </Button>
     </div>
   )
 }

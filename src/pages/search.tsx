@@ -2,25 +2,24 @@ import LessonCard from "@/components/lesson/LessonCard"
 import type { Lesson } from "@/utils/types/lesson"
 import type { SerializedSearchItem } from "@/utils/types/component"
 import PaginatedGrid from "@/components/search/PaginatedGrid"
-
 import { useSearchLesson } from "@/utils/hooks/useSearch"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
-import { useMemo } from "react"
-// import { mockLesson } from "@/utils/mock"
-
-// const MockSerializedLessons: SerializedSearchItem<Lesson>[] = mockLesson.map((lesson) => ({
-//   kind: "lesson" as const,
-//   data: lesson,
-// }))
+import { useMemo, useState } from "react"
+import { LayoutGrid, List } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function SearchPage() {
   const { items, total, loading } = useSearchLesson()
   const { page, limit, setPage } = useSearchQueryParams()
 
+  // State to toggle between 'grid' (default card) and 'list' (preview/inline card)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
   const renderItem = (item: SerializedSearchItem<Lesson>) => {
     switch (item.kind) {
       case "lesson":
-        return <LessonCard Lesson={item.data} />
+        // Dynamically pass the variant based on the selected view mode
+        return <LessonCard lesson={item.data} variant={viewMode === 'grid' ? 'default' : 'preview'} />
       default:
         return <></>
     }
@@ -34,21 +33,53 @@ export default function SearchPage() {
     }))
   }, [items])
 
-
   return (
-    <>
-      <PaginatedGrid
-        items={serializedLessons}
-        loading={loading}
-        limit={limit}
-        currentPage={page}
-        totalPages={Math.ceil(total / limit)}
-        renderItem={renderItem}
-        getKey={(item) => item.data.UUID}
-        onPageChange={setPage}
-      >
+    <div className="container mx-auto py-6 px-4">
+      {/* Enclosed panel: tinted surface so the (solid) cards stand out from it */}
+      <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
 
-      </PaginatedGrid>
-    </>
+        {/* Header with Title and Layout Toggle */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <h1 className="text-2xl font-bold">Search Results</h1>
+
+          {/* View Toggle Buttons */}
+          <div className="flex items-center gap-1 rounded-md border border-border bg-card p-1">
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setViewMode('grid')}
+              className="h-8 w-8"
+              aria-label="Grid view"
+              aria-pressed={viewMode === 'grid'}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setViewMode('list')}
+              className="h-8 w-8"
+              aria-label="List view"
+              aria-pressed={viewMode === 'list'}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Paginated Grid receives the layout prop */}
+        <PaginatedGrid
+          items={serializedLessons}
+          loading={loading}
+          limit={limit}
+          currentPage={page}
+          totalPages={Math.ceil(total / limit)}
+          renderItem={renderItem}
+          getKey={(item) => item.data.UUID}
+          onPageChange={setPage}
+          layout={viewMode}
+        />
+      </div>
+    </div>
   )
 }

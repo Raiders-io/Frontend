@@ -21,7 +21,7 @@ export const changePageFileList = () => {
 }
 
 export const changePageLessons = () => {
-  router.navigate("/lessons")
+  router.navigate("/myLesson")
 }
 
 export const changePageFriends = () => {
