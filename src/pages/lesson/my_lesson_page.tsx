@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { lessonService } from "@/services/lesson_service"
 import type { Lesson } from "@/utils/types/lesson"
@@ -10,7 +10,6 @@ import {
   FileText,
   Lock,
   Globe,
-  Filter,
   LayoutGrid,
 } from "lucide-react"
 import LessonActions from "@/components/lesson/LessonActions"
@@ -32,7 +31,6 @@ export default function MyLessonsPage() {
         const lessonsData = await lessonService.getAllLessons()
         setLessons(lessonsData)
 
-        // Collect all unique files from all lessons
         const allFiles = new Map<string, FileItem>()
         for (const lesson of lessonsData) {
           if (lesson.files) {
@@ -51,18 +49,21 @@ export default function MyLessonsPage() {
     fetchData()
   }, [])
 
-  const handleTogglePrivacy = async (lessonUUID: string) => {
+  const handleTogglePrivacy = async (lessonId: string) => {
     try {
-      const lesson = lessons.find((l) => l.UUID === lessonUUID)
+      const lesson = lessons.find(
+        (l) => l.UUID === lessonId 
+      )
       if (!lesson) return
 
-      await lessonService.updateLessonById(lessonUUID, {
+      await lessonService.updateLessonById(lessonId, {
         privacy: !lesson.isPrivate,
       })
-
       setLessons((prev) =>
         prev.map((l) =>
-          l.UUID === lessonUUID ? { ...l, isPrivate: !l.isPrivate } : l
+          l.UUID === lessonId
+            ? { ...l, isPrivate: !l.isPrivate }
+            : l
         )
       )
     } catch (error) {
@@ -70,113 +71,134 @@ export default function MyLessonsPage() {
     }
   }
 
-  const handleDelete = async (lessonUUID: string) => {
+  const handleDelete = async (lessonId: string) => {
     if (!confirm("Are you sure you want to delete this lesson?")) return
     try {
-      await lessonService.deleteLessonById(lessonUUID)
-      setLessons((prev) => prev.filter((l) => l.UUID !== lessonUUID))
+      await lessonService.deleteLessonById(lessonId)
+      setLessons((prev) =>
+        prev.filter((l) => l.UUID !== lessonId)
+      )
     } catch (error) {
       console.error("Error deleting lesson:", error)
     }
   }
 
-  const filteredLessons = lessons.filter((lesson) => {
-    if (viewMode === "public") return !lesson.isPrivate
-    if (viewMode === "private") return lesson.isPrivate
-    return true
-  })
+  const filteredLessons = useMemo(() => {
+    return lessons.filter((lesson) => {
+      if (viewMode === "public") return !lesson.isPrivate
+      if (viewMode === "private") return lesson.isPrivate
+      return true
+    })
+  }, [lessons, viewMode])
 
   const publicCount = lessons.filter((l) => !l.isPrivate).length
   const privateCount = lessons.filter((l) => l.isPrivate).length
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Loading your lessons...</p>
+      <div className="container mx-auto py-6 px-4">
+        <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
+          <div className="flex items-center justify-center py-20">
+            <p className="text-muted-foreground">Loading your lessons...</p>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">My Lessons</h1>
-            <p className="text-sm text-muted-foreground">
-              {lessons.length} {lessons.length === 1 ? "lesson" : "lessons"} total
-            </p>
+    <div className="container mx-auto py-6 px-4">
+      {/* Enclosed panel — same surface as search.tsx */}
+      <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
+        {/* Header: title on the left, segmented view toggle on the right */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">My Lessons</h1>
+            <span className="text-sm text-muted-foreground">
+              {lessons.length} {lessons.length === 1 ? "lesson" : "lessons"}
+            </span>
           </div>
-          <Link to="/lesson/new">
-            <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              New Lesson
-            </Button>
-          </Link>
-        </div>
-      </header>
 
-      {/* Controls */}
-      <div className="mx-auto max-w-7xl px-6 py-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex gap-2">
+          {/* Segmented control — identical pattern to search.tsx */}
+          <div className="flex items-center gap-1 rounded-md border border-border bg-card p-1">
             <Button
-              variant={viewMode === "all" ? "default" : "outline"}
+              variant={viewMode === "all" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("all")}
               className="gap-1.5"
+              aria-pressed={viewMode === "all"}
             >
               <LayoutGrid className="h-3.5 w-3.5" />
               All ({lessons.length})
             </Button>
             <Button
-              variant={viewMode === "public" ? "default" : "outline"}
+              variant={viewMode === "public" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("public")}
               className="gap-1.5"
+              aria-pressed={viewMode === "public"}
             >
               <Globe className="h-3.5 w-3.5" />
               Public ({publicCount})
             </Button>
             <Button
-              variant={viewMode === "private" ? "default" : "outline"}
+              variant={viewMode === "private" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("private")}
               className="gap-1.5"
+              aria-pressed={viewMode === "private"}
             >
               <Lock className="h-3.5 w-3.5" />
               Private ({privateCount})
             </Button>
             <Button
-              variant={viewMode === "by-file" ? "default" : "outline"}
+              variant={viewMode === "by-file" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("by-file")}
               className="gap-1.5"
+              aria-pressed={viewMode === "by-file"}
             >
               <FileText className="h-3.5 w-3.5" />
               By File
             </Button>
           </div>
-
-          {viewMode === "by-file" && (
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <select
-                value={selectedFilename ?? ""}
-                onChange={(e) => setSelectedFilename(e.target.value || null)}
-                className="rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-              >
-                <option value="">All files</option>
-                {files.map((file) => (
-                  <option key={file.filename} value={file.filename}>
-                    {file.filename}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
         </div>
+
+        {/* File filter (only visible in "by-file" mode) */}
+        {viewMode === "by-file" && (
+          <div className="mb-6 flex items-center gap-2">
+            <select
+              value={selectedFilename ?? ""}
+              onChange={(e) => setSelectedFilename(e.target.value || null)}
+              className="rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              <option value="">All files</option>
+              {files.map((file) => (
+                <option key={file.filename} value={file.filename}>
+                  {file.filename}
+                </option>
+              ))}
+            </select>
+            <Link to="/lesson/new">
+              <Button size="sm" className="gap-2">
+                <Plus className="h-4 w-4" />
+                New Lesson
+              </Button>
+            </Link>
+          </div>
+        )}
+
+        {/* New Lesson button (when not in by-file mode) */}
+        {viewMode !== "by-file" && (
+          <div className="mb-6 flex justify-end">
+            <Link to="/lesson/new">
+              <Button size="sm" className="gap-2">
+                <Plus className="h-4 w-4" />
+                New Lesson
+              </Button>
+            </Link>
+          </div>
+        )}
 
         {/* Content */}
         {viewMode === "by-file" ? (
@@ -186,24 +208,26 @@ export default function MyLessonsPage() {
             selectedFilename={selectedFilename}
           />
         ) : (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <>
             {filteredLessons.length > 0 ? (
-              filteredLessons.map((lesson) => (
-                <LessonCard
-                  key={lesson.UUID}
-                  lesson={lesson}
-                  variant="preview"
-                  actions={
-                    <LessonActions
-                      lesson={lesson}
-                      onTogglePrivacy={handleTogglePrivacy}
-                      onDelete={handleDelete}
-                    />
-                  }
-                />
-              ))
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredLessons.map((lesson) => (
+                  <LessonCard
+                    key={lesson.UUID}
+                    lesson={lesson}
+                    variant="preview"
+                    actions={
+                      <LessonActions
+                        lesson={lesson}
+                        onTogglePrivacy={handleTogglePrivacy}
+                        onDelete={handleDelete}
+                      />
+                    }
+                  />
+                ))}
+              </div>
             ) : (
-              <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
+              <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="rounded-full bg-muted p-4">
                   <LayoutGrid className="h-8 w-8 text-muted-foreground" />
                 </div>
@@ -221,7 +245,7 @@ export default function MyLessonsPage() {
                 </Link>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

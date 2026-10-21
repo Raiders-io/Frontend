@@ -19,8 +19,8 @@ import type { Lesson } from "@/utils/types/lesson"
 
 interface LessonActionsProps {
   lesson: Lesson
-  onTogglePrivacy: (lessonUUID: string) => void
-  onDelete: (lessonUUID: string) => void
+  onTogglePrivacy: (lessonId: string) => void
+  onDelete: (lessonId: string) => void
 }
 
 export default function LessonActions({
@@ -31,6 +31,9 @@ export default function LessonActions({
   const author = lesson.author?.username ?? ""
   const editUrl = `/lesson/${author}/${lesson.slug}/edit`
   const filesUrl = `/lesson/${author}/${lesson.slug}/files`
+  
+  // Fix: Use 'id' instead of 'UUID'
+  const lessonId = lesson.UUID || lesson.UUID || ""
 
   return (
     <DropdownMenu>
@@ -52,7 +55,7 @@ export default function LessonActions({
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem
-          onClick={() => onTogglePrivacy(lesson.UUID)}
+          onClick={() => onTogglePrivacy(lessonId)}
           className="gap-2 cursor-pointer"
         >
           {lesson.isPrivate ? (
@@ -75,7 +78,7 @@ export default function LessonActions({
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => onDelete(lesson.UUID)}
+          onClick={() => onDelete(lessonId)}
           className="gap-2 cursor-pointer text-destructive focus:text-destructive"
         >
           <Trash2 className="h-4 w-4" />

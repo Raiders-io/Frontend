@@ -4,7 +4,7 @@ import type { file as FileItem } from "@/utils/types/lesson"
 import LessonCard from "@/components/lesson/LessonCard"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { FileText, ChevronDown, ChevronRight } from "lucide-react"
+import { FileText, ChevronDown, ChevronRight, FolderOpen } from "lucide-react"
 
 interface FileLessonsViewProps {
   lessons: Lesson[]
@@ -19,7 +19,6 @@ export default function FileLessonsView({
 }: FileLessonsViewProps) {
   const [openFiles, setOpenFiles] = useState<Set<string>>(new Set())
 
-  // Group lessons by file
   const lessonsByFile = new Map<string, Lesson[]>()
   const lessonsWithoutFiles: Lesson[] = []
 
@@ -55,7 +54,7 @@ export default function FileLessonsView({
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="rounded-full bg-muted p-4">
-          <FileText className="h-8 w-8 text-muted-foreground" />
+          <FolderOpen className="h-8 w-8 text-muted-foreground" />
         </div>
         <h3 className="mt-4 text-lg font-semibold">No files found</h3>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -66,7 +65,7 @@ export default function FileLessonsView({
   }
 
   return (
-    <div className="mt-6 space-y-4">
+    <div className="space-y-3">
       {/* Files with lessons */}
       {filteredFiles.map((file) => {
         const fileLessons = lessonsByFile.get(file.filename) ?? []
@@ -74,7 +73,7 @@ export default function FileLessonsView({
 
         return (
           <Collapsible key={file.filename} open={isOpen} onOpenChange={() => toggleFile(file.filename)}>
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-lg border border-border bg-card transition-shadow hover:shadow-md">
               <CollapsibleTrigger asChild>
                 <button className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -90,9 +89,9 @@ export default function FileLessonsView({
                     {fileLessons.length}
                   </Badge>
                   {isOpen ? (
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform" />
                   ) : (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform" />
                   )}
                 </button>
               </CollapsibleTrigger>
@@ -123,10 +122,13 @@ export default function FileLessonsView({
       {/* Lessons without files */}
       {lessonsWithoutFiles.length > 0 && !selectedFilename && (
         <div className="rounded-lg border border-dashed border-border bg-muted/30 p-6">
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            Lessons without files ({lessonsWithoutFiles.length})
-          </h3>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-4 flex items-center gap-2">
+            <FolderOpen className="h-5 w-5 text-muted-foreground" />
+            <h3 className="text-sm font-semibold text-muted-foreground">
+              Lessons without files ({lessonsWithoutFiles.length})
+            </h3>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {lessonsWithoutFiles.map((lesson) => (
               <LessonCard
                 key={lesson.UUID}
