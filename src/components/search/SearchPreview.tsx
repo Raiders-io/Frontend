@@ -50,8 +50,8 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
             : items?.length > 0 ? items.map((item) => (
                 <LessonCard
                   key={item.UUID}
-                  Lesson={item}
-                  maxLen={20}
+                  lesson={item}
+                  variant="preview"
                   className="w-full max-h-20"
                 />
               ))

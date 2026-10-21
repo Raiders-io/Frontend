@@ -20,6 +20,7 @@ const LessonCreatePage = lazy(() => import("@/pages/lesson/lesson_create_page"))
 const RootLayout = lazy(() => import("@/utils/router/RootLayout"))
 const SearchPage = lazy(() => import("@/pages/search"))
 const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
+const MyLessonsPage = lazy(() => import("@/pages/lesson/my_lesson_page"))
 
 export {
   LoginPage,
@@ -42,4 +43,5 @@ export {
   RootLayout,
   SearchPage,
   GDPRPage,
+  MyLessonsPage,
 }
