@@ -6,14 +6,14 @@ import type { Question, QuestionChoice } from "@/utils/types/exam"
 import { ChooseQuestionWeight } from "@/components/exam/ChooseQuestionWeight"
 import { CodeQuestionEditor } from "@/components/exam/CodeQuestionEditor"
 
-type CreateQuestionProps = { onAdd?: (question: Question) => void }
+type CreateQuestionProps = { onAdd?: (question: Question) => Promise<boolean> }
 
 export default function Question({ onAdd }: CreateQuestionProps) {
   return <CreateQuestion onAdd={onAdd} />
 }
 
 export function CreateQuestion({ onAdd }: CreateQuestionProps) {
-  const [text, setText] = useState("")
+  const [questionTitle, setQuestionTitle] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const [referenceFile, setReferenceFile] = useState<File | null>(null)
   const [type, setType] = useState<Question["type"]>("multiple_choice")
@@ -28,7 +28,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   const [codeEditorKey, setCodeEditorKey] = useState(0)
 
   function resetForm(resetType = true) {
-    setText("")
+    setQuestionTitle("")
     setPos((prevPos) => prevPos + 1)
     if (resetType) setType("multiple_choice")
     setAnswer("")
@@ -55,18 +55,18 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     }
   }
 
-  function submitQuestion(codeAnswer = answer, referenceCode = "") {
-    if (!text.trim()) return
+  async function submitQuestion(codeAnswer = answer, referenceCode = ""): Promise<void> {
+    if (!questionTitle.trim()) return
     if (type === "multiple_choice") {
       if (choices.length < 2 || !choices.some((choice) => choice.isCorrect))
         return
     } else if (type === "written_answer" && answers.length === 0) {
       return
     }
-    onAdd?.({
+    const result = await onAdd?.({
       id: Date.now().toString(),
       pos,
-      title: text.trim(),
+      title: questionTitle.trim(),
       type,
       points: currentPoints,
       starterCode: type === "c_function" ? codeAnswer.trim() || undefined : undefined,
@@ -77,13 +77,15 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       choices:
         type === "multiple_choice" && choices.length > 0 ? choices : undefined,
     })
+    if (!result)
+      return
     resetForm(type !== "c_function")
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
     if (type !== "c_function") {
-      submitQuestion()
+      await submitQuestion()
       return
     }
 
@@ -108,7 +110,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
             }),
         ),
       )
-      submitQuestion(mainCode, referenceCode)
+      await submitQuestion(mainCode, referenceCode)
     } catch (error) {
       setFileError(
         error instanceof Error ? error.message : "Unable to read the selected C files",
@@ -140,8 +142,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <Input
-        value={text}
-        onChange={(event) => setText(event.target.value)}
+        value={questionTitle}
+        onChange={(event) => setQuestionTitle(event.target.value)}
         placeholder="Question"
       />
       <ChooseQuestionWeight
