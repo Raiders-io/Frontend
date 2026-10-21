@@ -75,19 +75,19 @@ export function toQuestion(
     question.questionType === "MCQ"
       ? "multiple_choice"
       : question.questionType === "TEXT"
-        ? "exact_answer"
+        ? "written_answer"
         : "c_function"
 
   return {
     id: String(question.id),
     pos: position,
-    text: question.title,
+    title: question.title,
     type,
     points: question.points,
     starterCode: type === "c_function" ? question.starterCode ?? undefined : undefined,
     referenceCode:
       type === "c_function" ? question.referenceCode ?? undefined : undefined,
-    answers: type === "exact_answer" ? goodAnswers : undefined,
+    answers: type === "written_answer" ? goodAnswers : undefined,
     choices:
       type === "multiple_choice"
         ? [

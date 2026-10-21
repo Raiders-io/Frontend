@@ -17,7 +17,7 @@ export function ExamQuestion({
   return (
     <li className="rounded-md border p-4">
       <p className="font-semibold">
-        {number}. {question.text}
+        {number}. {question.title}
       </p>
 
       {question.choices && (
@@ -39,7 +39,7 @@ export function ExamQuestion({
         </ul>
       )}
 
-      {question.type === "exact_answer" && (
+      {question.type === "written_answer" && (
         <input
           className="mt-2 w-full rounded-md border p-2"
           type="text"
