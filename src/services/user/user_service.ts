@@ -59,13 +59,13 @@ export const userService = {
   },
 
   fetchAvatar: async (identifier?: string): Promise<string> => {
-    const url = identifier ? `${PROFILE}/${identifier}/avatar` : `${ME}/avatar`
+    const url = `${PROFILE}/${identifier}/avatar`
     const { data } = await api.get(url, { responseType: "blob" })
     return URL.createObjectURL(data)
   },
 
   fetchBackground: async (identifier?: string): Promise<string> => {
-    const url = identifier ? `${PROFILE}/${identifier}/background` : `${ME}/background`
+    const url = `${PROFILE}/${identifier}/background`
     const { data } = await api.get(url, { responseType: "blob" })
     return URL.createObjectURL(data)
   },
