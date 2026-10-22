@@ -1,6 +1,7 @@
 import LessonForm from "@/components/lesson/LessonForm"
 import { lessonService } from "@/services/lesson_service"
 import type { CreateLessonPayload } from "@/utils/schema/lessonSchema"
+import { toast } from "sonner"
 // import FileListWidget from "@/components/FileListWidget"
 
 /**
@@ -12,6 +13,7 @@ export default function LessonCreationPage() {
     console.log("Submitting Lesson:", values)
     try {
       await lessonService.createLesson(values)
+      toast.success("Lesson created successfully!")
     } catch (error) {
       console.error("Error creating lesson:", error)
     }

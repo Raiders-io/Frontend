@@ -24,6 +24,18 @@ export const changePageLessons = () => {
   router.navigate("/myLesson")
 }
 
+export const changePageLessonCreate = () => {
+  router.navigate("/create/lesson")
+}
+
+export const changePageLessonEdit = (author: string, slug: string) => {
+  router.navigate(`/lesson/${author}/${slug}/edit`)
+}
+
+export const changePageLessonView = (author: string, slug: string) => {
+  router.navigate(`/lesson/${author}/${slug}`)
+}
+
 export const changePageFriends = () => {
   router.navigate("/friends")
 }

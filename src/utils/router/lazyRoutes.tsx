@@ -16,11 +16,11 @@ const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
 const TermsOfService = lazy(() => import("@/pages/legal/terms"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
-const LessonCreatePage = lazy(() => import("@/pages/lesson/lesson_create_page"))
+const LessonCreatePage = lazy(() => import("@/pages/lesson/CreateLesson"))
 const RootLayout = lazy(() => import("@/utils/router/RootLayout"))
 const SearchPage = lazy(() => import("@/pages/search"))
 const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
-const MyLessonsPage = lazy(() => import("@/pages/lesson/my_lesson_page"))
+const MyLessonsPage = lazy(() => import("@/pages/lesson/ManageLesson"))
 
 export {
   LoginPage,
