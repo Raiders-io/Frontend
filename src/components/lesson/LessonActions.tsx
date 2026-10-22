@@ -33,7 +33,7 @@ export default function LessonActions({
   const filesUrl = `/lesson/${author}/${lesson.slug}/files`
   
   // Fix: Use 'id' instead of 'UUID'
-  const lessonId = lesson.UUID || lesson.UUID || ""
+  const lessonId = lesson.UUID || ""
 
   return (
     <DropdownMenu>

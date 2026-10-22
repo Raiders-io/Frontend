@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { changePageLessonView } from "@/utils/router/changePage"
 
 type Variant = "preview" | "default" | "small"
 
@@ -173,7 +174,6 @@ export default function LessonCard({
   const description = lesson.description?.trim()
   const isPreview = variant === "preview"
   const isDefault = variant === "default"
-  const lessonUrl = `/lesson/${author?.username ?? ""}/${slug}/`
   const canExpand =
     isDefault && !!description && description.length > expandThreshold
   const limit = TAG_LIMIT[variant]
@@ -202,12 +202,12 @@ export default function LessonCard({
      above it. The title underlines whenever the card is hovered. */
   const titleNode = (
     <CardTitle className={lessonStyle.Title[variant]}>
-      <Link
-        to={lessonUrl}
+      <Button
         className="underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
+        onClick={(e) => {e.preventDefault(); changePageLessonView(author.username, slug)}}
       >
         {title}
-      </Link>
+      </Button>
     </CardTitle>
   )
 
