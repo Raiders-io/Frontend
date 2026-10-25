@@ -13,10 +13,28 @@ import { FriendButton } from "./FriendButton"
 import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
 import { UserBackground } from "@/components/user/UserBackground"
+import { changePageLogin } from "@/utils/router/changePage"
+import { useAuthStore } from "@/utils/stores/auth_store"
+
+type ProfileMode = "owner" | "visitor" | "guest"
 
 const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
-function ProfileSkeleton({ isOwner }: { isOwner: boolean }) {
+function getMode(userId: string | undefined, isAuthenticated: string): ProfileMode {
+  if (!isAuthenticated) return "guest"
+  return userId ? "visitor" : "owner"
+}
+
+function LoginButton({ label = "Log in" }: { label?: string }) {
+  return (
+    <Button size="sm" onClick={() => changePageLogin()}>
+      {label}
+    </Button>
+  )
+}
+
+function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
+  const isOwner = mode === "owner"
   return (
     <div className="space-y-10" aria-busy="true" aria-label="Loading profile">
       <div className="flex items-center gap-6">
@@ -25,7 +43,7 @@ function ProfileSkeleton({ isOwner }: { isOwner: boolean }) {
           <Skeleton className="h-7 w-48" />
           <Skeleton className="h-4 w-28" />
         </div>
-        {isOwner && <Skeleton className="h-9 w-24 rounded-md" />}
+        {mode !== "guest" && <Skeleton className="h-9 w-24 rounded-md" />}
       </div>
 
       <div className={isOwner ? OWNER_GRID : undefined}>
@@ -61,8 +79,20 @@ function ProfileError({ message, onRetry }: { message: string; onRetry: () => vo
   )
 }
 
-export default function ProfilePage({ userId }: { userId?: string }) {
-  const isOwner = !userId
+function LoginRequired() {
+  return (
+    <Empty>
+      <EmptyHeader>
+        <EmptyTitle>You need to be logged in to see your profile.</EmptyTitle>
+      </EmptyHeader>
+      <EmptyContent>
+        <LoginButton />
+      </EmptyContent>
+    </Empty>
+  )
+}
+
+function ProfileContent({ userId, mode }: { userId?: string; mode: ProfileMode }) {
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
   const errorMessage = error
@@ -71,9 +101,20 @@ export default function ProfilePage({ userId }: { userId?: string }) {
       : getErrorMessage(error, "Failed to load profile")
     : null
 
+  const renderActions = () => {
+    if (!user) return null
+    switch (mode) {
+      case "owner":
+        return <EditProfileDialog me={user as PrivateProfile} />
+      case "visitor":
+        return <FriendButton userId={user.id} username={user.username} />
+      case "guest":
+        return <LoginButton label="Log in to add friend" />
+    }
+  }
+
   return (
     <div className="relative min-h-screen w-full">
-      {/* Background Banner with improved fallback gradient */}
       <UserBackground
         user={user}
         className="absolute inset-x-0 top-0 -z-10 h-74 sm:h-78"
@@ -83,21 +124,12 @@ export default function ProfilePage({ userId }: { userId?: string }) {
         {errorMessage ? (
           <ProfileError message={errorMessage} onRetry={() => refetch()} />
         ) : isPending || !user ? (
-          <ProfileSkeleton isOwner={isOwner} />
+          <ProfileSkeleton mode={mode} />
         ) : (
           <div className="space-y-10">
-            <ProfileHeader
-              user={user}
-              actions={
-                isOwner ? (
-                  <EditProfileDialog me={user as PrivateProfile} />
-                ) : (
-                  <FriendButton userId={user.id} username={user.username} />
-                )
-              }
-            />
+            <ProfileHeader user={user} actions={renderActions()} />
 
-            {isOwner ? (
+            {mode === "owner" ? (
               <div className={OWNER_GRID}>
                 <div className="space-y-8">
                   <Biography bio={user.bio ?? ""} />
@@ -119,6 +151,15 @@ export default function ProfilePage({ userId }: { userId?: string }) {
       </main>
     </div>
   )
+}
+
+export default function ProfilePage({ userId }: { userId?: string }) {
+  const isAuthenticated = useAuthStore((s) => s.user?.id ?? '')
+  const mode = getMode(userId, isAuthenticated)
+
+  if (mode === "guest" && !userId) return <LoginRequired />
+
+  return <ProfileContent userId={userId} mode={mode} />
 }
 
 export function PublicProfilePage() {
