@@ -85,14 +85,15 @@ export function UserMenu() {
     <div className="flex items-center gap-3">
       {isAuthenticated ? (
         user ? (
-          <button
+          <Button
             type="button"
+            variant="link"
             onClick={() => changePageProfile()}
-            className="hidden max-w-32 select-none truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline"
+            className="hidden cursor-pointer max-w-32 select-none truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline"
             title={user.username}
           >
             {user.username}
-          </button>
+          </Button>
         ) : (
           <span
             className="hidden h-4 w-16 animate-pulse rounded bg-muted sm:inline-block"
@@ -100,7 +101,7 @@ export function UserMenu() {
           />
         )
       ) : (
-        <Button variant="ghost" size="sm" onClick={() => changePageLogin()}>
+        <Button variant="ghost" size="sm" onClick={() => changePageLogin()} className="cursor-pointer">
           Log in
         </Button>
       )}

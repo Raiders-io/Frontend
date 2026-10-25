@@ -80,7 +80,7 @@ export function ProfileHeader({ user, actions }: Props) {
           {STATS.map(({ key, label, icon: Icon, accent }) => (
             <div
               key={key}
-              className="flex flex-col items-center justify-center gap-2 px-3 py-4 text-center sm:flex-row sm:gap-3 sm:px-6"
+              className="select-none flex flex-col items-center justify-center gap-2 px-3 py-4 text-center sm:flex-row sm:gap-3 sm:px-6"
             >
               <div
                 className={cn(
