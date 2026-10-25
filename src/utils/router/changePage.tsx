@@ -24,10 +24,6 @@ export const changePageLessons = () => {
   router.navigate("/lessons")
 }
 
-export const changePageFriends = () => {
-  router.navigate("/friends")
-}
-
 export const changePageUser = (userId: string) => {
   router.navigate(`/users/${userId}`)
 }

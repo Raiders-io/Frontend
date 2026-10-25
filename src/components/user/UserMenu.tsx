@@ -31,13 +31,11 @@ import {
   SettingsIcon,
   UserIcon,
   UserPlusIcon,
-  UsersIcon,
 } from "lucide-react"
 import {
   changePageChat,
   changePageEditProfile,
   changePageFileList,
-  changePageFriends,
   changePageLessons,
   changePageLogin,
   changePageProfile,
@@ -63,7 +61,6 @@ const AUTHENTICATED_GROUPS: MenuEntry[][] = [
   ],
   [
     { label: "Profile", icon: UserIcon, onSelect: changePageProfile },
-    { label: "My Friends", icon: UsersIcon, onSelect: changePageFriends },
     { label: "Messages", icon: MessageCircleIcon, onSelect: changePageChat },
     { label: "Settings", icon: SettingsIcon, onSelect: changePageEditProfile },
   ],

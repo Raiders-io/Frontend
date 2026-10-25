@@ -74,7 +74,10 @@ export default function ProfilePage({ userId }: { userId?: string }) {
   return (
     <div className="relative min-h-screen w-full">
       {/* Background Banner with improved fallback gradient */}
-      <UserBackground></UserBackground>
+      <UserBackground
+        user={user}
+        className="absolute inset-x-0 top-0 -z-10 h-74 sm:h-78"
+      />
 
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
         {errorMessage ? (
