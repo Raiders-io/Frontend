@@ -184,7 +184,7 @@ export function EditProfileDialog({ me }: Props) {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <UserBackground userId={me.id} className="h-full w-full" />
+                      <UserBackground user={me} className="h-full w-full" />
                     )}
                   </div>
 

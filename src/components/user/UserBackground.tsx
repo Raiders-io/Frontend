@@ -1,13 +1,14 @@
 import { useBackground } from "@/services/user/user_queries"
 import { cn } from "@/utils/lib/shadcn"
+import type { PublicProfile } from "@/utils/types/user"
 
 interface UserBackgroundProps {
-  userId?: string
+  user?: PublicProfile
   className?: string
 }
 
-export const UserBackground = ({ userId, className }: UserBackgroundProps) => {
-  const { data: backgroundUrl } = useBackground(userId)
+export const UserBackground = ({ user, className }: UserBackgroundProps) => {
+  const { data: backgroundUrl } = useBackground(user?.id)
 
   if (!backgroundUrl) {
     return <div className={cn("bg-muted", className)} />
