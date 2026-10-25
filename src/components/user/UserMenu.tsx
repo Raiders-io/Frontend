@@ -47,6 +47,7 @@ import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { UserAvatar } from "./UserAvatar"
 import type { PrivateProfile } from "@/utils/types/user"
+import { Button } from "../ui/button"
 
 type MenuEntry = {
   label: string
@@ -82,21 +83,27 @@ export function UserMenu() {
 
   return (
     <div className="flex items-center gap-3">
-      {isAuthenticated &&
-        (user ? (
-          <span
-            className="hidden max-w-32 select-none truncate text-sm text-muted-foreground sm:inline"
+      {isAuthenticated ? (
+        user ? (
+          <button
+            type="button"
+            onClick={() => changePageProfile()}
+            className="hidden max-w-32 select-none truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline"
             title={user.username}
           >
             {user.username}
-          </span>
+          </button>
         ) : (
           <span
             className="hidden h-4 w-16 animate-pulse rounded bg-muted sm:inline-block"
             aria-hidden="true"
           />
-        ))}
-
+        )
+      ) : (
+        <Button variant="ghost" size="sm" onClick={() => changePageLogin()}>
+          Log in
+        </Button>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <UserAvatarButton
