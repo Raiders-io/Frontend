@@ -18,10 +18,19 @@ export const userKeys = {
   profiles: () => [...userKeys.all, "profile"] as const,
   profile: (identifier: string) => [...userKeys.profiles(), identifier] as const,
 
-  avatar: (identifier?: string) => 
-    identifier === undefined ? [...userKeys.me(), "avatar"] as const : [...userKeys.profile(identifier), "avatar"] as const,
-  background: (identifier?: string) => 
-    identifier === undefined ? [...userKeys.me(), "background"] as const : [...userKeys.profile(identifier), "background"] as const,
+  avatar: (identifier?: string, version?: string | null) =>
+    [
+      ...(identifier === undefined ? userKeys.me() : userKeys.profile(identifier)),
+      "avatar",
+      version ?? null,
+    ] as const,
+
+  background: (identifier?: string, version?: string | null) =>
+    [
+      ...(identifier === undefined ? userKeys.me() : userKeys.profile(identifier)),
+      "background",
+      version ?? null,
+    ] as const,
 
   friendships: () => [...userKeys.all, "friendships"] as const,
   relationship: (userId: string) => [...userKeys.all, "relationship", userId] as const,
@@ -45,19 +54,21 @@ export function useUpdateMe() {
   })
 }
 
-export function useAvatar(identifier?: string) {
+export function useAvatar(identifier?: string, version?: string | null) {
   return useQuery({
-    queryKey: userKeys.avatar(identifier),
-    queryFn: () => userService.fetchAvatar(identifier),
+    queryKey: userKeys.avatar(identifier, version),
+    queryFn: () => userService.fetchAvatar(identifier, version),
+    enabled: Boolean(identifier),
     staleTime: 1000 * 60 * 10, 
   })
 }
 
-export function useBackground(identifier?: string) {
+export function useBackground(identifier?: string, version?: string | null) {
   return useQuery({
-    queryKey: userKeys.background(identifier),
-    queryFn: () => userService.fetchBackground(identifier),
-    staleTime: 1000 * 60 * 10,
+    queryKey: userKeys.background(identifier, version),
+    queryFn: () => userService.fetchBackground(identifier, version),
+    enabled: Boolean(identifier),
+    staleTime: Infinity,
   })
 }
 
@@ -104,6 +115,7 @@ export function useMe() {
 
 export function useProfile(identifier?: string) {
   return useQuery<PublicProfile>({
+    enabled: Boolean(identifier),
     queryKey: identifier === undefined ? userKeys.me() : userKeys.profile(identifier),
     queryFn: () =>
       identifier === undefined ? userService.fetchMe() : userService.fetchProfile(identifier),
