@@ -8,6 +8,8 @@ export interface PublicProfile {
   currentStreak: number
   lessonsCompletedCount: number
   longestStreak: number
+  avatarUpdatedAt: string | null
+  backgroundUpdatedAt: string | null
 }
 
 export interface PrivateProfile extends PublicProfile {
