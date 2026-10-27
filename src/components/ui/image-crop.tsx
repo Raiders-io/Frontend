@@ -36,6 +36,9 @@ const QUALITY_STEPS = [0.92, 0.85, 0.75, 0.65];
 const MAX_DOWNSCALE_ATTEMPTS = 8;
 const DOWNSCALE_FACTOR = 0.8;
 
+const MIN_CROP_PERCENT = 5;
+const WHEEL_ZOOM_SPEED = 0.0015;
+
 const EXTENSIONS: Record<string, string> = {
   "image/webp": "webp",
   "image/jpeg": "jpg",
@@ -68,6 +71,38 @@ const canvasToBlob = (
   new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 
 const baseName = (name: string) => name.replace(/\.[^/.]+$/, "") || "image";
+
+/** Scale a crop around its center, keeping its ratio and staying in the image. */
+const scaleCrop = (crop: PercentCrop, factor: number): PercentCrop => {
+  const { width, height } = crop;
+  if (width <= 0 || height <= 0) {
+    return crop;
+  }
+
+  const minScale = Math.min(
+    1,
+    Math.max(MIN_CROP_PERCENT / width, MIN_CROP_PERCENT / height)
+  );
+  const maxScale = Math.min(100 / width, 100 / height);
+  if (minScale > maxScale) {
+    return crop;
+  }
+
+  const scale = Math.min(maxScale, Math.max(minScale, factor));
+  const newWidth = width * scale;
+  const newHeight = height * scale;
+  const centerX = crop.x + width / 2;
+  const centerY = crop.y + height / 2;
+
+  return {
+    ...crop,
+    unit: "%",
+    x: Math.min(100 - newWidth, Math.max(0, centerX - newWidth / 2)),
+    y: Math.min(100 - newHeight, Math.max(0, centerY - newHeight / 2)),
+    width: newWidth,
+    height: newHeight,
+  };
+};
 
 type CropToFileOptions = {
   image: HTMLImageElement;
@@ -160,6 +195,8 @@ type ImageCropContextType = {
   onImageLoad: (e: SyntheticEvent<HTMLImageElement>) => void;
   applyCrop: () => Promise<void>;
   resetCrop: () => void;
+  /** factor < 1 zooms in (smaller area), factor > 1 zooms out. */
+  zoomCrop: (factor: number) => void;
 };
 
 const ImageCropContext = createContext<ImageCropContextType | null>(null);
@@ -273,6 +310,12 @@ export const ImageCrop = ({
     }
   };
 
+  // factor < 1 zooms in (smaller area), factor > 1 zooms out.
+  const zoomCrop = useCallback((factor: number) => {
+    setCrop((prev) => (prev ? scaleCrop(prev, factor) : prev));
+    setCompletedCrop((prev) => (prev ? scaleCrop(prev, factor) : prev));
+  }, []);
+
   const contextValue: ImageCropContextType = {
     file,
     imgSrc,
@@ -285,6 +328,7 @@ export const ImageCrop = ({
     onImageLoad,
     applyCrop,
     resetCrop,
+    zoomCrop,
   };
 
   return (
@@ -301,11 +345,14 @@ export const ImageCrop = ({
 export type ImageCropContentProps = {
   style?: CSSProperties;
   className?: string;
+  /** Zoom the selection with the mouse wheel / trackpad pinch. */
+  wheelZoom?: boolean;
 };
 
 export const ImageCropContent = ({
   style,
   className,
+  wheelZoom = true,
 }: ImageCropContentProps) => {
   const {
     imgSrc,
@@ -315,7 +362,29 @@ export const ImageCropContent = ({
     onImageLoad,
     imgRef,
     reactCropProps,
+    isApplying,
+    zoomCrop,
   } = useImageCrop();
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Native listener: React's onWheel is passive and cannot preventDefault,
+  // so the page would scroll while zooming.
+  useEffect(() => {
+    const element = wrapperRef.current;
+    if (!(element && wheelZoom) || isApplying) {
+      return;
+    }
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      zoomCrop(Math.exp(delta * WHEEL_ZOOM_SPEED));
+    };
+
+    element.addEventListener("wheel", onWheel, { passive: false });
+    return () => element.removeEventListener("wheel", onWheel);
+  }, [wheelZoom, isApplying, zoomCrop]);
 
   const shadcnStyle = {
     "--rc-border-color": "var(--color-border)",
@@ -323,24 +392,26 @@ export const ImageCropContent = ({
   } as CSSProperties;
 
   return (
-    <ReactCrop
-      className={cn("max-h-[277px] max-w-full", className)}
-      crop={crop}
-      onChange={handleChange}
-      onComplete={handleComplete}
-      style={{ ...shadcnStyle, ...style }}
-      {...reactCropProps}
-    >
-      {imgSrc && (
-        <img
-          alt="Image to crop"
-          className="block max-h-[inherit] max-w-full"
-          onLoad={onImageLoad}
-          ref={imgRef}
-          src={imgSrc}
-        />
-      )}
-    </ReactCrop>
+    <div className="contents" ref={wrapperRef}>
+      <ReactCrop
+        className={cn("max-h-[277px] max-w-full", className)}
+        crop={crop}
+        onChange={handleChange}
+        onComplete={handleComplete}
+        style={{ ...shadcnStyle, ...style }}
+        {...reactCropProps}
+      >
+        {imgSrc && (
+          <img
+            alt="Image to crop"
+            className="block max-h-[inherit] max-w-full"
+            onLoad={onImageLoad}
+            ref={imgRef}
+            src={imgSrc}
+          />
+        )}
+      </ReactCrop>
+    </div>
   );
 };
 
