@@ -1,5 +1,5 @@
 import api from "@/utils/lib/axios"
-import type { PaginationParams, Paginated } from "@/utils/types/common"
+import type { PaginationParams, Paginated, Username, UsernameCheckResult } from "@/utils/types/common"
 import type {
   CreatedExam,
   CreatedLesson,
@@ -22,12 +22,25 @@ const FRIENDS = `${ME}/friends`
 const LESSONS = `${ME}/lessons`
 
 export const userService = {
+
+  checkUsernameAvailable: async (username: Username, signal?: AbortSignal):  Promise<UsernameCheckResult> => {
+    const { data } = await api.get<{ available: boolean; reason?: string }>(`${PROFILE}/username/available`,
+      { params: { username }, signal }
+    )
+
+    if (data.available) return { available: true }
+    if (data.reason === "reserved" || data.reason === "invalid") {
+      return { available: false, reason: data.reason }
+    }
+    return { available: false, reason: "taken" }
+  },
+
   fetchMe: async (): Promise<PrivateProfile> => {
     const { data } = await api.get<PrivateProfile>(ME)
     return data
   },
 
-  async updateMe(payload: UpdateMePayload) {
+  updateMe: async (payload: UpdateMePayload) => {
     const form = new FormData()
 
     for (const [key, value] of Object.entries(payload)) {

@@ -22,10 +22,13 @@ const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
 const SearchPage = lazy(() => import("@/pages/search"))
+const ChooseUsername = lazy(() => import("@/pages/user/ChooseUsername"))
 import { Toaster } from "@/components/ui/sonner"
+import { FooterComponent } from "@/components/FooterComponent"
 
 export function RootLayout() {
   return (
+    <>
     <div>
       <TopNavBar />
       <Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
@@ -33,10 +36,20 @@ export function RootLayout() {
         <Outlet /> {/* Child routes render here */}
       </main>
     </div>
+    <FooterComponent />
+    </>
   )
 }
 
 export const router = createBrowserRouter([
+  {
+    path: "/onboarding/username",
+    element: (
+      <ProtectedRoute>
+        <ChooseUsername/>
+      </ProtectedRoute>
+    ),
+  },
   {
     element: <RootLayout />,
     children: [

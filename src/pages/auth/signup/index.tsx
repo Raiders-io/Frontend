@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/auth_layout"
-import { changePageHome } from "@/utils/router/changePage"
+import { changePageChooseUsername} from "@/utils/router/changePage"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
@@ -71,7 +71,7 @@ export default function SignupPage() {
     try {
       const response = await authService.signup(data)
       setAuth(response.data.user, response.data.token)
-      changePageHome()
+      changePageChooseUsername()
     } catch (error) {
       console.error("Signup error:", error)
       setFormError(
