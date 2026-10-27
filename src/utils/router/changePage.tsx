@@ -24,12 +24,16 @@ export const changePageLessons = () => {
   router.navigate("/lessons")
 }
 
-export const changePageFriends = () => {
-  router.navigate("/friends")
+export const changePageUser = (userId: string) => {
+  router.navigate(`/users/${userId}`)
+}
+
+export const changePageChooseUsername = () => {
+  router.navigate("/onboarding/username", { replace: true })
 }
 
 export const changePageEditProfile = () => {
-  router.navigate("/edit-profile")
+  router.navigate("/settings")
 }
 
 export const changePageChat = () => {

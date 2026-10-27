@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/utils/router'
 import { ThemeProvider } from "@/components/theme-provider"
-import { FooterComponent } from '@/components/FooterComponent'
 
 export default function App() {
 	return (
@@ -12,7 +11,6 @@ export default function App() {
 					<div className="flex-1">
 						<RouterProvider router={router} />
 					</div>
-					<FooterComponent />
 				</div>
 			</Suspense>
 		</ThemeProvider>

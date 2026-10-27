@@ -3,7 +3,6 @@ import {
 	changePageChat,
 	changePageFileList,
 	changePageLessons,
-	changePageFriends,
 	changePageProfile,
 	changePageEditProfile,
 	changePageAbout,
@@ -28,7 +27,6 @@ const NAV_COLUMNS = [
 		heading: "Compte",
 		links: [
 			{ label: "Profile", onClick: changePageProfile },
-			{ label: "Friends", onClick: changePageFriends },
 			{ label: "Messages", onClick: changePageChat },
 		],
 	},

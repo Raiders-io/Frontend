@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useChat } from '@/utils/hooks/use_chat'
-import { userService } from '@/services/user_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
 import { Button } from '@/components/ui/button'
-import type { User } from '@/utils/types/auth'
+import type { Credentials } from '@/utils/types/auth'
 import { changePageChat } from '@/utils/router/changePage'
+import { authService } from '@/services/auth_service'
 
-export default function UsersList() {
+export default function UsersList() 
+{
 	const { createConversation } = useChat()
-	const [members, setMembers] = useState<User[]>([])
+	const [members, setMembers] = useState<Credentials[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		userService.fetchUsers()
+		authService.fetchUserByIds()
 			.then(setMembers)
 			.catch(console.error)
 			.finally(() => setIsLoading(false))
@@ -64,14 +65,14 @@ export default function UsersList() {
 										className="group flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-muted/40"
 									>
 										<span
-											className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[11px] font-medium text-white ${avatarColor(member.fullName)}`}
+											className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[11px] font-medium text-white ${avatarColor(member.id)}`}
 										>
-											{initials(member.fullName)}
+											{initials(member.email)}
 										</span>
 
 										<div className="min-w-0 flex-1">
 											<p className="truncate text-sm font-medium text-foreground">
-												{member.fullName}
+												{member.email}
 											</p>
 											<p className="truncate font-mono text-xs text-muted-foreground">
 												{member.email}

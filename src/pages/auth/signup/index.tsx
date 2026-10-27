@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/auth_layout"
-import { changePageHome } from "@/utils/router/changePage"
+import { changePageChooseUsername} from "@/utils/router/changePage"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
@@ -22,7 +22,6 @@ import {
 
 const signupSchema = z
   .object({
-    fullName: z.string().min(2, "Nom trop court"),
     email: z.string().email("Email invalide"),
     password: z.string().min(8, "Mot de passe trop court"),
     passwordConfirmation: z.string(),
@@ -72,7 +71,7 @@ export default function SignupPage() {
     try {
       const response = await authService.signup(data)
       setAuth(response.data.user, response.data.token)
-      changePageHome()
+      changePageChooseUsername()
     } catch (error) {
       console.error("Signup error:", error)
       setFormError(
@@ -101,25 +100,6 @@ export default function SignupPage() {
     >
       <FieldGroup>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="fullName"
-              className="text-xs font-medium text-foreground"
-            >
-              Nom
-            </Label>
-            <Input
-              id="fullName"
-              placeholder="Ada Lovelace"
-              autoComplete="name"
-              className="h-11 bg-background"
-              {...register("fullName")}
-            />
-            <p className="min-h-4 text-xs leading-4 text-destructive">
-              {errors.fullName?.message}
-            </p>
-          </div>
-
           <div className="space-y-1.5">
             <Label
               htmlFor="email"
@@ -199,7 +179,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="age-confirmation">
                 I am at least 18 years old
               </FieldLabel>
-              <FieldDescription className="!mt-0">
+              <FieldDescription className="mt-0!">
                 By clicking this checkbox, you confirm that you are at least 18
                 years old.
               </FieldDescription>
@@ -216,7 +196,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="terms-checkbox-desc">
                 I agree to the terms and conditions
               </FieldLabel>
-              <FieldDescription className="!mt-0">
+              <FieldDescription className="mt-0!">
                 By clicking this checkbox, you agree to the Terms of Service.
               </FieldDescription>
             </FieldContent>
@@ -232,7 +212,7 @@ export default function SignupPage() {
               <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
                 I will not use this service for prohibited activities
               </FieldLabel>
-              <FieldDescription className="!mt-0">
+              <FieldDescription className="mt-0!">
                 By clicking this checkbox, you agree not to use this service for
                 any prohibited activities (listed in the Terms of Service).
               </FieldDescription>

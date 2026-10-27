@@ -1,7 +1,6 @@
+import { useEffect, useState } from "react"
+import { Loader2, UserX } from "lucide-react"
 import { ThemeDropDown } from "@/components/themeDropDown"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,89 +14,62 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { UserX, Loader2 } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
-import { useState, useEffect } from "react"
 import { toast } from "sonner"
 
-export default function EditProfile() {
+export default function Settings() {
   return (
-    <>
-      <Card>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+
+      <Card className="max-w-md">
         <CardHeader>
-          <h1>Edit Profile Page</h1>
+          <CardTitle>Preferences</CardTitle>
+          <CardDescription>Here you can edit your preferences.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Edit Profile</h2>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                placeholder="Edit your profile information 1 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-              <Textarea
-                placeholder="Edit your profile information 2 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-              <Textarea
-                placeholder="Edit your profile information 3 here..."
-                className="w-full h-12 p-2 border rounded"
-              />
-            </CardContent>
-          </Card>
-          <Separator className="my-4" />
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Here you can edit your preferences.</h2>
-            </CardHeader>
-            <CardContent>
-              <ThemeDropDown />
-            </CardContent>
-          </Card>
-          <Card className="w-full max-w-md p-4">
-            <CardHeader>
-              <h2>Account Data</h2>
-            </CardHeader>
-            <CardContent>
-              <DeleteAccountDialog />
-            </CardContent>
-          </Card>
+          <ThemeDropDown />
         </CardContent>
       </Card>
-    </>
+
+      <Card className="max-w-md">
+        <CardHeader>
+          <CardTitle>Account Data</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DeleteAccountDialog />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
 export const DeleteAccountDialog = () => {
-  const { logout, user } = useAuthStore()
+  const { logout } = useAuthStore()
   const [isDisabled, setIsDisabled] = useState(true)
   const [countdown, setCountdown] = useState(5)
   const [confirmationInput, setConfirmationInput] = useState("")
   const [isOpen, setIsOpen] = useState(false)
-  let toastId: string | number
-  // Timer pour désactiver le bouton
+
+  const REQUIRED_PHRASE = "delete my account"
+  const isConfirmed = confirmationInput.trim().toLowerCase() === REQUIRED_PHRASE
+
+  // Timer: Se lance seulement quand la phrase de confirmation est valide
   useEffect(() => {
-    if (!isOpen || !isDisabled) return
+    if (!isOpen || !isConfirmed || countdown <= 0) {
+      if (countdown <= 0) setIsDisabled(false)
+      return
+    }
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          setIsDisabled(false)
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [isOpen, isDisabled])
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [isOpen, isConfirmed, countdown])
 
   const handleDeleteAccount = async () => {
+    const toastId = toast.loading("Deleting your account...")
     try {
       await authService.deleteAccount()
       toast.success("Account deleted successfully.", { id: toastId })
@@ -105,32 +77,24 @@ export const DeleteAccountDialog = () => {
       router.navigate("/login")
     } catch (error) {
       console.error("Error deleting account:", error)
+      toast.error("Failed to delete account. Please try again.", { id: toastId })
     }
   }
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open)
-    toastId = toast.warning(
-      "Are you sure you want to delete your account? This action cannot be undone.",
-      { duration: 5000 },
-    )
-    if (!open) {
+    if (open) {
+      // Reinitialiser les etats a l'ouverture
       setIsDisabled(true)
       setCountdown(5)
       setConfirmationInput("")
     }
   }
 
-  const isConfirmed = confirmationInput === user?.id
-
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="destructive"
-          className="cursor-pointer"
-          aria-label="Delete Account"
-        >
+        <Button variant="destructive" aria-label="Delete Account">
           <UserX />
           Delete Account
         </Button>
@@ -146,16 +110,29 @@ export const DeleteAccountDialog = () => {
             This action cannot be undone.
             <br />
             <br />
-            To confirm, please type your id: <strong>{user?.id}</strong>
+            To confirm, please type:{" "}
+            <strong
+              className="select-none pointer-events-none"
+              onContextMenu={(e) => e.preventDefault()}
+            >
+              {REQUIRED_PHRASE}
+            </strong>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="px-4 pb-4">
           <input
             type="text"
             value={confirmationInput}
-            onChange={(e) => setConfirmationInput(e.target.value)}
-            placeholder="Enter your id"
-            className="w-full p-2 border rounded"
+            onChange={(e) => {
+              setConfirmationInput(e.target.value)
+              // Reset du countdown et du statut si l'utilisateur modifie la saisie
+              if (e.target.value.trim().toLowerCase() !== REQUIRED_PHRASE) {
+                setCountdown(5)
+                setIsDisabled(true)
+              }
+            }}
+            placeholder={`Type "${REQUIRED_PHRASE}"`}
+            className="w-full p-2 border rounded bg-background text-foreground"
           />
         </div>
         <AlertDialogFooter>
@@ -165,7 +142,7 @@ export const DeleteAccountDialog = () => {
             variant="destructive"
             onClick={handleDeleteAccount}
           >
-            {isDisabled ? (
+            {isConfirmed && isDisabled ? (
               <>
                 <Loader2 className="animate-spin" size={16} />
                 Please wait {countdown}s

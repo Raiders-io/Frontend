@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom"
 import { lazy } from "react"
 import ProtectedRoute from "@/utils/router/protected_route"
 import TopNavBar from "@/components/TopNavBar"
+import ProfilePage, { PublicProfilePage } from "@/pages/user/ProfilePage"
 
 const LoginPage = lazy(() => import("@/pages/auth/login"))
 const SignupPage = lazy(() => import("@/pages/auth/signup"))
@@ -9,7 +10,7 @@ const HomePage = lazy(() => import("@/pages/home"))
 const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
-const EditProfile = lazy(() => import("@/pages/user/edit-profile"))
+const Settings = lazy(() => import("@/pages/user/Settings"))
 const AboutPage = lazy(() => import("@/pages/about"))
 const ContactPage = lazy(() => import("@/pages/contact"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
@@ -21,10 +22,13 @@ const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
 const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
 const SearchPage = lazy(() => import("@/pages/search"))
+const ChooseUsername = lazy(() => import("@/pages/user/ChooseUsername"))
 import { Toaster } from "@/components/ui/sonner"
+import { FooterComponent } from "@/components/FooterComponent"
 
 export function RootLayout() {
   return (
+    <>
     <div>
       <TopNavBar />
       <Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
@@ -32,10 +36,20 @@ export function RootLayout() {
         <Outlet /> {/* Child routes render here */}
       </main>
     </div>
+    <FooterComponent />
+    </>
   )
 }
 
 export const router = createBrowserRouter([
+  {
+    path: "/onboarding/username",
+    element: (
+      <ProtectedRoute>
+        <ChooseUsername/>
+      </ProtectedRoute>
+    ),
+  },
   {
     element: <RootLayout />,
     children: [
@@ -76,10 +90,22 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/edit-profile",
+        path: "/profile",
         element: (
           <ProtectedRoute>
-            <EditProfile />
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/users/:identifier",
+        element: <PublicProfilePage />,
+      },
+      {
+        path: "/settings",
+        element: (
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         ),
       },
