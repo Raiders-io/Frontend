@@ -1,4 +1,5 @@
-import type { Paginated, PaginationParams } from "@/utils/types/common"
+import type { Paginated, PaginationParams, Username } from "@/utils/types/common"
+import { useEffect, useState } from "react"
 import {
   keepPreviousData,
   useMutation,
@@ -9,6 +10,8 @@ import {
 import { userService } from "./user_service"
 import type { PrivateProfile, PublicProfile, RelationshipStatus, UpdateMePayload } from "@/utils/types/user"
 import { useAuthStore } from "@/utils/stores/auth_store"
+
+const USERNAME_CHECK_DEBOUNCE_MS = 400
 
 export const userKeys = {
   all: ["user"] as const,
@@ -35,10 +38,21 @@ export const userKeys = {
   friendships: () => [...userKeys.all, "friendships"] as const,
   relationship: (userId: string) => [...userKeys.all, "relationship", userId] as const,
 
+  usernameAvailable: (username: string) => [...userKeys.all, "username-available", username] as const,
+
   search: (query: string) => [...userKeys.all, "search", query] as const,
 
   list: (name: string, scope: string, params?: PaginationParams) =>
     [...userKeys.all, "list", name, scope, params ?? {}] as const,
+}
+
+function useDebouncedValue<T>(value: T, delay: number) {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(id)
+  }, [value, delay])
+  return debounced
 }
 
 export function useUpdateMe() {
@@ -50,8 +64,28 @@ export function useUpdateMe() {
       qc.invalidateQueries({ queryKey: userKeys.profiles() })
       qc.invalidateQueries({ queryKey: userKeys.avatar() })
       qc.invalidateQueries({ queryKey: userKeys.background() })
+      qc.invalidateQueries({ queryKey: [...userKeys.all, "username-available"] })
     },
   })
+}
+
+export function useUsernameAvailability(username: Username, enabled = true) {
+  const debounced = useDebouncedValue(username, USERNAME_CHECK_DEBOUNCE_MS)
+  const settled = debounced === username
+
+  const query = useQuery({
+    queryKey: userKeys.usernameAvailable(debounced),
+    queryFn: ({ signal }) => userService.checkUsernameAvailable(debounced, signal),
+    enabled: enabled && settled,
+    staleTime: 1000 * 30,
+    retry: false,
+  })
+
+  return {
+    isChecking: enabled && (!settled || query.isFetching),
+    result: enabled && settled ? query.data : undefined,
+    isError: enabled && settled && query.isError,
+  }
 }
 
 export function useAvatar(identifier?: string, version?: string | null) {
@@ -59,7 +93,7 @@ export function useAvatar(identifier?: string, version?: string | null) {
     queryKey: userKeys.avatar(identifier, version),
     queryFn: () => userService.fetchAvatar(identifier, version),
     enabled: Boolean(identifier),
-    staleTime: 1000 * 60 * 10, 
+    staleTime: 1000 * 60 * 10,
   })
 }
 

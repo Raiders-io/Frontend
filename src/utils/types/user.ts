@@ -1,7 +1,8 @@
+import type { Username } from "./common"
 
 export interface PublicProfile {
   id: string
-  username: string
+  username: Username
   firstname: string | null
   lastname: string | null
   bio: string | null
@@ -19,7 +20,7 @@ export interface PrivateProfile extends PublicProfile {
 export type Profile = PrivateProfile | PublicProfile
 
 export interface UpdateMePayload {
-  username?: string
+  username?: Username
   firstname?: string | null
   lastname?: string | null
   bio?: string | null
@@ -29,7 +30,7 @@ export interface UpdateMePayload {
 
 export interface UserSearchResult {
   id: string
-  username: string
+  username: Username
   firstname: string | null
   lastname: string | null
   avatar_url: string | null

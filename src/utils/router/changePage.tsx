@@ -28,6 +28,10 @@ export const changePageUser = (userId: string) => {
   router.navigate(`/users/${userId}`)
 }
 
+export const changePageChooseUsername = () => {
+  router.navigate("/onboarding/username", { replace: true })
+}
+
 export const changePageEditProfile = () => {
   router.navigate("/settings")
 }
