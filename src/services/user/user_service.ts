@@ -14,13 +14,12 @@ import type {
   SentFriendRequest,
   UpdateMePayload,
   UserSearchResult } from "@/utils/types/user"
+import { validate as isUUID } from 'uuid'
 
 const PROFILE = "/api/v1/profile"
 const ME = `${PROFILE}/me`
 const FRIENDS = `${ME}/friends`
 const LESSONS = `${ME}/lessons`
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export const userService = {
   fetchMe: async (): Promise<PrivateProfile> => {
@@ -53,7 +52,7 @@ export const userService = {
 
   fetchProfile: (identifier?: string) => {
     if (!identifier) return userService.fetchMe()
-    return UUID_RE.test(identifier)
+    return isUUID(identifier)
       ? userService.fetchUserById(identifier)
       : userService.fetchUserByUsername(identifier)
   },
