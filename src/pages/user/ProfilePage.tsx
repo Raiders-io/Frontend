@@ -15,12 +15,13 @@ import { getErrorMessage } from "./utils"
 import { UserBackground } from "@/components/user/UserBackground"
 import { changePageLogin } from "@/utils/router/changePage"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import axios from "axios"
 
 type ProfileMode = "owner" | "visitor" | "guest"
 
 const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
-function getMode(userId: string | undefined, isAuthenticated: string): ProfileMode {
+function getMode(userId: string | undefined, isAuthenticated: boolean): ProfileMode {
   if (!isAuthenticated) return "guest"
   return userId ? "visitor" : "owner"
 }
@@ -96,7 +97,7 @@ function ProfileContent({ userId, mode }: { userId?: string; mode: ProfileMode }
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
   const errorMessage = error
-    ? (error as any)?.response?.status === 404
+    ? axios.isAxiosError(error) && error.response?.status === 404
       ? "This profile does not exist."
       : getErrorMessage(error, "Failed to load profile")
     : null
@@ -154,7 +155,7 @@ function ProfileContent({ userId, mode }: { userId?: string; mode: ProfileMode }
 }
 
 export default function ProfilePage({ userId }: { userId?: string }) {
-  const isAuthenticated = useAuthStore((s) => s.user?.id ?? '')
+  const isAuthenticated = useAuthStore((s) => Boolean(s.user?.id))
   const mode = getMode(userId, isAuthenticated)
 
   if (mode === "guest" && !userId) return <LoginRequired />
