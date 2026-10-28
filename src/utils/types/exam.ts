@@ -26,5 +26,7 @@ export type ExamSummary = {
   description: string | null
   createdAt: string | null
   updatedAt: string | null
-  userId: string | null
+  authorId: string | null
+  authorNickname: string | null
+  tags: string[]
 }
