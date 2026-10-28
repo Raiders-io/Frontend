@@ -203,8 +203,9 @@ export default function LessonCard({
   const titleNode = (
     <CardTitle className={lessonStyle.Title[variant]}>
       <Button
+        variant='link'
         className="underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
-        onClick={(e) => {e.preventDefault(); changePageLessonView(author.username, slug)}}
+        onClick={(e) => { e.preventDefault(); changePageLessonView(author.username, slug) }}
       >
         {title}
       </Button>

@@ -9,7 +9,7 @@ export interface Tag {
 
 export interface Lesson {
   title: string
-  UUID: string
+  lessonId: string
   slug: string
   authorId: string
   author: {

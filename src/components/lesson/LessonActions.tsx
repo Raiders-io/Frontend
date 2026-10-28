@@ -31,9 +31,8 @@ export default function LessonActions({
   const author = lesson.author?.username ?? ""
   const editUrl = `/lesson/${author}/${lesson.slug}/edit`
   const filesUrl = `/lesson/${author}/${lesson.slug}/files`
-  
+
   // Fix: Use 'id' instead of 'UUID'
-  const lessonId = lesson.UUID || ""
 
   return (
     <DropdownMenu>
@@ -55,7 +54,11 @@ export default function LessonActions({
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem
-          onClick={() => onTogglePrivacy(lessonId)}
+          onSelect={(e) => {
+            console.log("DEBUG: Privacy toggle")
+            e.stopPropagation();
+            onTogglePrivacy(lesson.lessonId)
+          }}
           className="gap-2 cursor-pointer"
         >
           {lesson.isPrivate ? (
@@ -78,7 +81,7 @@ export default function LessonActions({
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => onDelete(lessonId)}
+          onClick={() => onDelete(lesson.lessonId)}
           className="gap-2 cursor-pointer text-destructive focus:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
