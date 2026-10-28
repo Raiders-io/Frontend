@@ -1,5 +1,6 @@
 import type { Lesson, Tag } from "@/utils/types/lesson"
 import type { FileObject } from "./types/object"
+import type { ExamSummary } from "@/utils/types/exam"
 
 export const mockTag: Tag[] = [
   {
@@ -194,5 +195,104 @@ export const mockObjFile: FileObject[] = [
   },
   {
     name: 'Berry'
+  },
+]
+
+export const mockExams: ExamSummary[] = [
+  {
+    id: "mock-exam-01",
+    title: "TypeScript fundamentals",
+    description: "Types, interfaces and everyday TypeScript syntax.",
+    createdAt: "2026-10-01T09:00:00.000Z",
+    updatedAt: "2026-10-01T09:00:00.000Z",
+    userId: "mock-user-01",
+  },
+  {
+    id: "mock-exam-02",
+    title: "React components",
+    description: "Props, state and component composition.",
+    createdAt: "2026-10-02T09:00:00.000Z",
+    updatedAt: "2026-10-02T09:00:00.000Z",
+    userId: "mock-user-01",
+  },
+  {
+    id: "mock-exam-03",
+    title: "JavaScript basics",
+    description: "Variables, functions, arrays and objects.",
+    createdAt: "2026-10-03T09:00:00.000Z",
+    updatedAt: "2026-10-03T09:00:00.000Z",
+    userId: "mock-user-02",
+  },
+  {
+    id: "mock-exam-04",
+    title: "CSS layout",
+    description: "Practice Flexbox and CSS Grid.",
+    createdAt: "2026-10-04T09:00:00.000Z",
+    updatedAt: "2026-10-04T09:00:00.000Z",
+    userId: "mock-user-02",
+  },
+  {
+    id: "mock-exam-05",
+    title: "HTTP and REST APIs",
+    description: "Methods, status codes and request bodies.",
+    createdAt: "2026-10-05T09:00:00.000Z",
+    updatedAt: "2026-10-05T09:00:00.000Z",
+    userId: "mock-user-03",
+  },
+  {
+    id: "mock-exam-06",
+    title: "AdonisJS routing",
+    description: "Routes, controllers and middleware.",
+    createdAt: "2026-10-06T09:00:00.000Z",
+    updatedAt: "2026-10-06T09:00:00.000Z",
+    userId: "mock-user-03",
+  },
+  {
+    id: "mock-exam-07",
+    title: "Database relationships",
+    description: "Understand one-to-many and many-to-many relations.",
+    createdAt: "2026-10-07T09:00:00.000Z",
+    updatedAt: "2026-10-07T09:00:00.000Z",
+    userId: "mock-user-04",
+  },
+  {
+    id: "mock-exam-08",
+    title: "Async JavaScript",
+    description: "Promises, async functions and error handling.",
+    createdAt: "2026-10-08T09:00:00.000Z",
+    updatedAt: "2026-10-08T09:00:00.000Z",
+    userId: "mock-user-04",
+  },
+  {
+    id: "mock-exam-09",
+    title: "TypeScript and React",
+    description: "Type React props and state safely.",
+    createdAt: "2026-10-09T09:00:00.000Z",
+    updatedAt: "2026-10-09T09:00:00.000Z",
+    userId: "mock-user-05",
+  },
+  {
+    id: "mock-exam-10",
+    title: "Web accessibility",
+    description: "Semantic HTML, keyboard use and accessible labels.",
+    createdAt: "2026-10-10T09:00:00.000Z",
+    updatedAt: "2026-10-10T09:00:00.000Z",
+    userId: "mock-user-05",
+  },
+  {
+    id: "mock-exam-11",
+    title: "Error handling",
+    description: "Handle expected errors in frontend and backend code.",
+    createdAt: "2026-10-11T09:00:00.000Z",
+    updatedAt: "2026-10-11T09:00:00.000Z",
+    userId: "mock-user-06",
+  },
+  {
+    id: "mock-exam-12",
+    title: "Exam with missing details",
+    description: null,
+    createdAt: null,
+    updatedAt: null,
+    userId: null,
   },
 ]

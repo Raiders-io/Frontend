@@ -1,37 +1,43 @@
 import LessonCard from "@/components/lesson/LessonCard"
+import ExamCard from "@/components/exam/ExamCard"
 import type { Lesson } from "@/utils/types/lesson"
+import type { ExamSummary } from "@/utils/types/exam"
 import type { SerializedSearchItem } from "@/utils/types/component"
 import PaginatedGrid from "@/components/search/PaginatedGrid"
 import { useSearchLesson } from "@/utils/hooks/useSearch"
+import { useSearchExam } from "@/utils/hooks/useSearchExam"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
 import { useMemo, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { LayoutGrid, List } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function SearchPage() {
-  const { items, total, loading } = useSearchLesson()
-  const { page, limit, setPage } = useSearchQueryParams()
+  const [searchParams] = useSearchParams()
+  const { page, limit, resource, setPage } = useSearchQueryParams()
+  const isExamSearch = resource === "exam"
+  const useExamMock = import.meta.env.DEV && searchParams.get("mock") === "exams"
+  const lessonSearch = useSearchLesson({ enabled: !isExamSearch })
+  const examSearch = useSearchExam({ enabled: isExamSearch, useMock: useExamMock })
+  const { total, loading } = isExamSearch ? examSearch : lessonSearch
 
   // State to toggle between 'grid' (default card) and 'list' (preview/inline card)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
-  const renderItem = (item: SerializedSearchItem<Lesson>) => {
-    switch (item.kind) {
-      case "lesson":
-        // Dynamically pass the variant based on the selected view mode
-        return <LessonCard lesson={item.data} variant={viewMode === 'grid' ? 'default' : 'preview'} />
-      default:
-        return <></>
+  const renderItem = (item: SerializedSearchItem<Lesson | ExamSummary>) => {
+    if ("UUID" in item.data) {
+      return <LessonCard lesson={item.data} variant={viewMode === 'grid' ? 'default' : 'preview'} />
     }
+
+    return <ExamCard exam={item.data} variant={viewMode === "grid" ? "default" : "preview"} />
   }
 
-  const serializedLessons = useMemo(() => {
-    if (!items) return []
-    return items.map((lesson) => ({
-      kind: "lesson" as const,
-      data: lesson,
-    }))
-  }, [items])
+  const serializedItems: SerializedSearchItem<Lesson | ExamSummary>[] = useMemo(() => {
+    if (isExamSearch) {
+      return examSearch.items.map((exam) => ({ kind: "exam", data: exam }))
+    }
+    return lessonSearch.items.map((lesson) => ({ kind: "lesson", data: lesson }))
+  }, [isExamSearch, examSearch.items, lessonSearch.items])
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -69,13 +75,13 @@ export default function SearchPage() {
 
         {/* Paginated Grid receives the layout prop */}
         <PaginatedGrid
-          items={serializedLessons}
+          items={serializedItems}
           loading={loading}
           limit={limit}
           currentPage={page}
           totalPages={Math.ceil(total / limit)}
           renderItem={renderItem}
-          getKey={(item) => item.data.UUID}
+          getKey={(item) => "UUID" in item.data ? item.data.UUID : item.data.id}
           onPageChange={setPage}
           layout={viewMode}
         />

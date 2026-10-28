@@ -19,3 +19,12 @@ export type ExamType = {
   description?: string
   questions: Question[]
 }
+
+export type ExamSummary = {
+  id: string
+  title: string | null
+  description: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  userId: string | null
+}
