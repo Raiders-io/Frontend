@@ -75,7 +75,7 @@ export default function SearchPage() {
           currentPage={page}
           totalPages={Math.ceil(total / limit)}
           renderItem={renderItem}
-          getKey={(item) => item.data.UUID}
+          getKey={(item) => item.data.lessonId}
           onPageChange={setPage}
           layout={viewMode}
         />

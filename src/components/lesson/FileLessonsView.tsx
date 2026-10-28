@@ -101,7 +101,7 @@ export default function FileLessonsView({
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {fileLessons.map((lesson) => (
                         <LessonCard
-                          key={lesson.UUID}
+                          key={lesson.lessonId}
                           lesson={lesson}
                           variant="preview"
                         />
@@ -131,7 +131,7 @@ export default function FileLessonsView({
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {lessonsWithoutFiles.map((lesson) => (
               <LessonCard
-                key={lesson.UUID}
+                key={lesson.lessonId}
                 lesson={lesson}
                 variant="preview"
               />

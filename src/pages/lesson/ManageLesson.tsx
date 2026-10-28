@@ -52,7 +52,7 @@ export default function MyLessonsPage() {
   const handleTogglePrivacy = async (lessonId: string) => {
     try {
       const lesson = lessons.find(
-        (l) => l.UUID === lessonId 
+        (l) => l.lessonId === lessonId
       )
       if (!lesson) return
 
@@ -61,7 +61,7 @@ export default function MyLessonsPage() {
       })
       setLessons((prev) =>
         prev.map((l) =>
-          l.UUID === lessonId
+          l.lessonId === lessonId
             ? { ...l, isPrivate: !l.isPrivate }
             : l
         )
@@ -76,7 +76,7 @@ export default function MyLessonsPage() {
     try {
       await lessonService.deleteLessonById(lessonId)
       setLessons((prev) =>
-        prev.filter((l) => l.UUID !== lessonId)
+        prev.filter((l) => l.lessonId !== lessonId)
       )
     } catch (error) {
       console.error("Error deleting lesson:", error)
@@ -179,20 +179,20 @@ export default function MyLessonsPage() {
                 </option>
               ))}
             </select>
-              <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
-                <Plus className="h-4 w-4" />
-                New Lesson
-              </Button>
+            <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
+              <Plus className="h-4 w-4" />
+              New Lesson
+            </Button>
           </div>
         )}
 
         {/* New Lesson button (when not in by-file mode) */}
         {viewMode !== "by-file" && (
           <div className="mb-6 flex justify-end">
-              <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
-                <Plus className="h-4 w-4" />
-                New Lesson
-              </Button>
+            <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
+              <Plus className="h-4 w-4" />
+              New Lesson
+            </Button>
           </div>
         )}
 
@@ -209,7 +209,7 @@ export default function MyLessonsPage() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredLessons.map((lesson) => (
                   <LessonCard
-                    key={lesson.UUID}
+                    key={lesson.lessonId}
                     lesson={lesson}
                     variant="preview"
                     actions={
@@ -233,10 +233,10 @@ export default function MyLessonsPage() {
                     ? "Create your first lesson to get started."
                     : `You don't have any ${viewMode} lessons yet.`}
                 </p>
-                  <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={changePageLessonCreate}>
-                    <Plus className="h-4 w-4" />
-                    Create Lesson
-                  </Button>
+                <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={changePageLessonCreate}>
+                  <Plus className="h-4 w-4" />
+                  Create Lesson
+                </Button>
               </div>
             )}
           </>
