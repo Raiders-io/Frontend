@@ -30,3 +30,18 @@ export type ExamSummary = {
   authorNickname: string | null
   tags: string[]
 }
+
+export type ExamSearchParams = {
+  page: number
+  limit: number
+  q: string
+}
+
+export type PaginatedExamResponse = {
+  data: ExamSummary[]
+  meta: {
+    total: number
+    page: number
+    limit: number
+  }
+}
