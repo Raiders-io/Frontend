@@ -19,3 +19,29 @@ export type ExamType = {
   description?: string
   questions: Question[]
 }
+
+export type ExamSummary = {
+  id: string
+  title: string | null
+  description: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  authorId: string | null
+  authorNickname: string | null
+  tags: string[]
+}
+
+export type ExamSearchParams = {
+  page: number
+  limit: number
+  q: string
+}
+
+export type PaginatedExamResponse = {
+  data: ExamSummary[]
+  meta: {
+    total: number
+    page: number
+    limit: number
+  }
+}
