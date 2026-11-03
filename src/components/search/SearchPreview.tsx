@@ -24,41 +24,41 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
 
   return (
     <div className={`${className} relative w-full`}>
-    <Popover open={isOpen}>
-      <PopoverAnchor asChild>
-        <div>{children}</div>
-      </PopoverAnchor>
-      <PopoverContent
-        align="start"
-        className="w-[var(--radix-popover-trigger-width)] p-2"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => e.preventDefault()}
-        onMouseDown={(e) => e.preventDefault()} // keep focus in the input
-      >
-        <p className="px-2 pb-2 text-sm font-medium">
-          {loading ? (
-            <LoaderCircle className="size-4 animate-spin" />
-          ) : (
-            `${total} Search Results`
-          )}
-        </p>
-        <div className="flex flex-col gap-2">
-          {loading
-            ? Array.from({ length: 5 }).map((_, i) => (
+      <Popover open={isOpen}>
+        <PopoverAnchor asChild>
+          <div>{children}</div>
+        </PopoverAnchor>
+        <PopoverContent
+          align="start"
+          className="w-[var(--radix-popover-trigger-width)] p-2"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={(e) => e.preventDefault()}
+          onMouseDown={(e) => e.preventDefault()} // keep focus in the input
+        >
+          <p className="px-2 pb-2 text-sm font-medium">
+            {loading ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : (
+              `${total} Search Results`
+            )}
+          </p>
+          <div className="flex flex-col gap-2">
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
                 <SkeletonCard key={i} className="w-full max-h-20" />
               ))
-            : items?.length > 0 ? items.map((item) => (
+              : items?.length > 0 ? items.map((item) => (
                 <LessonCard
-                  key={item.UUID}
+                  key={item.lessonId}
                   lesson={item}
                   variant="preview"
                   className="w-full max-h-20"
                 />
               ))
-              : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
-        </div>
-      </PopoverContent>
-    </Popover>
+                : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
