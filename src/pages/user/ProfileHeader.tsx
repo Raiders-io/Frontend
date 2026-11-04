@@ -65,11 +65,9 @@ export function ProfileHeader({ user, actions }: Props) {
                   </div>
                 )}
               </div>
-              {fullName && (
-                <p className="text-muted-foreground mt-1 truncate text-sm">
-                  {fullName}
-                </p>
-              )}
+              <p className="text-muted-foreground mt-1! min-h-5 truncate text-sm">
+                {fullName}
+              </p>
             </div>
           </div>
         </CardContent>

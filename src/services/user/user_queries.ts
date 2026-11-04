@@ -8,7 +8,7 @@ import {
   type QueryKey,
 } from "@tanstack/react-query"
 import { userService } from "./user_service"
-import type { PrivateProfile, PublicProfile, RelationshipStatus, UpdateMePayload } from "@/utils/types/user"
+import type { PublicProfile, RelationshipStatus, UpdateMePayload } from "@/utils/types/user"
 import { useAuthStore } from "@/utils/stores/auth_store"
 
 const USERNAME_CHECK_DEBOUNCE_MS = 400
@@ -57,14 +57,12 @@ function useDebouncedValue<T>(value: T, delay: number) {
 
 export function useUpdateMe() {
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: (payload: UpdateMePayload) => userService.updateMe(payload),
-    onSuccess: (me: PrivateProfile) => {
+    onSuccess: (me) => {
       qc.setQueryData(userKeys.me(), me)
       qc.invalidateQueries({ queryKey: userKeys.profiles() })
-      qc.invalidateQueries({ queryKey: userKeys.avatar() })
-      qc.invalidateQueries({ queryKey: userKeys.background() })
-      qc.invalidateQueries({ queryKey: [...userKeys.all, "username-available"] })
     },
   })
 }
