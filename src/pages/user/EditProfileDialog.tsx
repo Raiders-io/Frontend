@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useDropzone } from "react-dropzone"
+import Editor from "@monaco-editor/react"
+import type { editor } from "monaco-editor"
 import { Camera, Loader2, Pencil, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +23,7 @@ import { UserAvatar } from "@/components/user/UserAvatar"
 import { UserBackground } from "@/components/user/UserBackground"
 import { UsernameField, useUsernameStatus } from "@/components/user/UsernameField"
 import { ImageCropDialog } from "@/components/ImageCropDialog"
+import { isThemeDark } from "@/components/theme-provider"
 import { useUpdateMe } from "@/services/user/user_queries"
 import { cn } from "@/utils/lib/shadcn"
 import { usernameSchema } from "@/utils/types/common"
@@ -50,6 +53,79 @@ const BACKGROUND_MIN_SIZE = { width: 600, height: 200 }
 const BACKGROUND_MAX_OUTPUT = 2400 // 2400x800, above the 1200x400 output
 
 const BIO_MAX_LENGTH = 5000
+
+const BIO_MIN_HEIGHT = 96
+const BIO_MAX_HEIGHT = 320
+
+const BIO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
+  minimap: { enabled: false },
+  lineNumbers: "off",
+  glyphMargin: false,
+  folding: false,
+  lineDecorationsWidth: 12,
+  lineNumbersMinChars: 0,
+  renderLineHighlight: "none",
+  overviewRulerLanes: 0,
+  overviewRulerBorder: false,
+  hideCursorInOverviewRuler: true,
+  scrollBeyondLastLine: false,
+  stickyScroll: { enabled: false },
+  guides: { indentation: false },
+  bracketPairColorization: { enabled: false },
+  matchBrackets: "never",
+  renderWhitespace: "none",
+
+  quickSuggestions: false,
+  suggestOnTriggerCharacters: false,
+  wordBasedSuggestions: "off",
+  parameterHints: { enabled: false },
+  hover: { enabled: "off" },
+  occurrencesHighlight: "off",
+  selectionHighlight: false,
+  links: false,
+  contextmenu: false,
+  unicodeHighlight: { ambiguousCharacters: false },
+
+  wordWrap: "on",
+  fontFamily: "ui-sans-serif, system-ui, -apple-system, sans-serif",
+  fontSize: 14,
+  lineHeight: 22,
+  padding: { top: 10, bottom: 10 },
+
+  scrollbar: {
+    verticalScrollbarSize: 8,
+    useShadows: false,
+    alwaysConsumeMouseWheel: false,
+  },
+  smoothScrolling: true,
+  automaticLayout: true,
+  ariaLabel: "Bio",
+}
+
+/** Monaco editor that grows with its content, between BIO_MIN_HEIGHT and BIO_MAX_HEIGHT. */
+function BioEditor({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const [height, setHeight] = useState(BIO_MIN_HEIGHT)
+
+  return (
+    <Editor
+      height={height}
+      language="markdown"
+      theme={isThemeDark() ? "vs-dark" : "light"}
+      value={value}
+      onChange={(v) => onChange(v ?? "")}
+      loading={<Loader2 className="size-4 animate-spin text-muted-foreground" />}
+      options={BIO_EDITOR_OPTIONS}
+      onMount={(ed) => {
+        const update = () =>
+          setHeight(Math.min(Math.max(ed.getContentHeight(), BIO_MIN_HEIGHT), BIO_MAX_HEIGHT))
+        ed.onDidContentSizeChange(update)
+        update()
+      }}
+    />
+  )
+}
+
+/* --------------------------------- Schema --------------------------------- */
 
 type MinSize = { width: number; height: number }
 
@@ -171,13 +247,12 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
     handleSubmit,
     reset,
     setError,
-    watch,
     formState: { errors, isSubmitting, dirtyFields },
   } = form
 
-  const { canSubmit: usernameOk } = useUsernameStatus(watch("username") ?? "", me.username)
+  const username = useWatch({ control: form.control, name: "username" })
+  const { canSubmit: usernameOk } = useUsernameStatus(username ?? "", me.username)
 
-  const bioLength = watch("bio")?.length ?? 0
   const cropping = !!avatar.source || !!background.source
   const bg = background.dropzone
   const av = avatar.dropzone
@@ -332,27 +407,49 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                     </Field>
                   </div>
 
-                  <Field data-invalid={!!errors.bio}>
-                    <div className="flex items-center justify-between">
-                      <FieldLabel htmlFor="bio">Bio</FieldLabel>
-                      <span
-                        className={cn(
-                          "text-xs tabular-nums",
-                          bioLength > BIO_MAX_LENGTH ? "font-medium text-destructive" : "text-muted-foreground"
-                        )}
-                      >
-                        {bioLength}/{BIO_MAX_LENGTH}
-                      </span>
-                    </div>
-                    <Textarea
-                      id="bio"
-                      rows={4}
-                      aria-invalid={!!errors.bio}
-                      className="max-h-32 resize-none overflow-y-auto"
-                      {...register("bio")}
-                    />
-                    <FieldError errors={[errors.bio]} />
-                  </Field>
+                  <Controller
+                    name="bio"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      const length = field.value?.length ?? 0
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <div className="flex items-center justify-between">
+                            <FieldLabel htmlFor="bio">Bio</FieldLabel>
+                            <span
+                              className={cn(
+                                "text-xs tabular-nums",
+                                length > BIO_MAX_LENGTH ? "font-medium text-destructive" : "text-muted-foreground"
+                              )}
+                            >
+                              {length}/{BIO_MAX_LENGTH}
+                            </span>
+                          </div>
+
+                          {/* Small screens: native textarea */}
+                          <Textarea
+                            {...field}
+                            id="bio"
+                            rows={4}
+                            aria-invalid={fieldState.invalid}
+                            className="max-h-32 resize-none overflow-y-auto sm:hidden"
+                          />
+
+                          {/* From sm: Monaco, auto-growing */}
+                          <div
+                            className={cn(
+                              "hidden overflow-hidden rounded-md border sm:block",
+                              fieldState.invalid && "border-destructive"
+                            )}
+                          >
+                            <BioEditor value={field.value ?? ""} onChange={field.onChange} />
+                          </div>
+
+                          <FieldError errors={[fieldState.error]} />
+                        </Field>
+                      )
+                    }}
+                  />
 
                   <FieldError errors={[errors.root]} />
                 </FieldGroup>

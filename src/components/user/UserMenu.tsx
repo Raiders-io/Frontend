@@ -82,14 +82,14 @@ export function UserMenu() {
   const groups = isAuthenticated ? AUTHENTICATED_GROUPS : GUEST_GROUPS
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {isAuthenticated ? (
         user ? (
           <Button
             type="button"
             variant="link"
             onClick={() => changePageProfile()}
-            className="hidden cursor-pointer max-w-32 select-none truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline"
+            className="hidden cursor-pointer max-w-32 select-none truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 pr-1 focus-visible:ring-ring sm:inline"
             title={user.username}
           >
             {user.username}

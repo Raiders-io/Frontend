@@ -30,8 +30,7 @@ export function getInitials(user: NameLike): string {
   return (initials || user.username.slice(0, 2)).toUpperCase()
 }
 
-export function 
-(user: NameLike): string {
+export function getDisplayName(user: NameLike): string {
   const full = [user.firstname, user.lastname].filter(Boolean).join(" ")
   return full || ""
 }
