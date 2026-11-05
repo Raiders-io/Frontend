@@ -6,7 +6,7 @@ import { useSearchLesson } from "@/utils/hooks/useSearch"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
 import { useMemo, useState } from "react"
 import { LayoutGrid, List } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import SelectPanel from "@/components/search/SelectPanel"
 
 export default function SearchPage() {
   const { items, total, loading } = useSearchLesson()
@@ -43,28 +43,19 @@ export default function SearchPage() {
           <h1 className="text-2xl font-bold">Search Results</h1>
 
           {/* View Toggle Buttons */}
-          <div className="flex items-center gap-1 rounded-md border border-border bg-card p-1">
-            <Button
-              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-              size="icon"
-              onClick={() => setViewMode('grid')}
-              className="h-8 w-8"
-              aria-label="Grid view"
-              aria-pressed={viewMode === 'grid'}
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-              size="icon"
-              onClick={() => setViewMode('list')}
-              className="h-8 w-8"
-              aria-label="List view"
-              aria-pressed={viewMode === 'list'}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
+          <SelectPanel
+            options={['grid', 'list']}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            render={(viewMode) => {
+              switch (viewMode) {
+                case 'grid':
+                  return <LayoutGrid className='h-8 w-8' />
+                case 'list':
+                  return <List className="h-4 w-4" />
+              }
+            }}
+          />
         </div>
 
         {/* Paginated Grid receives the layout prop */}
