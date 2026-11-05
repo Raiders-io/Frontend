@@ -23,8 +23,8 @@ import {
   SearchPage,
   GDPRPage,
   MyLessonsPage,
+  EditLessonPage,
 } from "@/utils/router/lazyRoutes"
-import TestPage from "@/pages/test"
 
 export const router = createBrowserRouter([
   {
@@ -118,10 +118,6 @@ export const router = createBrowserRouter([
         path: "/create/lesson",
         element: <LessonCreatePage />
       },
-      {
-        path: "/test",
-        element: <TestPage />,
-      },
       // {
       //   path: "/lesson/:author",
       // },
@@ -130,8 +126,12 @@ export const router = createBrowserRouter([
         element: <LessonPage />,
       },
       {
+        path: "/lesson/:author/:slug/edit",
+        element: <EditLessonPage />,
+      },
+      {
         path: "/myLesson",
-        element: <MyLessonsPage/>,
+        element: <MyLessonsPage />,
       },
       {
         path: "*",

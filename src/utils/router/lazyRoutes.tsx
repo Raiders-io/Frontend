@@ -21,6 +21,7 @@ const RootLayout = lazy(() => import("@/utils/router/RootLayout"))
 const SearchPage = lazy(() => import("@/pages/search"))
 const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const MyLessonsPage = lazy(() => import("@/pages/lesson/ManageLesson"))
+const EditLessonPage = lazy(() => import("@/pages/lesson/EditLessonPage"))
 
 export {
   LoginPage,
@@ -44,4 +45,5 @@ export {
   SearchPage,
   GDPRPage,
   MyLessonsPage,
+  EditLessonPage
 }

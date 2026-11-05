@@ -1,4 +1,5 @@
 import { z } from "zod"
+import type { Lesson } from "../types/lesson"
 
 export const tagSchema = z.object({
   name: z.string().min(1, "Tag name is required"),
@@ -56,4 +57,14 @@ export const EMPTY_LESSON_VALUES: CreateLessonPayload = {
   privacy: false,
   tags: [],
   files: [],
+}
+
+export function LessonToSchema(item: Lesson): Partial<CreateLessonPayload> {
+  return {
+    title: item.title,
+    description: item.description,
+    tags: item.tags,
+    privacy: item.isPrivate,
+    files: item.files?.forEach((f) => f.filename) ?? []
+  }
 }

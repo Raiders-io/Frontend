@@ -14,8 +14,8 @@ import {
   MoreHorizontal,
   FileText,
 } from "lucide-react"
-import { Link } from "react-router-dom"
 import type { Lesson } from "@/utils/types/lesson"
+import { changePageLessonEdit } from "@/utils/router/changePage"
 
 interface LessonActionsProps {
   lesson: Lesson
@@ -28,9 +28,7 @@ export default function LessonActions({
   onTogglePrivacy,
   onDelete,
 }: LessonActionsProps) {
-  const author = lesson.author?.username ?? ""
-  const editUrl = `/lesson/${author}/${lesson.slug}/edit`
-  const filesUrl = `/lesson/${author}/${lesson.slug}/files`
+  const { author, slug, lessonId } = lesson
 
   // Fix: Use 'id' instead of 'UUID'
 
@@ -47,17 +45,20 @@ export default function LessonActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <Link to={editUrl}>
-          <DropdownMenuItem className="gap-2 cursor-pointer">
-            <Edit className="h-4 w-4" />
-            Edit lesson
-          </DropdownMenuItem>
-        </Link>
+        <DropdownMenuItem className="gap-2 cursor-pointer"
+          onSelect={(e) => {
+            e.stopPropagation();
+            changePageLessonEdit(author.username, slug)
+          }}
+        >
+          <Edit className="h-4 w-4" />
+          Edit lesson
+        </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={(e) => {
             console.log("DEBUG: Privacy toggle")
             e.stopPropagation();
-            onTogglePrivacy(lesson.lessonId)
+            onTogglePrivacy(lessonId)
           }}
           className="gap-2 cursor-pointer"
         >
@@ -73,15 +74,19 @@ export default function LessonActions({
             </>
           )}
         </DropdownMenuItem>
-        <Link to={filesUrl}>
-          <DropdownMenuItem className="gap-2 cursor-pointer">
-            <FileText className="h-4 w-4" />
-            Manage files
-          </DropdownMenuItem>
-        </Link>
+        <DropdownMenuItem className="gap-2 cursor-pointer"
+          onSelect={(e) => {
+            e.stopPropagation();
+            //TODO when the page is ready
+            //changePageLessonEditFiles(author.username, slug)
+          }}
+        >
+          <FileText className="h-4 w-4" />
+          Manage files
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => onDelete(lesson.lessonId)}
+          onClick={() => onDelete(lessonId)}
           className="gap-2 cursor-pointer text-destructive focus:text-destructive"
         >
           <Trash2 className="h-4 w-4" />

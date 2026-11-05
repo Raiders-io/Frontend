@@ -14,6 +14,7 @@ import {
 import LessonActions from "@/components/lesson/LessonActions"
 import FileLessonsView from "@/components/lesson/FileLessonsView"
 import { changePageLessonCreate } from "@/utils/router/changePage"
+import SelectPanel from "@/components/search/SelectPanel"
 
 type ViewMode = "all" | "public" | "private" | "by-file"
 
@@ -28,7 +29,11 @@ export default function MyLessonsPage() {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const lessonsData = await lessonService.getAllLessons()
+        const response = await lessonService.getAllLessons()
+
+        const lessonsData = Array.isArray(response)
+          ? response
+          : (response && Array.isArray((response as any).data) ? (response as any).data : [])
         setLessons(lessonsData)
 
         const allFiles = new Map<string, FileItem>()
@@ -71,6 +76,39 @@ export default function MyLessonsPage() {
     }
   }
 
+  const PanelRender = (option: String) => {
+    switch (option) {
+      case "all":
+        return (
+          <>
+            <LayoutGrid className="h-3.5 w-3.5" />
+            All ({lessons.length})
+          </>
+        )
+      case "public":
+        return (
+          <>
+            <Globe className="h-3.5 w-3.5" />
+            Public ({publicCount})
+          </>
+        )
+      case "private":
+        return (
+          <>
+            <Lock className="h-3.5 w-3.5" />
+            Private ({privateCount})
+          </>
+        )
+      case "by-file":
+        return (
+          <>
+            <FileText className="h-3.5 w-3.5" />
+            By File
+          </>
+        )
+    }
+  }
+
   const handleDelete = async (lessonId: string) => {
     if (!confirm("Are you sure you want to delete this lesson?")) return
     try {
@@ -106,9 +144,27 @@ export default function MyLessonsPage() {
     )
   }
 
+  if (!loading && lessons?.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="rounded-full bg-muted p-4">
+          <LayoutGrid className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className="mt-4 text-lg font-semibold">No lessons found</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Create your first lesson to get started.
+        </p>
+        <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={changePageLessonCreate}>
+          <Plus className="h-4 w-4" />
+          Create Lesson
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto py-6 px-4">
-      {/* Enclosed panel — same surface as search.tsx */}
+      {/* Enclosedpanel — same surface as search.tsx */}
       <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
         {/* Header: title on the left, segmented view toggle on the right */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -120,48 +176,12 @@ export default function MyLessonsPage() {
           </div>
 
           {/* Segmented control — identical pattern to search.tsx */}
-          <div className="flex items-center gap-1 rounded-md border border-border bg-card p-1">
-            <Button
-              variant={viewMode === "all" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("all")}
-              className="gap-1.5"
-              aria-pressed={viewMode === "all"}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-              All ({lessons.length})
-            </Button>
-            <Button
-              variant={viewMode === "public" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("public")}
-              className="gap-1.5"
-              aria-pressed={viewMode === "public"}
-            >
-              <Globe className="h-3.5 w-3.5" />
-              Public ({publicCount})
-            </Button>
-            <Button
-              variant={viewMode === "private" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("private")}
-              className="gap-1.5"
-              aria-pressed={viewMode === "private"}
-            >
-              <Lock className="h-3.5 w-3.5" />
-              Private ({privateCount})
-            </Button>
-            <Button
-              variant={viewMode === "by-file" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("by-file")}
-              className="gap-1.5"
-              aria-pressed={viewMode === "by-file"}
-            >
-              <FileText className="h-3.5 w-3.5" />
-              By File
-            </Button>
-          </div>
+          <SelectPanel
+            options={["all", "public", "private", "by-file"]}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            render={PanelRender}
+          />
         </div>
 
         {/* File filter (only visible in "by-file" mode) */}
@@ -211,7 +231,7 @@ export default function MyLessonsPage() {
                   <LessonCard
                     key={lesson.lessonId}
                     lesson={lesson}
-                    variant="preview"
+                    variant="small"
                     actions={
                       <LessonActions
                         lesson={lesson}
