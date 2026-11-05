@@ -10,11 +10,15 @@ import {
   Lock,
   Globe,
   LayoutGrid,
+  List,
 } from "lucide-react"
 import LessonActions from "@/components/lesson/LessonActions"
 import FileLessonsView from "@/components/lesson/FileLessonsView"
 import { changePageLessonCreate } from "@/utils/router/changePage"
 import SelectPanel from "@/components/search/SelectPanel"
+import BackgroundPanel from "@/components/homemade/BackgroundPanel"
+import type { ItemLayout } from "@/components/search/ItemGrid"
+import ItemGrid from "@/components/search/ItemGrid"
 
 type ViewMode = "all" | "public" | "private" | "by-file"
 
@@ -23,6 +27,7 @@ export default function MyLessonsPage() {
   const [files, setFiles] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>("all")
+  const [layout, setLayout] = useState<ItemLayout>('grid')
   const [selectedFilename, setSelectedFilename] = useState<string | null>(null)
 
   useEffect(() => {
@@ -134,59 +139,71 @@ export default function MyLessonsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-6 px-4">
-        <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
-          <div className="flex items-center justify-center py-20">
-            <p className="text-muted-foreground">Loading your lessons...</p>
-          </div>
-        </div>
-      </div>
+      <BackgroundPanel title="My Lessons">
+        <p className="text-muted-foreground">Loading your lessons...</p>
+      </BackgroundPanel>
     )
   }
 
   if (!loading && lessons?.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="rounded-full bg-muted p-4">
-          <LayoutGrid className="h-8 w-8 text-muted-foreground" />
+      <BackgroundPanel>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="rounded-full bg-muted p-4">
+            <LayoutGrid className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold">No lessons found</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Create your first lesson to get started.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4 gap-2"
+            onClick={changePageLessonCreate}>
+            <Plus className="h-4 w-4" />
+            Create Lesson
+          </Button>
         </div>
-        <h3 className="mt-4 text-lg font-semibold">No lessons found</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Create your first lesson to get started.
-        </p>
-        <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={changePageLessonCreate}>
-          <Plus className="h-4 w-4" />
-          Create Lesson
-        </Button>
-      </div>
+      </BackgroundPanel>
     )
   }
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      {/* Enclosedpanel — same surface as search.tsx */}
-      <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
-        {/* Header: title on the left, segmented view toggle on the right */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">My Lessons</h1>
-            <span className="text-sm text-muted-foreground">
-              {lessons.length} {lessons.length === 1 ? "lesson" : "lessons"}
-            </span>
-          </div>
-
-          {/* Segmented control — identical pattern to search.tsx */}
+    <BackgroundPanel
+      title="My Lessons"
+      subtitle={`${lessons.length} ${lessons.length === 1 ? "lesson" : "lessons"}`}
+      controls={
+        <div className="flex flex-wrap items-center - gap-2">
           <SelectPanel
             options={["all", "public", "private", "by-file"]}
             viewMode={viewMode}
             setViewMode={setViewMode}
             render={PanelRender}
           />
+          <SelectPanel
+            options={['grid', 'list']}
+            viewMode={layout}
+            setViewMode={setLayout}
+            render={(mode) =>
+              mode === 'grid' ? (
+                <LayoutGrid className="h-4 w-4" />)
+                : (<List className="h-4 w-4" />
+                )
+            }
+          />
         </div>
-
-        {/* File filter (only visible in "by-file" mode) */}
-        {viewMode === "by-file" && (
-          <div className="mb-6 flex items-center gap-2">
+      }
+      toolbar={
+        <div
+          className={
+            viewMode === "by-file"
+              ? "flex items-center gap-2"
+              : "flex justify-end"
+          }
+        >
+          {/* File filter (only visible in "by-file" mode) */}
+          {viewMode === "by-file" && (
             <select
               value={selectedFilename ?? ""}
               onChange={(e) => setSelectedFilename(e.target.value || null)}
@@ -199,69 +216,66 @@ export default function MyLessonsPage() {
                 </option>
               ))}
             </select>
-            <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
-              <Plus className="h-4 w-4" />
-              New Lesson
-            </Button>
-          </div>
-        )}
+          )}
 
-        {/* New Lesson button (when not in by-file mode) */}
-        {viewMode !== "by-file" && (
-          <div className="mb-6 flex justify-end">
-            <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
-              <Plus className="h-4 w-4" />
-              New Lesson
-            </Button>
-          </div>
-        )}
+          {/* Always visible */}
+          <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
+            <Plus className="h-4 w-4" />
+            New Lesson
+          </Button>
+        </div>
+      }
+    >
+      {/* Content */}
+      {viewMode === "by-file" ? (
+        <FileLessonsView
+          lessons={lessons}
+          files={files}
+          selectedFilename={selectedFilename}
+        />
+      ) : (
+        <ItemGrid
+          items={filteredLessons}
+          layout={layout}
+          getKey={(lesson) => lesson.lessonId}
+          renderItem={(lesson) =>
+            <LessonCard
+              lesson={lesson}
+              variant={layout === 'grid' ? 'default' : 'preview'}
+              actions={
+                <LessonActions
+                  lesson={lesson}
+                  onTogglePrivacy={handleTogglePrivacy}
+                  onDelete={handleDelete}
+                />
+              }
+            />
 
-        {/* Content */}
-        {viewMode === "by-file" ? (
-          <FileLessonsView
-            lessons={lessons}
-            files={files}
-            selectedFilename={selectedFilename}
-          />
-        ) : (
-          <>
-            {filteredLessons.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredLessons.map((lesson) => (
-                  <LessonCard
-                    key={lesson.lessonId}
-                    lesson={lesson}
-                    variant="small"
-                    actions={
-                      <LessonActions
-                        lesson={lesson}
-                        onTogglePrivacy={handleTogglePrivacy}
-                        onDelete={handleDelete}
-                      />
-                    }
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="rounded-full bg-muted p-4">
-                  <LayoutGrid className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">No lessons found</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {viewMode === "all"
-                    ? "Create your first lesson to get started."
-                    : `You don't have any ${viewMode} lessons yet.`}
-                </p>
-                <Button variant="outline" size="sm" className="mt-4 gap-2" onClick={changePageLessonCreate}>
-                  <Plus className="h-4 w-4" />
-                  Create Lesson
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+          }
+        />
+      )}
+    </BackgroundPanel>
   )
 }
+
+/* ---------------------------------------------------------------------------
+ * Also update the two early returns above it in the component:
+ *
+ * Loading:
+ *   if (loading) {
+ *     return (
+ *       <BackgroundPanel title="My Lessons">
+ *         <p className="py-20 text-center text-muted-foreground">
+ *           Loading your lessons...
+ *         </p>
+ *       </BackgroundPanel>
+ *     )
+ *   }
+ *
+ * Empty (`lessons.length === 0`): delete this early return entirely. The
+ * inner empty state above already handles it, inside the panel.
+ *
+ * Import at the top:
+ *   import BackgroundPanel from "@/components/search/BackgroundPanel"
+ *   (adjust the path to wherever you placed the file)
+ * ------------------------------------------------------------------------- */

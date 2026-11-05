@@ -7,6 +7,7 @@ import { useSearchQueryParams } from "@/utils/hooks/searchParams"
 import { useMemo, useState } from "react"
 import { LayoutGrid, List } from "lucide-react"
 import SelectPanel from "@/components/search/SelectPanel"
+import BackgroundPanel from "@/components/homemade/BackgroundPanel"
 
 export default function SearchPage() {
   const { items, total, loading } = useSearchLesson()
@@ -34,43 +35,34 @@ export default function SearchPage() {
   }, [items])
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      {/* Enclosed panel: tinted surface so the (solid) cards stand out from it */}
-      <div className="rounded-lg border border-border bg-muted/60 p-4 shadow-sm md:p-6 dark:bg-muted/30">
-
-        {/* Header with Title and Layout Toggle */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <h1 className="text-2xl font-bold">Search Results</h1>
-
-          {/* View Toggle Buttons */}
-          <SelectPanel
-            options={['grid', 'list']}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            render={(viewMode) => {
-              switch (viewMode) {
-                case 'grid':
-                  return <LayoutGrid className='h-8 w-8' />
-                case 'list':
-                  return <List className="h-4 w-4" />
-              }
-            }}
-          />
-        </div>
-
-        {/* Paginated Grid receives the layout prop */}
-        <PaginatedGrid
-          items={serializedLessons}
-          loading={loading}
-          limit={limit}
-          currentPage={page}
-          totalPages={Math.ceil(total / limit)}
-          renderItem={renderItem}
-          getKey={(item) => item.data.lessonId}
-          onPageChange={setPage}
-          layout={viewMode}
-        />
-      </div>
-    </div>
+    <BackgroundPanel
+      title="Search Results"
+      controls={<SelectPanel
+        options={['grid', 'list']}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        render={(viewMode) => {
+          switch (viewMode) {
+            case 'grid':
+              return <LayoutGrid className='h-8 w-8' />
+            case 'list':
+              return <List className="h-4 w-4" />
+          }
+        }}
+      />
+      }
+    >
+      <PaginatedGrid
+        items={serializedLessons}
+        loading={loading}
+        limit={limit}
+        currentPage={page}
+        totalPages={Math.ceil(total / limit)}
+        renderItem={renderItem}
+        getKey={(item) => item.data.lessonId}
+        onPageChange={setPage}
+        layout={viewMode}
+      />
+    </BackgroundPanel>
   )
 }
