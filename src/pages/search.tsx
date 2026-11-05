@@ -26,11 +26,11 @@ export default function SearchPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const renderItem = (item: SerializedSearchItem<Lesson | ExamSummary>) => {
-    if ("UUID" in item.data) {
-      return <LessonCard lesson={item.data} variant={viewMode === 'grid' ? 'default' : 'preview'} />
+    if ("lessonId" in item.data) {
+      return <LessonCard lesson={item.data as Lesson} variant={viewMode === 'grid' ? 'default' : 'preview'} />
     }
 
-    return <ExamCard exam={item.data} variant={viewMode === "grid" ? "default" : "preview"} />
+    return <ExamCard exam={item.data as ExamSummary} variant={viewMode === "grid" ? "default" : "preview"} />
   }
 
   const serializedItems: SerializedSearchItem<Lesson | ExamSummary>[] = useMemo(() => {
@@ -59,13 +59,22 @@ export default function SearchPage() {
       }
     >
       <PaginatedGrid
-        items={serializedLessons}
+        items={serializedItems}
         loading={loading}
         limit={limit}
         currentPage={page}
         totalPages={Math.ceil(total / limit)}
         renderItem={renderItem}
-        getKey={(item) => item.data.lessonId}
+        getKey={(item) => {
+          switch (item.kind) {
+            case 'lesson':
+              return (item.data as Lesson).lessonId
+            case 'exam':
+              return (item.data as ExamSummary).id
+            default:
+              return 'None'
+          }
+        }}
         onPageChange={setPage}
         layout={viewMode}
       />
