@@ -16,32 +16,32 @@ export const examApi = {
   // Question authoring
   listQuestions: () =>
     api
-      .get<BackendQuestion[]>("/questions")
+      .get<BackendQuestion[]>("/api/v1/questions")
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
   createQuestion: (question: CreateQuestionPayload) =>
     api
-      .post<BackendQuestion>("/questions", question)
+      .post<BackendQuestion>("/api/v1/questions", question)
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
   deleteQuestion: (questionId: string) =>
-    api.delete(`/questions/${questionId}`),
+    api.delete(`/api/v1/questions/${questionId}`),
 
   // Exam authoring
   createExam: (exam: CreateExamPayload) =>
     api
-      .post<BackendExam>("/exam-authorings", exam)
+      .post<BackendExam>("/api/v1/exam-authorings", exam)
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
   listExams: () =>
     api
-      .get<BackendExamListResponse>("/exam-authorings")
+      .get<BackendExamListResponse>("/api/v1/exam-authorings")
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
@@ -50,14 +50,14 @@ export const examApi = {
   // Exam attempts (a paper is one user's attempt at an exam)
   startPaper: (examId: string) =>
     api
-      .post<StartPaperResponse>("/exam-papers", { examId })
+      .post<StartPaperResponse>("/api/v1/exam-papers", { examId })
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
       })),
   getPaper: (paperId: string) =>
     api
-      .get<ExamPaper>(`/exam-papers/${paperId}`)
+      .get<ExamPaper>(`/api/v1/exam-papers/${paperId}`)
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),
@@ -68,7 +68,7 @@ export const examApi = {
     answers: { id: string; answer: string }[],
   ) =>
     api
-      .patch<ExamPaperSubmissionResult>(`/exam-papers/${paperId}`, {
+      .patch<ExamPaperSubmissionResult>(`/api/v1/exam-papers/${paperId}`, {
         answers,
         submit: true,
       })
