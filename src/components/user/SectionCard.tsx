@@ -1,6 +1,12 @@
 import type { ReactNode } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface SectionCardProps {
   title: string
@@ -9,7 +15,12 @@ interface SectionCardProps {
   children: ReactNode
 }
 
-export function SectionCard({ title, count, description, children }: SectionCardProps) {
+export function SectionCard({
+  title,
+  count,
+  description,
+  children,
+}: SectionCardProps) {
   return (
     <Card>
       <CardHeader>

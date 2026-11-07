@@ -1,14 +1,36 @@
 import { useFormContext } from "react-hook-form"
 import { Dices, Loader2 } from "lucide-react"
-import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} from "unique-names-generator"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import { useUsernameAvailability } from "@/services/user/user_queries"
-import { usernameSchema, USERNAME_REASON_MESSAGES, USERNAME_MAX_LENGTH } from "@/utils/types/common"
+import {
+  usernameSchema,
+  USERNAME_REASON_MESSAGES,
+  USERNAME_MAX_LENGTH,
+} from "@/utils/types/common"
 
 export function randomUsername() {
   const suffix = String(Math.floor(Math.random() * 100))
-  const base = uniqueNamesGenerator({ dictionaries: [adjectives, animals], separator: "_", length: 2 })
+  const base = uniqueNamesGenerator({
+    dictionaries: [adjectives, animals],
+    separator: "_",
+    length: 2,
+  })
     .replace(/[^a-zA-Z0-9_]/g, "")
     .slice(0, USERNAME_MAX_LENGTH - suffix.length)
   return base + suffix
@@ -18,9 +40,15 @@ export function useUsernameStatus(username: string, current: string) {
   const value = username.trim()
   const unchanged = value === current
   const shouldCheck = usernameSchema.safeParse(value).success && !unchanged
-  const { isChecking, result, isError } = useUsernameAvailability(value, shouldCheck)
+  const { isChecking, result, isError } = useUsernameAvailability(
+    value,
+    shouldCheck,
+  )
   const available = result?.available === true
-  const unavailableMessage = result && "reason" in result ? USERNAME_REASON_MESSAGES[result.reason] : null
+  const unavailableMessage =
+    result && "reason" in result
+      ? USERNAME_REASON_MESSAGES[result.reason]
+      : null
 
   return {
     value,
@@ -33,8 +61,19 @@ export function useUsernameStatus(username: string, current: string) {
   }
 }
 
-export function UsernameField({ current, autoFocus }: { current: string; autoFocus?: boolean }) {
-  const { register, setValue, watch, formState: { errors } } = useFormContext<{ username: string }>()
+export function UsernameField({
+  current,
+  autoFocus,
+}: {
+  current: string
+  autoFocus?: boolean
+}) {
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<{ username: string }>()
   const s = useUsernameStatus(watch("username") ?? "", current)
 
   const invalid = !!errors.username || !!s.unavailableMessage
@@ -55,7 +94,12 @@ export function UsernameField({ current, autoFocus }: { current: string; autoFoc
             type="button"
             size="icon-xs"
             aria-label="Generate a random username"
-            onClick={() => setValue("username", randomUsername(), { shouldValidate: true, shouldDirty: true })}
+            onClick={() =>
+              setValue("username", randomUsername(), {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           >
             <Dices />
           </InputGroupButton>
@@ -84,7 +128,8 @@ export function UsernameField({ current, autoFocus }: { current: string; autoFoc
           </FieldDescription>
         ) : (
           <FieldDescription className="m-0! p-0!">
-            Up to {USERNAME_MAX_LENGTH} characters: letters, numbers, and underscore.
+            Up to {USERNAME_MAX_LENGTH} characters: letters, numbers, and
+            underscore.
           </FieldDescription>
         )}
       </div>

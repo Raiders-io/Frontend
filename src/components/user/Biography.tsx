@@ -12,11 +12,24 @@ import { cn } from "@/utils/lib/shadcn"
 const schema = {
   ...defaultSchema,
   tagNames: [
-    "p", "img", "br", "strong", "em", "u", "s", "a", "ul", "ol", "li",
-    "blockquote", "code", "pre", "h3", "h4",
+    "p",
+    "img",
+    "br",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "a",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "code",
+    "pre",
+    "h3",
+    "h4",
   ],
   attributes: {
-
     p: ["align"],
 
     img: ["src", "style", "alt", "title", "width", "height"],
@@ -60,7 +73,7 @@ export function Biography({ bio }: BiographyProps) {
 
   if (!bio) return null
 
-  const label = isExpanded ? "Afficher moins" : "Afficher plus"
+  const label = isExpanded ? "Show less" : "Show more"
   const isCollapsed = isOverflowing && !isExpanded
 
   return (
@@ -71,7 +84,7 @@ export function Biography({ bio }: BiographyProps) {
             ref={contentRef}
             className={cn(
               "px-4 py-3 text-sm leading-relaxed text-foreground/80 wrap-break-word",
-              !isExpanded && "max-h-28 overflow-hidden sm:max-h-32"
+              !isExpanded && "max-h-28 overflow-hidden sm:max-h-32",
             )}
           >
             <ReactMarkdown

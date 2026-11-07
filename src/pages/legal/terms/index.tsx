@@ -1,5 +1,9 @@
-export default function TermsOfService() {
-  window.location.href = "/terms.html"
+import { useEffect } from "react";
 
-  return <></>
+export default function TermsOfService() {
+  useEffect(() => {
+    window.location.href = "/terms.html";
+  }, []);
+
+  return null;
 }

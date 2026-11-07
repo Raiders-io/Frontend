@@ -3,37 +3,48 @@ import { BookOpen, ClipboardList } from "lucide-react"
 import { userService } from "@/services/user/user_service"
 import type { PaginationParams } from "@/utils/types/common"
 import { formatDate } from "./utils"
-import { ItemRow, PaginatedSection } from "../../components/user/PaginatedSection"
+import {
+  ItemRow,
+  PaginatedSection,
+} from "../../components/user/PaginatedSection"
 
-/** Public : ce que ce profil a créé (leçons et examens). */
+/** Public: what this profile has created (lessons and exams). */
 export function CreatedContent({ userId }: { userId: string }) {
   const fetchLessons = useCallback(
     (p: PaginationParams) => userService.fetchCreatedLessons(userId, p),
-    [userId]
+    [userId],
   )
   const fetchExams = useCallback(
     (p: PaginationParams) => userService.fetchCreatedExams(userId, p),
-    [userId]
+    [userId],
   )
 
   return (
     <div className="space-y-6">
       <PaginatedSection
-        title="Leçons créées"
+        title="Lessons created"
         fetcher={fetchLessons}
-        emptyText="Aucune leçon créée pour le moment."
-        errorText="Impossible de charger les leçons."
+        emptyText="No lessons created yet."
+        errorText="Failed to load lessons."
         renderItem={(l) => (
-          <ItemRow icon={BookOpen} title={l.title} subtitle={`Créée le ${formatDate(l.created_at)}`} />
+          <ItemRow
+            icon={BookOpen}
+            title={l.title}
+            subtitle={`Created on ${formatDate(l.created_at)}`}
+          />
         )}
       />
       <PaginatedSection
-        title="Examens créés"
+        title="Exams created"
         fetcher={fetchExams}
-        emptyText="Aucun examen créé pour le moment."
-        errorText="Impossible de charger les examens."
+        emptyText="No exams created yet."
+        errorText="Failed to load exams."
         renderItem={(e) => (
-          <ItemRow icon={ClipboardList} title={e.title} subtitle={`Créé le ${formatDate(e.created_at)}`} />
+          <ItemRow
+            icon={ClipboardList}
+            title={e.title}
+            subtitle={`Created on ${formatDate(e.created_at)}`}
+          />
         )}
       />
     </div>

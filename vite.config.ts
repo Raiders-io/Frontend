@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react"
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer"
-import { default_config_image_opti } from "./vite-plugin-image-optimizer.config"
+import { default_config_image_opti } from "./vite-plugin-image-optimizer.config.ts"
 // import removeConsole from "vite-plugin-remove-console"
 // import { removeConsoleConfig } from "./removeConsole.config"
 
@@ -23,6 +23,7 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             {
+              debugName: "node_modules",
               name(id) {
                 if (!id.includes("node_modules")) return
                 if (id.includes("react-router")) return "router"
@@ -40,7 +41,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
 })

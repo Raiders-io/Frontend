@@ -27,12 +27,10 @@ import { ActionSettings } from "@/components/file-list/file-list-action-checkbox
 import {
   type FileListWidgetProps,
   type FileObject,
-  type MetaPagination,
   type ObjectError,
 } from "@/utils/types/object"
-import {
-  FileConflictDialog,
-} from "@/components/FileConflictDialog"
+import { type PaginationMeta } from "@/utils/types/common"
+import { FileConflictDialog } from "@/components/FileConflictDialog"
 import {
   getConflictingFiles,
   hasFileConflicts,
@@ -80,7 +78,7 @@ export default function FileListWidget({
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(initialLimit)
-  const [meta, setMeta] = useState<MetaPagination | null>(null)
+  const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const [conflictDialog, setConflictDialog] = useState<{
     conflicts: ObjectError[]
@@ -88,9 +86,9 @@ export default function FileListWidget({
   } | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(false)
-  
+
   const actionSettings = useActionSettingsStore()
-    
+
   const refreshFiles = async () => {
     setLoading(true)
     setError(null)
@@ -143,8 +141,8 @@ export default function FileListWidget({
     }
   }, [])
 
-  const currentPage = meta?.currentPage ?? page
-  const lastPage = meta?.lastPage ?? Math.max(page, 1)
+  const currentPage = meta?.current_page ?? page
+  const lastPage = meta?.last_page ?? Math.max(page, 1)
   const totalFiles = meta?.total ?? files.length
 
   const totalSize = useMemo(() => {
@@ -173,21 +171,22 @@ export default function FileListWidget({
   }
 
   const getFileIcon = (mimeType?: string, fileName?: string) => {
-    const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
+    const label =
+      `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ??
+      ""
 
-    if (label.includes("image")) 
-      return <FileImageIcon className="h-4 w-4" />
-    if (label.includes("video")) 
-      return <MonitorPlay className="h-4 w-4" />
-    if (label.includes("audio")) 
-      return <AudioLines className="h-4 w-4" />
-    if (label.includes("pdf")) 
-      return <ScrollText className="h-4 w-4" />
+    if (label.includes("image")) return <FileImageIcon className="h-4 w-4" />
+    if (label.includes("video")) return <MonitorPlay className="h-4 w-4" />
+    if (label.includes("audio")) return <AudioLines className="h-4 w-4" />
+    if (label.includes("pdf")) return <ScrollText className="h-4 w-4" />
     if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
       return <FileArchiveIcon className="h-4 w-4" />
-    if (label.includes("json")) 
-      return <FileJsonIcon className="h-4 w-4" />
-    if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
+    if (label.includes("json")) return <FileJsonIcon className="h-4 w-4" />
+    if (
+      label.includes("text") ||
+      label.includes("plain") ||
+      label.includes("markdown")
+    )
       return <FileText className="h-4 w-4" />
     return <Type className="h-4 w-4" />
   }
@@ -237,21 +236,20 @@ export default function FileListWidget({
       await refreshFiles()
     } catch (requestError) {
       console.error("Upload error:", requestError)
-      
+
       // Handle HTTP error responses (e.g., 409 Conflict with plain text body)
       // Check if the error is a file conflict error
       if (requestError instanceof Error || typeof requestError === "string") {
-        const errorMessage = typeof requestError === "string" 
-          ? requestError 
-          : requestError.message
-        
+        const errorMessage =
+          typeof requestError === "string" ? requestError : requestError.message
+
         if (isFileConflictError(errorMessage)) {
           // Create conflict entries for all files
           const conflicts = filesToUpload.map((f) => ({
             key: f.name,
             error: errorMessage,
           }))
-          
+
           setConflictDialog({
             conflicts,
             originalFiles: filesToUpload,
@@ -259,7 +257,7 @@ export default function FileListWidget({
           return
         }
       }
-      
+
       setUploadError("The upload failed.")
     } finally {
       setUploading(false)
@@ -310,23 +308,28 @@ export default function FileListWidget({
 
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
-  
-  const hasAnyActionButton = 
-    actionSettings.showDownloadButton || 
-    actionSettings.showVisibilityButton || 
+
+  const hasAnyActionButton =
+    actionSettings.showDownloadButton ||
+    actionSettings.showVisibilityButton ||
     actionSettings.showDeleteButton
-  
+
   const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
-  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", "Created at"]
+  const fullColumns: FileListTableColumn[] = [
+    ...baseColumns,
+    "Type",
+    "Visibility",
+    "Created at",
+  ]
   const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
-  
+
   const visibleColumns: FileListTableColumn[] =
     mode === "compact"
-      ? hasAnyActionButton 
-        ? [...baseColumns, "Actions"] 
+      ? hasAnyActionButton
+        ? [...baseColumns, "Actions"]
         : baseColumns
-      : hasAnyActionButton 
-        ? columnsWithActions 
+      : hasAnyActionButton
+        ? columnsWithActions
         : fullColumns
 
   const toggleFileSelection = (fileName: string) => {
@@ -370,7 +373,7 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Delete error:', error)
+      console.error("Delete error:", error)
     }
   }
 
@@ -384,15 +387,18 @@ export default function FileListWidget({
       }
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Bulk delete error:', error)
+      console.error("Bulk delete error:", error)
     }
   }
 
-  const changeVisibility = async (fileName: string, visibility?: FileObject["visibility"]) => {
+  const changeVisibility = async (
+    fileName: string,
+    visibility?: FileObject["visibility"],
+  ) => {
     if (!visibility)
       visibility = files.find((file) => file.name === fileName)?.visibility
     if (!visibility) {
-      console.error('Visibility not found for file:', fileName)
+      console.error("Visibility not found for file:", fileName)
       return
     }
     try {
@@ -401,7 +407,7 @@ export default function FileListWidget({
       await objectService.updatePartially(fileName, formData)
       setRefreshTrigger((prev) => !prev)
     } catch (error) {
-      console.error('Change visibility error:', error)
+      console.error("Change visibility error:", error)
     }
   }
 
@@ -551,7 +557,8 @@ export default function FileListWidget({
                       isSelected={selectedFiles.has(file.name)}
                       actionSettings={{
                         showDownloadButton: actionSettings.showDownloadButton,
-                        showVisibilityButton: actionSettings.showVisibilityButton,
+                        showVisibilityButton:
+                          actionSettings.showVisibilityButton,
                         showDeleteButton: actionSettings.showDeleteButton,
                       }}
                     />
@@ -562,17 +569,35 @@ export default function FileListWidget({
                     <TableRow>
                       <TableCell colSpan={5} className="text-left">
                         <div className="flex items-center gap-2">
-                          {selectedFiles.size > 0 && actionSettings.showDeleteButton && (
-                            <DeleteButton action={handleBulkDelete} title="Delete Selected Files" description={`The following files will be deleted:\n\n${Array.from(selectedFiles).map((element) => `- ${element}`).join("\n")}.\n\nThis action cannot be undone.`}>
-                              <Button variant="destructive" size="sm" aria-label="Delete Selected Files">
-                                <TrashIcon />
-                                Delete Selected
-                              </Button>
-                            </DeleteButton>
-                          )}
+                          {selectedFiles.size > 0 &&
+                            actionSettings.showDeleteButton && (
+                              <DeleteButton
+                                action={handleBulkDelete}
+                                title="Delete Selected Files"
+                                description={`The following files will be deleted:\n\n${Array.from(
+                                  selectedFiles,
+                                )
+                                  .map((element) => `- ${element}`)
+                                  .join(
+                                    "\n",
+                                  )}.\n\nThis action cannot be undone.`}
+                              >
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  aria-label="Delete Selected Files"
+                                >
+                                  <TrashIcon />
+                                  Delete Selected
+                                </Button>
+                              </DeleteButton>
+                            )}
                         </div>
                       </TableCell>
-                      <TableCell colSpan={visibleColumns.includes("Actions") ? 2 : 1} className="text-right">
+                      <TableCell
+                        colSpan={visibleColumns.includes("Actions") ? 2 : 1}
+                        className="text-right"
+                      >
                         Total: {totalFiles} file(s)
                       </TableCell>
                       <TableCell colSpan={1} className="text-right">

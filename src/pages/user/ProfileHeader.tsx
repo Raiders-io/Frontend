@@ -83,7 +83,7 @@ export function ProfileHeader({ user, actions }: Props) {
               <div
                 className={cn(
                   "flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-10",
-                  accent
+                  accent,
                 )}
               >
                 <Icon className="size-4 sm:size-5" />

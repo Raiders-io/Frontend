@@ -14,7 +14,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { authService } from "@/services/auth_service"
 import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
@@ -77,7 +83,9 @@ export const DeleteAccountDialog = () => {
       router.navigate("/login")
     } catch (error) {
       console.error("Error deleting account:", error)
-      toast.error("Failed to delete account. Please try again.", { id: toastId })
+      toast.error("Failed to delete account. Please try again.", {
+        id: toastId,
+      })
     }
   }
 

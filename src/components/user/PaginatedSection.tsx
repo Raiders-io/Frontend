@@ -1,8 +1,27 @@
-import { Fragment, useCallback, useEffect, useState, type ReactNode } from "react"
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react"
 import type { LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
 import {
   Pagination,
   PaginationContent,
@@ -46,12 +65,14 @@ function getPages(current: number, last: number): (number | "ellipsis")[] {
   const wanted = [...new Set([1, current - 1, current, current + 1, last])]
     .filter((p) => p >= 1 && p <= last)
     .sort((a, b) => a - b)
-  return wanted.flatMap((p, i) => (i > 0 && p - wanted[i - 1] > 1 ? ["ellipsis" as const, p] : [p]))
+  return wanted.flatMap((p, i) =>
+    i > 0 && p - wanted[i - 1] > 1 ? ["ellipsis" as const, p] : [p],
+  )
 }
 
 interface Props<T extends { id: string | number }> {
   title: string
-  /** Doit être stable (méthode du service ou useCallback), sinon rechargement en boucle. */
+  /** Must be stable (service method or useCallback), otherwise infinite reload loop. */
   fetcher: (params: PaginationParams) => Promise<Paginated<T>>
   emptyText: string
   errorText?: string
@@ -62,7 +83,7 @@ export function PaginatedSection<T extends { id: string | number }>({
   title,
   fetcher,
   emptyText,
-  errorText = "Impossible de charger cette section.",
+  errorText = "Failed to load this section.",
   renderItem,
 }: Props<T>) {
   const [items, setItems] = useState<T[]>([])
@@ -88,7 +109,7 @@ export function PaginatedSection<T extends { id: string | number }>({
         setLoading(false)
       }
     },
-    [fetcher]
+    [fetcher],
   )
 
   useEffect(() => {
@@ -122,12 +143,12 @@ export function PaginatedSection<T extends { id: string | number }>({
     body = (
       <Empty className="border">
         <EmptyHeader>
-          <EmptyTitle>Chargement impossible</EmptyTitle>
+          <EmptyTitle>Loading failed</EmptyTitle>
           <EmptyDescription>{errorText}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <Button variant="outline" size="sm" onClick={() => void loadPage(1)}>
-            Réessayer
+            Try again
           </Button>
         </EmptyContent>
       </Empty>
@@ -170,7 +191,7 @@ export function PaginatedSection<T extends { id: string | number }>({
                       {p}
                     </PaginationLink>
                   </PaginationItem>
-                )
+                ),
               )}
               <PaginationItem>
                 <PaginationNext

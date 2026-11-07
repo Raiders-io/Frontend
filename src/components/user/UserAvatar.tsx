@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAvatar } from "@/services/user/user_queries" // Ajustez le chemin selon votre structure de fichiers
-import { cn } from "@/utils/lib/shadcn";
+import { cn } from "@/utils/lib/shadcn"
 import { avatarColor, getInitials } from "@/utils/lib/user"
 import type { PublicProfile } from "@/utils/types/user"
 
@@ -11,11 +11,24 @@ type UserAvatarProps = {
   src?: string | null
 }
 
-export const UserAvatar = ({ user, className, fallbackClassName, src }: UserAvatarProps) => {
-  const { data: avatarUrl } = useAvatar(src ? undefined : user?.id, user?.avatarUpdatedAt)
+export const UserAvatar = ({
+  user,
+  className,
+  fallbackClassName,
+  src,
+}: UserAvatarProps) => {
+  const { data: avatarUrl } = useAvatar(
+    src ? undefined : user?.id,
+    user?.avatarUpdatedAt,
+  )
 
   return (
-    <Avatar className={cn("relative flex shrink-0 overflow-hidden rounded-full", className)}>
+    <Avatar
+      className={cn(
+        "relative flex shrink-0 overflow-hidden rounded-full",
+        className,
+      )}
+    >
       <AvatarImage
         src={src ?? avatarUrl}
         alt={user.username}

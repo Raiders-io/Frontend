@@ -5,7 +5,10 @@ interface ApiError {
   errors?: { message: string }[]
 }
 
-export function getErrorMessage(error: unknown, fallback = "Une erreur est survenue"): string {
+export function getErrorMessage(
+  error: unknown,
+  fallback = "Failed to load data",
+): string {
   if (axios.isAxiosError<ApiError>(error)) {
     const data = error.response?.data
     return data?.errors?.[0]?.message ?? data?.message ?? fallback

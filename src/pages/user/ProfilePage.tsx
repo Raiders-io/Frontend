@@ -1,6 +1,11 @@
 import { useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Empty, EmptyContent, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
+import {
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { PrivateProfile } from "@/utils/types/user"
 import { useProfile } from "@/services/user/user_queries"
@@ -21,7 +26,10 @@ type ProfileMode = "owner" | "visitor" | "guest"
 
 const OWNER_GRID = "grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"
 
-function getMode(userId: string | undefined, isAuthenticated: boolean): ProfileMode {
+function getMode(
+  userId: string | undefined,
+  isAuthenticated: boolean,
+): ProfileMode {
   if (!isAuthenticated) return "guest"
   return userId ? "visitor" : "owner"
 }
@@ -65,7 +73,13 @@ function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
   )
 }
 
-function ProfileError({ message, onRetry }: { message: string; onRetry: () => void }) {
+function ProfileError({
+  message,
+  onRetry,
+}: {
+  message: string
+  onRetry: () => void
+}) {
   return (
     <Empty>
       <EmptyHeader>
@@ -93,7 +107,13 @@ function LoginRequired() {
   )
 }
 
-function ProfileContent({ userId, mode }: { userId?: string; mode: ProfileMode }) {
+function ProfileContent({
+  userId,
+  mode,
+}: {
+  userId?: string
+  mode: ProfileMode
+}) {
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
   const errorMessage = error

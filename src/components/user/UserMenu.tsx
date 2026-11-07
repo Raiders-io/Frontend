@@ -101,7 +101,12 @@ export function UserMenu() {
           />
         )
       ) : (
-        <Button variant="ghost" size="sm" onClick={() => changePageLogin()} className="cursor-pointer">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => changePageLogin()}
+          className="cursor-pointer"
+        >
           Log in
         </Button>
       )}
@@ -109,15 +114,10 @@ export function UserMenu() {
         <DropdownMenuTrigger asChild>
           <UserAvatarButton
             label={
-              user
-                ? `Open user menu (${user.username})`
-                : "Open account menu"
+              user ? `Open user menu (${user.username})` : "Open account menu"
             }
           >
-            <MenuAvatar
-              isAuthenticated={isAuthenticated}
-              user={user}
-            />
+            <MenuAvatar isAuthenticated={isAuthenticated} user={user} />
           </UserAvatarButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44">
@@ -165,7 +165,9 @@ function MenuAvatar({
   }
 
   if (isAuthenticated) {
-    return <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-muted" />
+    return (
+      <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-muted" />
+    )
   }
 
   return (

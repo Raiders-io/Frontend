@@ -13,7 +13,13 @@ import {
 import { UnfriendDialog } from "./UnfriendDialog"
 import { getErrorMessage } from "./utils"
 
-export function FriendButton({ userId, username }: { userId: string; username: string }) {
+export function FriendButton({
+  userId,
+  username,
+}: {
+  userId: string
+  username: string
+}) {
   const { data: relation, isPending } = useRelationship(userId)
 
   const send = useSendFriendRequest()
@@ -46,7 +52,12 @@ export function FriendButton({ userId, username }: { userId: string; username: s
               <Clock />
               Demande envoyée
             </Badge>
-            <Button variant="outline" size="sm" disabled={busy} onClick={() => cancel.mutate(userId)}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={() => cancel.mutate(userId)}
+            >
               Annuler
             </Button>
           </>
@@ -54,11 +65,20 @@ export function FriendButton({ userId, username }: { userId: string; username: s
 
         {relation === "pending_received" && (
           <>
-            <Button size="sm" disabled={busy} onClick={() => accept.mutate(userId)}>
+            <Button
+              size="sm"
+              disabled={busy}
+              onClick={() => accept.mutate(userId)}
+            >
               <Check />
               Accepter
             </Button>
-            <Button variant="outline" size="sm" disabled={busy} onClick={() => decline.mutate(userId)}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={() => decline.mutate(userId)}
+            >
               Refuser
             </Button>
           </>
@@ -68,7 +88,7 @@ export function FriendButton({ userId, username }: { userId: string; username: s
           <>
             <Badge variant="secondary">
               <UserCheck />
-              Amis
+              Friends
             </Badge>
             <UnfriendDialog
               username={username}
@@ -79,7 +99,9 @@ export function FriendButton({ userId, username }: { userId: string; username: s
         )}
       </div>
       {failed && (
-        <p className="text-destructive text-xs">{getErrorMessage(failed.error, "Une erreur est survenue")}</p>
+        <p className="text-destructive text-xs">
+          {getErrorMessage(failed.error, "Une erreur est survenue")}
+        </p>
       )}
     </div>
   )

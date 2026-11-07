@@ -2,8 +2,10 @@ import type { ComponentProps } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/lib/shadcn"
 
-interface UserAvatarButtonProps
-  extends Omit<ComponentProps<typeof Button>, "aria-label"> {
+interface UserAvatarButtonProps extends Omit<
+  ComponentProps<typeof Button>,
+  "aria-label"
+> {
   label: string
 }
 

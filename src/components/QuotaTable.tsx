@@ -21,10 +21,6 @@ export function QuotaTable({ mode = "full" }) {
   const [error, setError] = useState(false)
   const [quota, setQuota] = useState<QuotaResponse | null>(null)
 
-  useEffect(() => {
-    void refreshQuota()
-  }, [])
-
   const refreshQuota = async () => {
     setLoading(true)
     setError(false)
@@ -42,6 +38,10 @@ export function QuotaTable({ mode = "full" }) {
       })
   }
 
+  useEffect(() => {
+    void refreshQuota()
+  }, [])
+
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
 
@@ -49,7 +49,7 @@ export function QuotaTable({ mode = "full" }) {
     const storageUsed = quota?.storageBytes || 0
     const storageLimit = quota?.storageBytesLimit || 1
     const storageRatio = () => {
-      let temp = ((storageUsed / storageLimit) * 100).toFixed(2)
+      const temp = ((storageUsed / storageLimit) * 100).toFixed(2)
       return storageUsed != 0 && temp === "0.00" ? "<0.01" : temp
     }
 

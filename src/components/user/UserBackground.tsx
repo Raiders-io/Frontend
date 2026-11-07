@@ -8,8 +8,15 @@ interface UserBackgroundProps {
   src?: string | null
 }
 
-export const UserBackground = ({ user, className, src }: UserBackgroundProps) => {
-  const { data: backgroundUrl } = useBackground(src ? undefined : user?.id, user?.backgroundUpdatedAt)
+export const UserBackground = ({
+  user,
+  className,
+  src,
+}: UserBackgroundProps) => {
+  const { data: backgroundUrl } = useBackground(
+    src ? undefined : user?.id,
+    user?.backgroundUpdatedAt,
+  )
 
   const url = src ?? backgroundUrl
 
@@ -19,7 +26,11 @@ export const UserBackground = ({ user, className, src }: UserBackgroundProps) =>
 
   return (
     <div className={cn("overflow-hidden bg-muted", className)}>
-      <img src={url} alt="User background" className="h-full w-full object-cover" />
+      <img
+        src={url}
+        alt="User background"
+        className="h-full w-full object-cover"
+      />
     </div>
   )
 }

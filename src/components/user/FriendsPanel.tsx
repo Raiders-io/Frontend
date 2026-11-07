@@ -37,8 +37,8 @@ import {
 
 import { IconAction } from "../homemade/IconAction"
 import { SectionCard } from "./SectionCard"
-import { UnfriendDialog } from "../../pages/user/UnfriendDialog"
-import { getErrorMessage } from "../../pages/user/utils"
+import { UnfriendDialog } from "@/pages/user/UnfriendDialog"
+import { getErrorMessage } from "@/pages/user/utils"
 import { changePageUser } from "@/utils/router/changePage"
 
 interface FriendsPanelProps {
@@ -66,9 +66,7 @@ function PersonItem({
 
       <ItemContent>
         <ItemTitle>{user.username}</ItemTitle>
-        <ItemDescription className="mt-0!">
-          @{user.username}
-        </ItemDescription>
+        <ItemDescription className="mt-0!">@{user.username}</ItemDescription>
       </ItemContent>
 
       {children && <ItemActions>{children}</ItemActions>}
@@ -90,23 +88,27 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
 
   const failedMutation = mutations.find((m) => m.isError)
   const error = loadError
-    ? getErrorMessage(loadError, "Impossible de charger les amis")
+    ? getErrorMessage(loadError, "Failed to load friends")
     : failedMutation
-      ? getErrorMessage(failedMutation.error, "Une erreur est survenue")
+      ? getErrorMessage(failedMutation.error, "An error occurred")
       : null
 
   if (!data) {
     return (
-      <SectionCard title="Amis">
+      <SectionCard title="Friends">
         {error ? (
           <Empty className="border">
             <EmptyHeader>
-              <EmptyTitle>Chargement impossible</EmptyTitle>
+              <EmptyTitle>Loading failed</EmptyTitle>
               <EmptyDescription>{error}</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button variant="outline" size="sm" onClick={() => void refetch()}>
-                Réessayer
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void refetch()}
+              >
+                Try again
               </Button>
             </EmptyContent>
           </Empty>
@@ -130,7 +132,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       )}
 
       {data.received.length > 0 && (
-        <SectionCard title="Demandes reçues" count={data.received.length}>
+        <SectionCard title="Received requests" count={data.received.length}>
           <ItemGroup className="divide-y">
             {data.received.map((req) => (
               <PersonItem key={req.id} user={req.user}>
@@ -140,7 +142,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   onClick={() => accept.mutate(req.user.id)}
                 >
                   <Check />
-                  Accepter
+                  Accept
                 </Button>
 
                 <Button
@@ -150,7 +152,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   onClick={() => decline.mutate(req.user.id)}
                 >
                   <X />
-                  Refuser
+                  Decline
                 </Button>
               </PersonItem>
             ))}
@@ -158,16 +160,16 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
         </SectionCard>
       )}
 
-      <SectionCard title="Amis" count={data.friends.length}>
+      <SectionCard title="Friends" count={data.friends.length}>
         {data.friends.length === 0 ? (
           <Empty className="border border-dashed">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <Users />
               </EmptyMedia>
-              <EmptyTitle>Aucun ami pour le moment</EmptyTitle>
+              <EmptyTitle>No friends yet</EmptyTitle>
               <EmptyDescription>
-                Recherchez un utilisateur pour lui envoyer une demande.
+                Search for users to send them a request.
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -177,12 +179,8 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
               <PersonItem key={friend.id} user={friend}>
                 <IconAction
                   icon={MessageCircle}
-                  label={`Écrire à ${friend.username}`}
-                  tooltip={
-                    onMessage
-                      ? "Envoyer un message"
-                      : "Messagerie bientôt disponible"
-                  }
+                  label={`Message ${friend.username}`}
+                  tooltip={onMessage ? "Send message" : "Messaging coming soon"}
                   disabled={!onMessage}
                   onClick={() => onMessage?.(friend)}
                 />
@@ -199,13 +197,13 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       </SectionCard>
 
       {data.sent.length > 0 && (
-        <SectionCard title="Demandes envoyées" count={data.sent.length}>
+        <SectionCard title="Sent requests" count={data.sent.length}>
           <ItemGroup className="divide-y">
             {data.sent.map((req) => (
               <PersonItem key={req.id} user={req.friend}>
                 <Badge variant="secondary">
                   <Clock />
-                  En attente
+                  Pending
                 </Badge>
 
                 <Button
@@ -214,7 +212,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   disabled={isBusy(req.friend.id)}
                   onClick={() => cancel.mutate(req.friend.id)}
                 >
-                  Annuler
+                  Cancel
                 </Button>
               </PersonItem>
             ))}

@@ -1,3 +1,5 @@
+import type { PaginationMeta } from "@/utils/types/common"
+
 // Use types from ObjectStorage/APi-ObjectStorage/app/class/objects.ts
 export type ObjectIndexResponseError = {
   // __status: number // HTTP status code, not 'in response body' but in the response header
@@ -39,20 +41,8 @@ export type ObjectSuccess = {
 }
 
 export type ObjectsContainer = {
-  meta: MetaPagination
+  meta: PaginationMeta
   data: FileObject[]
-}
-
-export type MetaPagination = {
-  total?: number
-  perPage?: number
-  currentPage?: number
-  lastPage?: number
-  firstPage?: number
-  firstPageUrl?: string
-  lastPageUrl?: string
-  nextPageUrl?: any
-  previousPageUrl?: any
 }
 
 export type FileObject = {

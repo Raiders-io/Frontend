@@ -16,12 +16,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { UserAvatar } from "@/components/user/UserAvatar"
 import { UserBackground } from "@/components/user/UserBackground"
-import { UsernameField, useUsernameStatus } from "@/components/user/UsernameField"
+import {
+  UsernameField,
+  useUsernameStatus,
+} from "@/components/user/UsernameField"
 import { ImageCropDialog } from "@/components/ImageCropDialog"
 import { isThemeDark } from "@/components/theme-provider"
 import { useUpdateMe } from "@/services/user/user_queries"
@@ -40,7 +48,9 @@ import { getErrorMessage } from "./utils"
 const IMAGE_RAW_MAX_BYTES = 15 * 1024 * 1024
 const IMAGE_MAX_BYTES = Math.floor(1.9 * 1024 * 1024) // backend limit 2 MB, with margin
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
-const ACCEPT = Object.fromEntries(IMAGE_TYPES.map((type) => [type, [] as string[]]))
+const ACCEPT = Object.fromEntries(
+  IMAGE_TYPES.map((type) => [type, [] as string[]]),
+)
 const IMAGE_FORMAT_ERROR = "Accepted formats: JPG, PNG, WebP"
 const IMAGE_SIZE_ERROR = "Maximum 15 MB"
 
@@ -103,7 +113,13 @@ const BIO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
 }
 
 /** Monaco editor that grows with its content, between BIO_MIN_HEIGHT and BIO_MAX_HEIGHT. */
-function BioEditor({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+function BioEditor({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (value: string) => void
+}) {
   const [height, setHeight] = useState(BIO_MIN_HEIGHT)
 
   return (
@@ -113,11 +129,18 @@ function BioEditor({ value, onChange }: { value: string; onChange: (value: strin
       theme={isThemeDark() ? "vs-dark" : "light"}
       value={value}
       onChange={(v) => onChange(v ?? "")}
-      loading={<Loader2 className="size-4 animate-spin text-muted-foreground" />}
+      loading={
+        <Loader2 className="size-4 animate-spin text-muted-foreground" />
+      }
       options={BIO_EDITOR_OPTIONS}
       onMount={(ed) => {
         const update = () =>
-          setHeight(Math.min(Math.max(ed.getContentHeight(), BIO_MIN_HEIGHT), BIO_MAX_HEIGHT))
+          setHeight(
+            Math.min(
+              Math.max(ed.getContentHeight(), BIO_MIN_HEIGHT),
+              BIO_MAX_HEIGHT,
+            ),
+          )
         ed.onDidContentSizeChange(update)
         update()
       }}
@@ -131,9 +154,24 @@ type MinSize = { width: number; height: number }
 
 const schema = z.object({
   username: usernameSchema,
-  firstname: z.string().trim().max(30, "Maximum 30 characters").optional().or(z.literal("")),
-  lastname: z.string().trim().max(30, "Maximum 30 characters").optional().or(z.literal("")),
-  bio: z.string().trim().max(BIO_MAX_LENGTH, `Maximum ${BIO_MAX_LENGTH} characters`).optional().or(z.literal("")),
+  firstname: z
+    .string()
+    .trim()
+    .max(30, "Maximum 30 characters")
+    .optional()
+    .or(z.literal("")),
+  lastname: z
+    .string()
+    .trim()
+    .max(30, "Maximum 30 characters")
+    .optional()
+    .or(z.literal("")),
+  bio: z
+    .string()
+    .trim()
+    .max(BIO_MAX_LENGTH, `Maximum ${BIO_MAX_LENGTH} characters`)
+    .optional()
+    .or(z.literal("")),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -251,7 +289,10 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
   } = form
 
   const username = useWatch({ control: form.control, name: "username" })
-  const { canSubmit: usernameOk } = useUsernameStatus(username ?? "", me.username)
+  const { canSubmit: usernameOk } = useUsernameStatus(
+    username ?? "",
+    me.username,
+  )
 
   const cropping = !!avatar.source || !!background.source
   const bg = background.dropzone
@@ -290,7 +331,9 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
       await updateMe.mutateAsync(payload)
       handleOpenChange(false)
     } catch (e) {
-      setError("root", { message: getErrorMessage(e, "Failed to update profile") })
+      setError("root", {
+        message: getErrorMessage(e, "Failed to update profile"),
+      })
     }
   }
 
@@ -312,11 +355,16 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
         >
           <DialogHeader className="shrink-0 border-b px-6 py-4 text-left">
             <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription>This information is visible to other users.</DialogDescription>
+            <DialogDescription>
+              This information is visible to other users.
+            </DialogDescription>
           </DialogHeader>
 
           <FormProvider {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-0 w-full min-w-0 flex-1 flex-col">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex min-h-0 w-full min-w-0 flex-1 flex-col"
+            >
               <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
                 <FieldGroup className="gap-5">
                   <div className="space-y-2">
@@ -348,9 +396,16 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                               <X />
                             </Button>
                           )}
-                          <Button type="button" variant="secondary" size="sm" onClick={bg.open}>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={bg.open}
+                          >
                             <Camera />
-                            <span className="max-sm:sr-only">Change background</span>
+                            <span className="max-sm:sr-only">
+                              Change background
+                            </span>
                           </Button>
                         </div>
                       </div>
@@ -359,7 +414,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                         {...av.getRootProps()}
                         className={cn(
                           "absolute -bottom-9 left-4 rounded-full ring-4 ring-background",
-                          av.isDragActive && "ring-primary"
+                          av.isDragActive && "ring-primary",
                         )}
                       >
                         <input {...av.getInputProps()} />
@@ -369,11 +424,15 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                           aria-label="Change photo"
                           className="group relative block cursor-pointer rounded-full"
                         >
-                          <UserAvatar user={me} src={avatar.preview} className="size-18" />
+                          <UserAvatar
+                            user={me}
+                            src={avatar.preview}
+                            className="size-18"
+                          />
                           <span
                             className={cn(
                               "absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100",
-                              av.isDragActive && "opacity-100"
+                              av.isDragActive && "opacity-100",
                             )}
                           >
                             <Camera className="size-5" />
@@ -384,11 +443,14 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
 
                     <div className="space-y-1 pt-10">
                       <p className="text-xs text-muted-foreground">
-                        Drop an image on the banner or the photo. JPG, PNG or WebP, 15 MB max, compressed
-                        automatically. Photo: 200×200 px min. Banner: 3:1 ratio, 600×200 px min.
+                        Drop an image on the banner or the photo. JPG, PNG or
+                        WebP, 15 MB max, compressed automatically. Photo:
+                        200×200 px min. Banner: 3:1 ratio, 600×200 px min.
                       </p>
                       {avatar.error && <FieldError>{avatar.error}</FieldError>}
-                      {background.error && <FieldError>{background.error}</FieldError>}
+                      {background.error && (
+                        <FieldError>{background.error}</FieldError>
+                      )}
                     </div>
                   </div>
 
@@ -397,12 +459,20 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-3">
                     <Field data-invalid={!!errors.firstname}>
                       <FieldLabel htmlFor="firstname">First name</FieldLabel>
-                      <Input id="firstname" aria-invalid={!!errors.firstname} {...register("firstname")} />
+                      <Input
+                        id="firstname"
+                        aria-invalid={!!errors.firstname}
+                        {...register("firstname")}
+                      />
                       <FieldError errors={[errors.firstname]} />
                     </Field>
                     <Field data-invalid={!!errors.lastname}>
                       <FieldLabel htmlFor="lastname">Last name</FieldLabel>
-                      <Input id="lastname" aria-invalid={!!errors.lastname} {...register("lastname")} />
+                      <Input
+                        id="lastname"
+                        aria-invalid={!!errors.lastname}
+                        {...register("lastname")}
+                      />
                       <FieldError errors={[errors.lastname]} />
                     </Field>
                   </div>
@@ -419,7 +489,9 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                             <span
                               className={cn(
                                 "text-xs tabular-nums",
-                                length > BIO_MAX_LENGTH ? "font-medium text-destructive" : "text-muted-foreground"
+                                length > BIO_MAX_LENGTH
+                                  ? "font-medium text-destructive"
+                                  : "text-muted-foreground",
                               )}
                             >
                               {length}/{BIO_MAX_LENGTH}
@@ -439,10 +511,13 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                           <div
                             className={cn(
                               "hidden overflow-hidden rounded-md border sm:block",
-                              fieldState.invalid && "border-destructive"
+                              fieldState.invalid && "border-destructive",
                             )}
                           >
-                            <BioEditor value={field.value ?? ""} onChange={field.onChange} />
+                            <BioEditor
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                            />
                           </div>
 
                           <FieldError errors={[fieldState.error]} />

@@ -1,5 +1,9 @@
-export default function CookiesPage() {
-  window.location.href = "/cookies.html"
+import { useEffect } from "react";
 
-  return <></>
+export default function CookiesPage() {
+  useEffect(() => {
+    window.location.href = "/cookies.html";
+  }, []);
+
+  return null;
 }
