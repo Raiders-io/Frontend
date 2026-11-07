@@ -25,9 +25,7 @@ export default function ExamPaperList() {
       const { data } = await examApi.startPaper(examId)
       navigate(`/exam/paper/${data.id}`)
     } catch {
-      setMessage(
-        "Unable to start the exam. Check your authentication.",
-      )
+      setMessage("Unable to start the exam. Check your authentication.")
     }
   }
 
@@ -42,11 +40,10 @@ export default function ExamPaperList() {
             type="button"
             onClick={() => startExam(exam.id)}
           >
-            <span className="block">
-              {exam.title || "Untitled exam"}
-            </span>
+            <span className="block">{exam.title || "Untitled exam"}</span>
             <span className="block text-sm text-muted-foreground/70">
-              {exam.description?.substring(0, 100) || "No description provided."}
+              {exam.description?.substring(0, 100) ||
+                "No description provided."}
             </span>
           </button>
         ))}
