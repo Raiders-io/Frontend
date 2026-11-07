@@ -3,6 +3,7 @@ import type { BackendQuestion,
   CreateQuestionPayload, 
   BackendExam, 
   CreateExamPayload,
+  BackendExamListResponse,
   ExamPaper,
   StartPaperResponse, 
   ExamPaperSubmissionResult, 
@@ -40,7 +41,7 @@ export const examApi = {
       })),
   listExams: () =>
     api
-      .get<BackendExam[]>("/exam-authorings")
+      .get<BackendExamListResponse>("/exam-authorings")
       .then((response) => ({
         ...response,
         data: rejectBackendError(response.data),

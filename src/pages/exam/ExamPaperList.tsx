@@ -16,7 +16,7 @@ export default function ExamPaperList() {
   useEffect(() => {
     examApi
       .listExams()
-      .then(({ data }) => setExams(data))
+      .then(({ data }) => setExams(data.data))
       .catch(() => setMessage("Unable to load exams."))
   }, [])
 
