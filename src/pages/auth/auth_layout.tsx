@@ -15,25 +15,25 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
 
 				<div className="max-w-md">
 					<p className="text-3xl font-medium leading-snug tracking-tight text-zinc-100">
-						Learn.
+						Apprends.
 						<br />
-						<span className="text-zinc-500">Then share.</span>
+						<span className="text-zinc-500">Puis transmets.</span>
 					</p>
 					<p className="mt-6 text-sm leading-relaxed text-zinc-400">
-						Courses written by members, for members. Follow the ones that
-						 interest you, publish your own, and test what you have learned.
+						Des cours écrits par les membres, pour les membres. Suis ceux qui
+						t'intéressent, publie les tiens, et vérifie ce que tu as retenu.
 					</p>
 				</div>
 
 				<dl className="grid grid-cols-3 gap-6 border-t border-zinc-800 pt-8 font-mono text-xs">
 					<div>
-						Follow community courses
+						Suivez les cours de la communauté
 					</div>
 					<div>
-						Publish your own courses
+						Publiez vos propres cours
 					</div>
 					<div>
-						Test your knowledge
+						Testez vos connaissances
 					</div>
 				</dl>
 			</aside>

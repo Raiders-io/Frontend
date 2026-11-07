@@ -1,12 +1,12 @@
 import api from "@/utils/lib/axios"
 import type { BackendQuestion,
-  CreateQuestionPayload, 
-  BackendExam, 
+  CreateQuestionPayload,
+  BackendExam,
   CreateExamPayload,
   BackendExamListResponse,
   ExamPaper,
-  StartPaperResponse, 
-  ExamPaperSubmissionResult, 
+  StartPaperResponse,
+  ExamPaperSubmissionResult,
 } from "@/utils/lib/exam_api/types"
 import { rejectBackendError } from "./utils"
 

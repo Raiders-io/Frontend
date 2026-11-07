@@ -31,9 +31,7 @@ export const DeleteButton = ({
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <TrashIcon />
           </AlertDialogMedia>
-          <AlertDialogTitle className="text-wrap wrap-anywhere">
-            {title}
-          </AlertDialogTitle>
+          <AlertDialogTitle className="text-wrap wrap-anywhere">{title}</AlertDialogTitle>
           <AlertDialogDescription style={{ whiteSpace: "pre-line" }}>
             {description}
           </AlertDialogDescription>
@@ -48,3 +46,4 @@ export const DeleteButton = ({
     </AlertDialog>
   )
 }
+

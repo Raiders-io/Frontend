@@ -32,7 +32,7 @@ export default function UsersList()
 						Membres
 					</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
-						Choose someone to start a conversation.
+						Choisis quelqu'un pour démarrer une conversation.
 					</p>
 
 					<div className="mt-9">
@@ -51,10 +51,10 @@ export default function UsersList()
 						) : members.length === 0 ? (
 							<div className="rounded-lg border border-dashed px-6 py-14 text-center">
 								<p className="text-sm font-medium text-foreground">
-									No one else yet
+									Personne d'autre pour l'instant
 								</p>
 								<p className="mt-1.5 text-sm text-muted-foreground">
-									New accounts will appear here.
+									Les nouveaux comptes apparaîtront ici.
 								</p>
 							</div>
 						) : (
@@ -85,7 +85,7 @@ export default function UsersList()
 											onClick={() => startConversation(member.id)}
 											className="shrink-0"
 										>
-											Message
+											Écrire
 										</Button>
 									</li>
 								))}

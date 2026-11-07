@@ -16,7 +16,7 @@ interface MessageInputProps {
 	placeholder?: string
 }
 
-export function MessageInput({ onSend, placeholder = 'Write a message…' }: MessageInputProps) {
+export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: MessageInputProps) {
 	const { register, handleSubmit, reset, watch } = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: { content: '' },
@@ -45,7 +45,7 @@ export function MessageInput({ onSend, placeholder = 'Write a message…' }: Mes
 					className="size-11 shrink-0 rounded-full transition-opacity disabled:opacity-30"
 				>
 					<ArrowUp className="size-4" strokeWidth={2.5} />
-					<span className="sr-only">Send</span>
+					<span className="sr-only">Envoyer</span>
 				</Button>
 			</div>
 		</form>

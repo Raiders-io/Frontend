@@ -102,7 +102,7 @@ export default function ChatPage() {
 								<MessageThread messages={activeMessages} currentUserId={currentUserId} />
 							)}
 							<MessageInput
-								placeholder={`Message ${activeLabel}…`}
+								placeholder={`Écrire à ${activeLabel}…`}
 								onSend={(content) => sendMessage(activeConversationId, content)}
 							/>
 						</>
@@ -113,11 +113,11 @@ export default function ChatPage() {
 								strokeWidth={1.25}
 							/>
 							<p className="text-sm font-medium text-foreground">
-								No conversation open
+								Aucune conversation ouverte
 							</p>
 							<p className="max-w-xs text-center text-sm text-muted-foreground">
-								Select a conversation on the left, or start one from the
-								member list.
+								Sélectionne une conversation à gauche, ou démarres-en une depuis
+								la liste des membres.
 							</p>
 						</div>
 					)}
