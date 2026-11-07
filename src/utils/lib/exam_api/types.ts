@@ -30,12 +30,23 @@ export type BackendExam = {
   id: string
   title: string | null
   description: string | null
+  tags?: string[]
   questions?: BackendQuestion[]
+}
+
+export type BackendExamListResponse = {
+  data: BackendExam[]
+  meta: {
+    total: number
+    page: number
+    limit: number
+  }
 }
 
 export type CreateExamPayload = {
   title: string
   description: string
+  tags: string[]
   questions: {
     id: string
     position: number

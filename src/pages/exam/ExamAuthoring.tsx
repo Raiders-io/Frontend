@@ -11,11 +11,32 @@ import { InitExam } from "@/components/exam/InitExam"
 export default function ExamAuthoring() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [title, setTitle] = useState("")
+  const [titleTags, setTitleTags] = useState<string[]>([])
+  const [manualTags, setManualTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState("")
   const [description, setDescription] = useState("")
   const [message, setMessage] = useState("")
   const [draggedQuestionIndex, setDraggedQuestionIndex] = useState<
     number | null
   >(null)
+  const tags = [...new Map([...titleTags, ...manualTags].map((tag) => [tag.toLocaleLowerCase(), tag])).values()]
+
+  function handleTitleChange(value: string) {
+    setTitle(value)
+    const words = value
+      .split(/\s+/u)
+      .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
+      .filter(Boolean)
+    setTitleTags([...new Map(words.map((word) => [word.toLocaleLowerCase(), word])).values()])
+  }
+
+  function handleAddTag() {
+    const tag = tagInput.trim()
+    if (!tag || tags.some((currentTag) => currentTag.toLocaleLowerCase() === tag.toLocaleLowerCase()))
+      return
+    setManualTags((currentTags) => [...currentTags, tag])
+    setTagInput("")
+  }
 
   async function handleAddQuestion(question: Question) : Promise<boolean> {
     try {
@@ -97,6 +118,7 @@ export default function ExamAuthoring() {
       await examApi.createExam({
         title: title.trim(),
         description: description.trim(),
+        tags,
         questions: questions.map((question, index) => ({
           id: question.id,
           position: index + 1,
@@ -105,7 +127,10 @@ export default function ExamAuthoring() {
       })
       setMessage("Exam created.")
       setTitle("")
+      setTitleTags([])
       setDescription("")
+      setManualTags([])
+      setTagInput("")
     } catch {
       setMessage("Failed to create exam.")
     }
@@ -116,7 +141,15 @@ export default function ExamAuthoring() {
       <h1 className="text-3xl font-bold">Create an exam</h1>
       <InitExam
         title={title}
-        setTitle={setTitle}
+        setTitle={handleTitleChange}
+        tags={tags}
+        removeTag={(tag) => {
+          setTitleTags((current) => current.filter((item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase()))
+          setManualTags((current) => current.filter((item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase()))
+        }}
+        tagInput={tagInput}
+        setTagInput={setTagInput}
+        addTag={handleAddTag}
         description={description}
         setDescription={setDescription}
         handleCreateExam={handleCreateExam}
