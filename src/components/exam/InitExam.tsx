@@ -1,16 +1,27 @@
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { ExamTagsInput } from "@/components/exam/ExamTagsInput"
 
 export function InitExam({
   title,
   setTitle,
+  tags,
+  removeTag,
+  tagInput,
+  setTagInput,
+  addTag,
   description,
   setDescription,
   handleCreateExam,
 }: {
   title: string
   setTitle: (title: string) => void
+  tags: string[]
+  removeTag: (tag: string) => void
+  tagInput: string
+  setTagInput: (tag: string) => void
+  addTag: () => void
   description: string
   setDescription: (description: string) => void
   handleCreateExam: (event: React.FormEvent<HTMLFormElement>) => void
@@ -23,6 +34,14 @@ export function InitExam({
         placeholder="Exam Name"
         id="input-required"
         required
+      />
+
+      <ExamTagsInput
+        tags={tags}
+        onRemoveTag={removeTag}
+        value={tagInput}
+        onChange={setTagInput}
+        onAddTag={addTag}
       />
 
       <Textarea
