@@ -34,7 +34,7 @@ function useResizableZones(): ResizableZonesContextType {
   const ctx = useContext(ResizableZonesContext)
   if (!ctx) {
     throw new Error(
-      "CustomResizablePanelLeftZone/B/Handle must be used inside CustomResizablePanelGroup",
+      "CustomResizablePanelLeftZone/B/Handle doit être utilisé à l'intérieur de CustomResizablePanelGroup",
     )
   }
   return ctx

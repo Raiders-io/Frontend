@@ -26,7 +26,7 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel, 
 					</p>
 				) : conversations.length === 0 ? (
 					<p className="px-3 py-8 text-center text-sm text-muted-foreground">
-						No conversations.
+						Aucune conversation.
 					</p>
 				) : (
 					<ul className="space-y-px">
