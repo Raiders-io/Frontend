@@ -31,7 +31,12 @@ export function ExamTagsInput({
             }
           }}
         />
-        <Button type="button" variant="secondary" onClick={onAddTag} disabled={!value.trim()}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onAddTag}
+          disabled={!value.trim()}
+        >
           Add tag
         </Button>
       </div>

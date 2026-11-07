@@ -30,14 +30,19 @@ import { FooterComponent } from "@/components/FooterComponent"
 export function RootLayout() {
   return (
     <>
-    <div>
-      <TopNavBar />
-      <Toaster visibleToasts={5} position="bottom-right" expand={false} closeButton={true} />
-      <main>
-        <Outlet /> {/* Child routes render here */}
-      </main>
-    </div>
-    <FooterComponent />
+      <div>
+        <TopNavBar />
+        <Toaster
+          visibleToasts={5}
+          position="bottom-right"
+          expand={false}
+          closeButton={true}
+        />
+        <main>
+          <Outlet /> {/* Child routes render here */}
+        </main>
+      </div>
+      <FooterComponent />
     </>
   )
 }
@@ -47,7 +52,7 @@ export const router = createBrowserRouter([
     path: "/onboarding/username",
     element: (
       <ProtectedRoute>
-        <ChooseUsername/>
+        <ChooseUsername />
       </ProtectedRoute>
     ),
   },

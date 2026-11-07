@@ -44,10 +44,7 @@ export function CodeQuestionEditor({
         onChange={handleReferenceFileChange}
         aria-label="Upload C reference function"
       />
-      <Button
-        type="submit"
-        disabled={!mainFile || !referenceFile}
-      >
+      <Button type="submit" disabled={!mainFile || !referenceFile}>
         Submit
       </Button>
     </div>

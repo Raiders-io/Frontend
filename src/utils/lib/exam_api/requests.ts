@@ -1,5 +1,6 @@
 import api from "@/utils/lib/axios"
-import type { BackendQuestion,
+import type {
+  BackendQuestion,
   CreateQuestionPayload,
   BackendExam,
   CreateExamPayload,
@@ -15,12 +16,10 @@ import { rejectBackendError } from "./utils"
 export const examApi = {
   // Question authoring
   listQuestions: () =>
-    api
-      .get<BackendQuestion[]>("/api/v1/questions")
-      .then((response) => ({
-        ...response,
-        data: rejectBackendError(response.data),
-      })),
+    api.get<BackendQuestion[]>("/api/v1/questions").then((response) => ({
+      ...response,
+      data: rejectBackendError(response.data),
+    })),
   createQuestion: (question: CreateQuestionPayload) =>
     api
       .post<BackendQuestion>("/api/v1/questions", question)
@@ -33,12 +32,10 @@ export const examApi = {
 
   // Exam authoring
   createExam: (exam: CreateExamPayload) =>
-    api
-      .post<BackendExam>("/api/v1/exam-authorings", exam)
-      .then((response) => ({
-        ...response,
-        data: rejectBackendError(response.data),
-      })),
+    api.post<BackendExam>("/api/v1/exam-authorings", exam).then((response) => ({
+      ...response,
+      data: rejectBackendError(response.data),
+    })),
   listExams: () =>
     api
       .get<BackendExamListResponse>("/api/v1/exam-authorings")
@@ -56,17 +53,12 @@ export const examApi = {
         data: rejectBackendError(response.data),
       })),
   getPaper: (paperId: string) =>
-    api
-      .get<ExamPaper>(`/api/v1/exam-papers/${paperId}`)
-      .then((response) => ({
-        ...response,
-        data: rejectBackendError(response.data),
-      })),
+    api.get<ExamPaper>(`/api/v1/exam-papers/${paperId}`).then((response) => ({
+      ...response,
+      data: rejectBackendError(response.data),
+    })),
   // Submit saved answers and ask the backend to grade the attempt.
-  updatePaper: (
-    paperId: string,
-    answers: { id: string; answer: string }[],
-  ) =>
+  updatePaper: (paperId: string, answers: { id: string; answer: string }[]) =>
     api
       .patch<ExamPaperSubmissionResult>(`/api/v1/exam-papers/${paperId}`, {
         answers,

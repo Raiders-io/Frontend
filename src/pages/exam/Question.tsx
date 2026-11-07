@@ -55,7 +55,10 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
     }
   }
 
-  async function submitQuestion(codeAnswer = answer, referenceCode = ""): Promise<void> {
+  async function submitQuestion(
+    codeAnswer = answer,
+    referenceCode = "",
+  ): Promise<void> {
     if (!questionTitle.trim()) return
     if (type === "multiple_choice") {
       if (choices.length < 2 || !choices.some((choice) => choice.isCorrect))
@@ -69,7 +72,8 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       title: questionTitle.trim(),
       type,
       points: currentPoints,
-      starterCode: type === "c_function" ? codeAnswer.trim() || undefined : undefined,
+      starterCode:
+        type === "c_function" ? codeAnswer.trim() || undefined : undefined,
       referenceCode:
         type === "c_function" ? referenceCode.trim() || undefined : undefined,
       answers:
@@ -77,12 +81,13 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       choices:
         type === "multiple_choice" && choices.length > 0 ? choices : undefined,
     })
-    if (!result)
-      return
+    if (!result) return
     resetForm(type !== "c_function")
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault()
     if (type !== "c_function") {
       await submitQuestion()
@@ -113,7 +118,9 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       await submitQuestion(mainCode, referenceCode)
     } catch (error) {
       setFileError(
-        error instanceof Error ? error.message : "Unable to read the selected C files",
+        error instanceof Error
+          ? error.message
+          : "Unable to read the selected C files",
       )
     }
   }

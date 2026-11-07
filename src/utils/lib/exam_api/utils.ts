@@ -1,5 +1,5 @@
 import type { BackendQuestion } from "@/utils/lib/exam_api/types"
-import type { BackendError} from "@/utils/lib/exam_api/types"
+import type { BackendError } from "@/utils/lib/exam_api/types"
 import type { Question } from "@/utils/types/exam"
 
 /**
@@ -10,7 +10,7 @@ import type { Question } from "@/utils/types/exam"
 export function toQuestion(
   question: BackendQuestion,
   position: number,
-  points: number
+  points: number,
 ): Question {
   const goodAnswers = asAnswers(question.goodAnswers)
   const badAnswers = asAnswers(question.badAnswers)
@@ -22,8 +22,10 @@ export function toQuestion(
     title: question.title,
     type,
     points: points,
-    starterCode: type === "c_function" ? question.starterCode ?? undefined : undefined,
-    referenceCode: type === "c_function" ? question.referenceCode ?? undefined : undefined,
+    starterCode:
+      type === "c_function" ? (question.starterCode ?? undefined) : undefined,
+    referenceCode:
+      type === "c_function" ? (question.referenceCode ?? undefined) : undefined,
     answers: type === "written_answer" ? goodAnswers : undefined,
     choices:
       type === "multiple_choice"
@@ -62,14 +64,14 @@ export function asAnswers(value: BackendQuestion["goodAnswers"]): string[] {
 
 /** Maps the backend question type name to the frontend Question type name. */
 export function getQuestionType(question: BackendQuestion): Question["type"] {
-    switch (question.questionType) {
-        case "MCQ":
-            return "multiple_choice"
-        case "TEXT":
-            return "written_answer"
-        default:
-            return "c_function"
-}
+  switch (question.questionType) {
+    case "MCQ":
+      return "multiple_choice"
+    case "TEXT":
+      return "written_answer"
+    default:
+      return "c_function"
+  }
 }
 
 /**
@@ -78,8 +80,11 @@ export function getQuestionType(question: BackendQuestion): Question["type"] {
  * this check does not validate every field in that response.
  */
 export function rejectBackendError<T>(responseBody: T | BackendError): T {
-    if (responseBody !== null && typeof responseBody === "object" && "error" in responseBody)
-        throw new Error(responseBody.error)
-    else
-        return responseBody as T
+  if (
+    responseBody !== null &&
+    typeof responseBody === "object" &&
+    "error" in responseBody
+  )
+    throw new Error(responseBody.error)
+  else return responseBody as T
 }

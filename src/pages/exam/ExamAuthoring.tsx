@@ -19,7 +19,14 @@ export default function ExamAuthoring() {
   const [draggedQuestionIndex, setDraggedQuestionIndex] = useState<
     number | null
   >(null)
-  const tags = [...new Map([...titleTags, ...manualTags].map((tag) => [tag.toLocaleLowerCase(), tag])).values()]
+  const tags = [
+    ...new Map(
+      [...titleTags, ...manualTags].map((tag) => [
+        tag.toLocaleLowerCase(),
+        tag,
+      ]),
+    ).values(),
+  ]
 
   function handleTitleChange(value: string) {
     setTitle(value)
@@ -27,18 +34,28 @@ export default function ExamAuthoring() {
       .split(/\s+/u)
       .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
       .filter(Boolean)
-    setTitleTags([...new Map(words.map((word) => [word.toLocaleLowerCase(), word])).values()])
+    setTitleTags([
+      ...new Map(
+        words.map((word) => [word.toLocaleLowerCase(), word]),
+      ).values(),
+    ])
   }
 
   function handleAddTag() {
     const tag = tagInput.trim()
-    if (!tag || tags.some((currentTag) => currentTag.toLocaleLowerCase() === tag.toLocaleLowerCase()))
+    if (
+      !tag ||
+      tags.some(
+        (currentTag) =>
+          currentTag.toLocaleLowerCase() === tag.toLocaleLowerCase(),
+      )
+    )
       return
     setManualTags((currentTags) => [...currentTags, tag])
     setTagInput("")
   }
 
-  async function handleAddQuestion(question: Question) : Promise<boolean> {
+  async function handleAddQuestion(question: Question): Promise<boolean> {
     try {
       const { data } = await examApi.createQuestion({
         title: question.title,
@@ -65,7 +82,11 @@ export default function ExamAuthoring() {
         starterCode: question.starterCode ?? "",
         referenceCode: question.referenceCode ?? "",
       })
-      const createdQuestion = toQuestion(data, questions.length + 1, question.points)
+      const createdQuestion = toQuestion(
+        data,
+        questions.length + 1,
+        question.points,
+      )
       setQuestions((previousQuestions) => [
         ...previousQuestions,
         { ...createdQuestion, points: question.points },
@@ -144,8 +165,16 @@ export default function ExamAuthoring() {
         setTitle={handleTitleChange}
         tags={tags}
         removeTag={(tag) => {
-          setTitleTags((current) => current.filter((item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase()))
-          setManualTags((current) => current.filter((item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase()))
+          setTitleTags((current) =>
+            current.filter(
+              (item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase(),
+            ),
+          )
+          setManualTags((current) =>
+            current.filter(
+              (item) => item.toLocaleLowerCase() !== tag.toLocaleLowerCase(),
+            ),
+          )
         }}
         tagInput={tagInput}
         setTagInput={setTagInput}

@@ -38,7 +38,11 @@ export default function ExamPaper({
         const examQuestion = answer.examsQuestion
         if (!examQuestion) return null
 
-        const question = toQuestion(backendQuestion, index + 1, examQuestion.points)
+        const question = toQuestion(
+          backendQuestion,
+          index + 1,
+          examQuestion.points,
+        )
         const currentAnswer = answers[answer.id] ?? ""
 
         return (
