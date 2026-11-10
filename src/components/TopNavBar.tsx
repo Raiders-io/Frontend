@@ -6,6 +6,7 @@ import type {
   SearchSortValue,
 } from "@/utils/types/component"
 import { UserMenu } from "./user/UserMenu"
+import { useEffect, useRef } from "react"
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -22,6 +23,22 @@ const sortOptions: { label: string; value: SearchSortValue }[] = [
 ]
 
 const TopNavBar = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
+
   return (
     <nav className="flex items-center justify-between gap-6 border-b p-4">
       <Button
