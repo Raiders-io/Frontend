@@ -2,14 +2,16 @@ import fs from "node:fs"
 import path from "node:path"
 
 const siteUrl = "https://raiders.io"
-const routerFilePath = path.resolve(process.cwd(), "src/utils/router/index.tsx")
-const source = fs.readFileSync(routerFilePath, "utf8")
+const pathsFilePath = path.resolve(process.cwd(), "src/utils/router/paths.tsx")
+const source = fs.readFileSync(pathsFilePath, "utf8")
 
+// Extract all static routes from PATHS object
+// Matches key: "value" or key: 'value' patterns
 const routes = [
   ...new Set(
-    Array.from(source.matchAll(/path\s*:\s*['"`]([^'"`]+)['"`]/g))
-      .map((match) => match[1])
-      .filter((route) => route && !route.includes(":") && route !== "*"),
+    Array.from(source.matchAll(/:\s*(['"])(.*?)\1/g))
+      .map((match) => match[2])
+      .filter((route) => route && route !== "*"),
   ),
 ]
 
