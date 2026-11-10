@@ -1,7 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { useTranslation } from 'react-i18next'
 
 type Key = string | number
 
@@ -22,7 +21,6 @@ export default function CheckBoxTab<T, K extends Key>({
   onSelectionChanged,
   className,
 }: CheckBoxTabProps<T, K>) {
-  const { t } = useTranslation()
   const handleSelectRow = (key: K, checked: boolean) => {
     const newSelected = new Set(selected)
     if (checked) {
