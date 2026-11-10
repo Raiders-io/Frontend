@@ -2,7 +2,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/utils/lib/shadcn"
 import { useState } from "react"
-import { useTranslation } from 'react-i18next'
 
 type Variant = "preview" | "default" | "small"
 
