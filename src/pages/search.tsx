@@ -12,8 +12,10 @@ import { useSearchParams } from "react-router-dom"
 import { LayoutGrid, List } from "lucide-react"
 import SelectPanel from "@/components/search/SelectPanel"
 import BackgroundPanel from "@/components/homemade/BackgroundPanel"
+import { useTranslation } from 'react-i18next'
 
 export default function SearchPage() {
+  const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const { page, limit, resource, setPage } = useSearchQueryParams()
   const isExamSearch = resource === "exam"
@@ -42,7 +44,7 @@ export default function SearchPage() {
 
   return (
     <BackgroundPanel
-      title="Search Results"
+      title={t('searchResults', 'Search Results')}
       controls={<SelectPanel
         options={['grid', 'list']}
         viewMode={viewMode}

@@ -1,6 +1,7 @@
 import { useBackground } from "@/services/user/user_queries"
 import { cn } from "@/utils/lib/shadcn"
 import type { PublicProfile } from "@/utils/types/user"
+import i18next from 'i18next'
 
 interface UserBackgroundProps {
   user?: PublicProfile
@@ -28,7 +29,7 @@ export const UserBackground = ({
     <div className={cn("overflow-hidden bg-muted", className)}>
       <img
         src={url}
-        alt="User background"
+        alt={i18next.t('userBackground', 'User background')}
         className="h-full w-full object-cover"
       />
     </div>

@@ -25,13 +25,14 @@ import { router } from "@/utils/router"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { toast } from "sonner"
 import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 export default function Settings() {
   const { t } = useTranslation()
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{t('settings', 'Settings')}</h1>
 
       <Card className="max-w-md">
         <CardHeader>
@@ -44,7 +45,7 @@ export default function Settings() {
 
       <Card className="max-w-md">
         <CardHeader>
-          <CardTitle>Account Data</CardTitle>
+          <CardTitle>{t('accountData', 'Account Data')}</CardTitle>
         </CardHeader>
         <CardContent>
           <DeleteAccountDialog />
@@ -62,7 +63,7 @@ export const DeleteAccountDialog = () => {
   const [confirmationInput, setConfirmationInput] = useState("")
   const [isOpen, setIsOpen] = useState(false)
 
-  const REQUIRED_PHRASE = "delete my account"
+  const REQUIRED_PHRASE = i18next.t('deleteMyAccount', 'delete my account')
   const isConfirmed = confirmationInput.trim().toLowerCase() === REQUIRED_PHRASE
 
   // Timer: Se lance seulement quand la phrase de confirmation est valide
@@ -80,12 +81,12 @@ export const DeleteAccountDialog = () => {
     const toastId = toast.loading("Deleting your account...")
     try {
       await authService.deleteAccount()
-      toast.success("Account deleted successfully.", { id: toastId })
+      toast.success(i18next.t('accountDeletedSuccessfully', 'Account deleted successfully.'), { id: toastId })
       logout()
       router.navigate("/login")
     } catch (error) {
       console.error("Error deleting account:", error)
-      toast.error("Failed to delete account. Please try again.", {
+      toast.error(i18next.t('failedToDeleteAccountPleaseTryAgain', 'Failed to delete account. Please try again.'), {
         id: toastId,
       })
     }
@@ -119,8 +120,7 @@ export const DeleteAccountDialog = () => {
             <UserX />
           </AlertDialogMedia>
           <AlertDialogTitle>{t('delete_account')}</AlertDialogTitle>
-          <AlertDialogDescription>
-            Your account will be permanently deleted and you will be logged out.
+          <AlertDialogDescription>Your account will be permanently deleted and you will be logged out.
             This action cannot be undone.
             <br />
             <br />
@@ -132,7 +132,7 @@ export const DeleteAccountDialog = () => {
               {REQUIRED_PHRASE}
             </strong>
             {t('delete_account_confirmation')}
-            To confirm, please type your id: <strong>{user?.id}</strong>
+            {i18next.t('toConfirmPleaseTypeYourId', 'To confirm, please type your id:')} <strong>{user?.id}</strong>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="px-4 pb-4">
@@ -147,7 +147,7 @@ export const DeleteAccountDialog = () => {
                 setIsDisabled(true)
               }
             }}
-            placeholder={`Type "${REQUIRED_PHRASE}"`}
+            placeholder={i18next.t('typeRequired_phrase', 'Type "{{REQUIRED_PHRASE}}"', { REQUIRED_PHRASE })}
             className="w-full p-2 border rounded bg-background text-foreground"
           />
         </div>

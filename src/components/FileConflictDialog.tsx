@@ -76,12 +76,12 @@ export const FileConflictDialog = ({
           </AlertDialogTitle>
           <AlertDialogDescription style={{ whiteSpace: "pre-line" }}>
             {conflictCount > 1
-              ? i18next.t('theFollowingFilesAlreadyExistAndCannotBeOverwrittenWithAStandardUploadValWouldYouLikeToReplaceThem', 'The following files already exist and cannot be overwritten with a standard upload:\n\n{{val}}\n\nWould you like to replace them?', { val: Array.from(
+              ? i18next.t('the_following_files_already', 'The following files already exist and cannot be overwritten with a standard upload:\n\n{{val}}\n\nWould you like to replace them?', { val: Array.from(
                   conflictFileNames,
                 )
                   .map((element) => `- ${element}`)
                   .join("\n") })
-              : i18next.t('theFileValAlreadyExistsWouldYouLikeToReplaceIt', 'The file "{{val}}" already exists. Would you like to replace it?', { val: conflictFileNames[0] })}
+              : i18next.t('the_file_val_already', 'The file "{{val}}" already exists. Would you like to replace it?', { val: conflictFileNames[0] })}
             {updateError && (
               <div className="mt-4 text-destructive">{updateError}</div>
             )}

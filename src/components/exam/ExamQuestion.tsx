@@ -1,5 +1,6 @@
 import CodeEditor from "@/components/exam/CodeEditor"
 import type { Question } from "@/utils/types/exam"
+import { useTranslation } from 'react-i18next'
 
 type ExamQuestionProps = {
   question: Question
@@ -14,11 +15,10 @@ export function ExamQuestion({
   answer,
   onAnswerChange,
 }: ExamQuestionProps) {
+  const { t } = useTranslation()
   return (
     <li className="rounded-md border p-4">
-      <p className="font-semibold">
-        {number}. {question.title}
-      </p>
+      <p className="font-semibold">{t('numberTitle', '{{number}}. {{title}}', { number, title: question.title })}</p>
 
       {question.choices && (
         <ul className="mt-2 flex flex-col gap-1">

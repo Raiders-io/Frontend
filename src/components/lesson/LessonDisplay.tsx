@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn } from "@/utils/lib/shadcn"
+import { useTranslation } from 'react-i18next'
 
 interface LessonDisplayProps {
   lesson: Lesson
@@ -44,6 +45,7 @@ export default function LessonDisplay({
   onFileDownload,
   onBack,
 }: LessonDisplayProps) {
+  const { t } = useTranslation()
   const createdLabel = formatDate(lesson.createdAt)
   const updatedLabel = formatDate(lesson.updatedAt)
   const mergedFiles = files ?? lesson.files ?? []
@@ -60,7 +62,7 @@ export default function LessonDisplay({
             className="gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to lesson
+            {t('backToLesson', 'Back to lesson')}
           </Button>
         )}
 
@@ -72,12 +74,12 @@ export default function LessonDisplay({
             {lesson.isPrivate ? (
               <>
                 <Lock className="h-3 w-3" />
-                Private
+                {t('private', 'Private')}
               </>
             ) : (
               <>
                 <Globe className="h-3 w-3" />
-                Public
+                {t('public', 'Public')}
               </>
             )}
           </Badge>
@@ -112,12 +114,12 @@ export default function LessonDisplay({
           {createdLabel && (
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <span>Created {createdLabel}</span>
+              <span>{t('createdCreatedlabel', 'Created {{createdLabel}}', { createdLabel })}</span>
             </div>
           )}
           {updatedLabel && updatedLabel !== createdLabel && (
             <div className="flex items-center gap-1.5">
-              <span>Updated {updatedLabel}</span>
+              <span>{t('updatedUpdatedlabel', 'Updated {{updatedLabel}}', { updatedLabel })}</span>
             </div>
           )}
         </div>
@@ -126,7 +128,7 @@ export default function LessonDisplay({
       {/* ---------- Description ---------- */}
       <section className={cn("mt-8 p-6", sectionCard)}>
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Description
+          {t('description', 'Description')}
         </h2>
         {lesson.description?.trim() ? (
           <ScrollArea className="mt-3 max-h-96">
@@ -136,7 +138,7 @@ export default function LessonDisplay({
           </ScrollArea>
         ) : (
           <p className="mt-3 text-sm italic text-muted-foreground">
-            No description provided.
+            {t('noDescriptionProvided', 'No description provided.')}
           </p>
         )}
       </section>
@@ -146,7 +148,7 @@ export default function LessonDisplay({
         <section className={cn("mt-6 p-6", sectionCard)}>
           <div className="flex items-baseline justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Tags
+              {t('tags', 'Tags')}
             </h2>
             <span className="text-xs text-muted-foreground/70">
               {lesson.tags.length} {lesson.tags.length === 1 ? "tag" : "tags"}
@@ -172,7 +174,7 @@ export default function LessonDisplay({
           <div className="flex items-center gap-2">
             <Paperclip className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Attachments
+              {t('attachments', 'Attachments')}
             </h2>
           </div>
           <span className="text-xs text-muted-foreground/70">
@@ -190,7 +192,7 @@ export default function LessonDisplay({
           </ul>
         ) : (
           <p className="mt-3 text-sm italic text-muted-foreground">
-            No files attached to this lesson.
+            {t('noFilesAttachedToThisLesson', 'No files attached to this lesson.')}
           </p>
         )}
       </section>
@@ -206,6 +208,7 @@ function FileCard({
   file: FileItem
   onDownload?: (file: FileItem) => void
 }) {
+  const { t } = useTranslation()
   const ext = file.filename.split(".").pop()?.toUpperCase() ?? "FILE"
   return (
     <div className="group flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 transition-colors hover:border-primary/40 hover:bg-muted/40">
@@ -216,7 +219,7 @@ function FileCard({
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium text-foreground">{file.filename}</p>
           <p className="text-xs text-muted-foreground">
-            Click to download
+            {t('clickToDownload', 'Click to download')}
           </p>
         </div>
       </div>

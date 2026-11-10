@@ -37,6 +37,8 @@ import { cn } from "@/utils/lib/shadcn"
 import { usernameSchema } from "@/utils/types/common"
 import type { PrivateProfile, UpdateMePayload } from "@/utils/types/user"
 import { getErrorMessage } from "./utils"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 /* ------------------------------ Image limits ------------------------------ */
 /*
@@ -193,7 +195,7 @@ async function checkSize(file: File, min?: MinSize) {
     const { width, height } = bitmap
     bitmap.close()
     if (width >= min.width && height >= min.height) return null
-    return `${width}×${height}px, minimum ${min.width}×${min.height}px`
+    return i18next.t('widthheightpxMinimumWidth2height2px', '{{width}}×{{height}}px, minimum {{width2}}×{{height2}}px', { width, height, width2: min.width, height2: min.height })
   } catch {
     return "unreadable file"
   }
@@ -270,6 +272,7 @@ function useImagePicker(min?: MinSize) {
 }
 
 export function EditProfileDialog({ me }: { me: PrivateProfile }) {
+  const { t } = useTranslation()
   const updateMe = useUpdateMe()
   const [open, setOpen] = useState(false)
   const avatar = useImagePicker(AVATAR_MIN_SIZE)
@@ -343,7 +346,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">
             <Pencil />
-            Edit
+            {t('edit', 'Edit')}
           </Button>
         </DialogTrigger>
 
@@ -354,9 +357,9 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
           }}
         >
           <DialogHeader className="shrink-0 border-b px-6 py-4 text-left">
-            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogTitle>{t('editProfile', 'Edit Profile')}</DialogTitle>
             <DialogDescription>
-              This information is visible to other users.
+              {t('thisInformationIsVisibleToOtherUsers', 'This information is visible to other users.')}
             </DialogDescription>
           </DialogHeader>
 
@@ -379,7 +382,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
 
                         {bg.isDragActive && (
                           <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg border-2 border-dashed border-primary bg-background/70 text-sm font-medium">
-                            Drop your background here
+                            {t('dropYourBackgroundHere', 'Drop your background here')}
                           </div>
                         )}
 
@@ -391,7 +394,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                               size="icon-sm"
                               className="size-8"
                               onClick={background.clear}
-                              aria-label="Cancel background change"
+                              aria-label={t('cancelBackgroundChange', 'Cancel background change')}
                             >
                               <X />
                             </Button>
@@ -404,7 +407,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                           >
                             <Camera />
                             <span className="max-sm:sr-only">
-                              Change background
+                              {t('changeBackground', 'Change background')}
                             </span>
                           </Button>
                         </div>
@@ -421,7 +424,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                         <button
                           type="button"
                           onClick={av.open}
-                          aria-label="Change photo"
+                          aria-label={t('changePhoto', 'Change photo')}
                           className="group relative block cursor-pointer rounded-full"
                         >
                           <UserAvatar
@@ -443,9 +446,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
 
                     <div className="space-y-1 pt-10">
                       <p className="text-xs text-muted-foreground">
-                        Drop an image on the banner or the photo. JPG, PNG or
-                        WebP, 15 MB max, compressed automatically. Photo:
-                        200×200 px min. Banner: 3:1 ratio, 600×200 px min.
+                        {t('drop_image_the_banner', 'Drop an image on the banner or the photo. JPG, PNG or\n                        WebP, 15 MB max, compressed automatically. Photo:\n                        200×200 px min. Banner: 3:1 ratio, 600×200 px min.')}
                       </p>
                       {avatar.error && <FieldError>{avatar.error}</FieldError>}
                       {background.error && (
@@ -458,7 +459,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-3">
                     <Field data-invalid={!!errors.firstname}>
-                      <FieldLabel htmlFor="firstname">First name</FieldLabel>
+                      <FieldLabel htmlFor="firstname">{t('firstName', 'First name')}</FieldLabel>
                       <Input
                         id="firstname"
                         aria-invalid={!!errors.firstname}
@@ -467,7 +468,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                       <FieldError errors={[errors.firstname]} />
                     </Field>
                     <Field data-invalid={!!errors.lastname}>
-                      <FieldLabel htmlFor="lastname">Last name</FieldLabel>
+                      <FieldLabel htmlFor="lastname">{t('lastName', 'Last name')}</FieldLabel>
                       <Input
                         id="lastname"
                         aria-invalid={!!errors.lastname}
@@ -485,7 +486,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                       return (
                         <Field data-invalid={fieldState.invalid}>
                           <div className="flex items-center justify-between">
-                            <FieldLabel htmlFor="bio">Bio</FieldLabel>
+                            <FieldLabel htmlFor="bio">{t('bio', 'Bio')}</FieldLabel>
                             <span
                               className={cn(
                                 "text-xs tabular-nums",
@@ -493,9 +494,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                                   ? "font-medium text-destructive"
                                   : "text-muted-foreground",
                               )}
-                            >
-                              {length}/{BIO_MAX_LENGTH}
-                            </span>
+                            >{t('lengthbio_max_length', '{{length}}/{{BIO_MAX_LENGTH}}', { length, BIO_MAX_LENGTH })}</span>
                           </div>
 
                           {/* Small screens: native textarea */}
@@ -538,7 +537,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                   disabled={isSubmitting}
                   onClick={() => handleOpenChange(false)}
                 >
-                  Cancel
+                  {t('cancel', 'Cancel')}
                 </Button>
                 <Button
                   type="submit"

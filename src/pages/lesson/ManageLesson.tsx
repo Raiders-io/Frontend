@@ -19,10 +19,12 @@ import SelectPanel from "@/components/search/SelectPanel"
 import BackgroundPanel from "@/components/homemade/BackgroundPanel"
 import type { ItemLayout } from "@/components/search/ItemGrid"
 import ItemGrid from "@/components/search/ItemGrid"
+import { useTranslation } from 'react-i18next'
 
 type ViewMode = "all" | "public" | "private" | "by-file"
 
 export default function MyLessonsPage() {
+  const { t } = useTranslation()
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [files, setFiles] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -84,29 +86,23 @@ export default function MyLessonsPage() {
       case "all":
         return (
           <>
-            <LayoutGrid className="h-3.5 w-3.5" />
-            All ({lessons.length})
-          </>
+            <LayoutGrid className="h-3.5 w-3.5" />{t('allLength', 'All ({{length}})', { length: lessons.length })}</>
         )
       case "public":
         return (
           <>
-            <Globe className="h-3.5 w-3.5" />
-            Public ({publicCount})
-          </>
+            <Globe className="h-3.5 w-3.5" />{t('publicPubliccount', 'Public ({{publicCount}})', { publicCount })}</>
         )
       case "private":
         return (
           <>
-            <Lock className="h-3.5 w-3.5" />
-            Private ({privateCount})
-          </>
+            <Lock className="h-3.5 w-3.5" />{t('privatePrivatecount', 'Private ({{privateCount}})', { privateCount })}</>
         )
       case "by-file":
         return (
           <>
             <FileText className="h-3.5 w-3.5" />
-            By File
+            {t('byFile', 'By File')}
           </>
         )
     }
@@ -137,8 +133,8 @@ export default function MyLessonsPage() {
 
   if (loading) {
     return (
-      <BackgroundPanel title="My Lessons">
-        <p className="text-muted-foreground">Loading your lessons...</p>
+      <BackgroundPanel title={t('myLessons', 'My Lessons')}>
+        <p className="text-muted-foreground">{t('loadingYourLessons', 'Loading your lessons...')}</p>
       </BackgroundPanel>
     )
   }
@@ -150,9 +146,9 @@ export default function MyLessonsPage() {
           <div className="rounded-full bg-muted p-4">
             <LayoutGrid className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="mt-4 text-lg font-semibold">No lessons found</h3>
+          <h3 className="mt-4 text-lg font-semibold">{t('noLessonsFound', 'No lessons found')}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Create your first lesson to get started.
+            {t('createYourFirstLessonToGetStarted', 'Create your first lesson to get started.')}
           </p>
           <Button
             variant="outline"
@@ -160,7 +156,7 @@ export default function MyLessonsPage() {
             className="mt-4 gap-2"
             onClick={changePageLessonCreate}>
             <Plus className="h-4 w-4" />
-            Create Lesson
+            {t('createLesson', 'Create Lesson')}
           </Button>
         </div>
       </BackgroundPanel>
@@ -169,8 +165,8 @@ export default function MyLessonsPage() {
 
   return (
     <BackgroundPanel
-      title="My Lessons"
-      subtitle={`${lessons.length} ${lessons.length === 1 ? "lesson" : "lessons"}`}
+      title={t('myLessons', 'My Lessons')}
+      subtitle={t('lengthVal', '{{length}} {{val}}', { length: lessons.length, val: lessons.length === 1 ? "lesson" : "lessons" })}
       controls={
         <div className="flex flex-wrap items-center - gap-2">
           <SelectPanel
@@ -207,7 +203,7 @@ export default function MyLessonsPage() {
               onChange={(e) => setSelectedFilename(e.target.value || null)}
               className="rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
-              <option value="">All files</option>
+              <option value="">{t('allFiles', 'All files')}</option>
               {files.map((file) => (
                 <option key={file.filename} value={file.filename}>
                   {file.filename}
@@ -219,7 +215,7 @@ export default function MyLessonsPage() {
           {/* Always visible */}
           <Button size="sm" className="gap-2" onClick={changePageLessonCreate}>
             <Plus className="h-4 w-4" />
-            New Lesson
+            {t('newLesson', 'New Lesson')}
           </Button>
         </div>
       }

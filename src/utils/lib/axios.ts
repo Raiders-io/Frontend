@@ -9,6 +9,7 @@ const api = axios.create({
 	timeout: 10000,
 })
 
+/* i18next-disable */
 api.interceptors.request.use((config) => {
 	const token = useAuthStore.getState().token
 	if (token) config.headers.Authorization = `Bearer ${token}`
@@ -33,5 +34,6 @@ api.interceptors.response.use(
 		return Promise.reject(error)
 	},
 )
+/* i18next-enable */
 
 export default api

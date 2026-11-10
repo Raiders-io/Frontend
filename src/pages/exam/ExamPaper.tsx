@@ -4,8 +4,10 @@ import ExamPaperView from "@/components/exam/ExamPaper"
 import { examApi } from "@/utils/lib/exam_api/requests"
 import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
 import { DisplayResult } from "@/components/exam/DisplayResult"
+import { useTranslation } from 'react-i18next'
 
 export default function ExamPaper() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [paper, setPaper] = useState<ExamPaperData | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
@@ -29,7 +31,7 @@ export default function ExamPaper() {
   }, [id])
 
   if (!id) {
-    return <p role="alert">No exam paper ID provided.</p>
+    return <p role="alert">{t('noExamPaperIdProvided', 'No exam paper ID provided.')}</p>
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -66,7 +68,7 @@ export default function ExamPaper() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      {!paper && !message && <p>Loading exam paper...</p>}
+      {!paper && !message && <p>{t('loadingExamPaper', 'Loading exam paper...')}</p>}
       {paper && (
         <ExamPaperView
           paper={paper}

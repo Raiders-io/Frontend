@@ -7,6 +7,7 @@ import type { DropEvent, DropzoneOptions, FileRejection } from "react-dropzone";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/lib/shadcn";
+import i18next from 'i18next'
 
 type DropzoneContextType = {
   src?: File[];
@@ -26,7 +27,7 @@ const renderBytes = (bytes: number) => {
     unitIndex++;
   }
 
-  return `${size.toFixed(2)}${units[unitIndex]}`;
+  return i18next.t('valval2', '{{val}}{{val2}}', { val: size.toFixed(2), val2: units[unitIndex] });
 };
 
 const DropzoneContext = createContext<DropzoneContextType | undefined>(
@@ -137,13 +138,13 @@ export const DropzoneContent = ({
       </div>
       <p className="my-2 w-full truncate font-medium text-sm">
         {src.length > maxLabelItems
-          ? `${new Intl.ListFormat("en").format(
+          ? i18next.t('valAndVal2More', '{{val}} and {{val2}} more', { val: new Intl.ListFormat("en").format(
               src.slice(0, maxLabelItems).map((file) => file.name)
-            )} and ${src.length - maxLabelItems} more`
+            ), val2: src.length - maxLabelItems })
           : new Intl.ListFormat("en").format(src.map((file) => file.name))}
       </p>
       <p className="w-full text-wrap text-muted-foreground text-xs">
-        Drag and drop or click to replace
+        {i18next.t('dragAndDropOrClickToReplace', 'Drag and drop or click to replace')}
       </p>
     </div>
   );
@@ -171,16 +172,16 @@ export const DropzoneEmptyState = ({
   let caption = "";
 
   if (accept) {
-    caption += "Accepts ";
+    caption += i18next.t('accepts', 'Accepts ');
     caption += new Intl.ListFormat("en").format(Object.keys(accept));
   }
 
   if (minSize && maxSize) {
-    caption += ` between ${renderBytes(minSize)} and ${renderBytes(maxSize)}`;
+    caption += i18next.t('betweenValAndVal2', 'between {{val}} and {{val2}}', { val: renderBytes(minSize), val2: renderBytes(maxSize) });
   } else if (minSize) {
-    caption += ` at least ${renderBytes(minSize)}`;
+    caption += i18next.t('atLeastVal', 'at least {{val}}', { val: renderBytes(minSize) });
   } else if (maxSize) {
-    caption += ` less than ${renderBytes(maxSize)}`;
+    caption += i18next.t('lessThanVal', 'less than {{val}}', { val: renderBytes(maxSize) });
   }
 
   return (
@@ -188,14 +189,12 @@ export const DropzoneEmptyState = ({
       <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
         <UploadIcon size={16} />
       </div>
-      <p className="my-2 w-full truncate text-wrap font-medium text-sm">
-        Upload {maxFiles === 1 ? "a file" : "files"}
-      </p>
+      <p className="my-2 w-full truncate text-wrap font-medium text-sm">{i18next.t('uploadFiles', { defaultValue_one: 'Upload a file', defaultValue_other: 'Upload files', count: maxFiles })}</p>
       <p className="w-full truncate text-wrap text-muted-foreground text-xs">
-        Drag and drop or click to upload
+        {i18next.t('dragAndDropOrClickToUpload', 'Drag and drop or click to upload')}
       </p>
       {caption && (
-        <p className="text-wrap text-muted-foreground text-xs">{caption}.</p>
+        <p className="text-wrap text-muted-foreground text-xs">{i18next.t('caption', '{{caption}}.', { caption })}</p>
       )}
     </div>
   );

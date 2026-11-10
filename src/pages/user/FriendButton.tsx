@@ -12,6 +12,7 @@ import {
 } from "@/services/user/user_queries"
 import { UnfriendDialog } from "./UnfriendDialog"
 import { getErrorMessage } from "./utils"
+import { useTranslation } from 'react-i18next'
 
 export function FriendButton({
   userId,
@@ -20,6 +21,7 @@ export function FriendButton({
   userId: string
   username: string
 }) {
+  const { t } = useTranslation()
   const { data: relation, isPending } = useRelationship(userId)
 
   const send = useSendFriendRequest()
@@ -42,7 +44,7 @@ export function FriendButton({
         {relation === "none" && (
           <Button size="sm" disabled={busy} onClick={() => send.mutate(userId)}>
             <UserPlus />
-            Ajouter
+            {t('ajouter', 'Ajouter')}
           </Button>
         )}
 
@@ -50,7 +52,7 @@ export function FriendButton({
           <>
             <Badge variant="secondary">
               <Clock />
-              Demande envoyée
+              {t('demandeEnvoye', 'Demande envoyée')}
             </Badge>
             <Button
               variant="outline"
@@ -58,7 +60,7 @@ export function FriendButton({
               disabled={busy}
               onClick={() => cancel.mutate(userId)}
             >
-              Annuler
+              {t('annuler', 'Annuler')}
             </Button>
           </>
         )}
@@ -71,7 +73,7 @@ export function FriendButton({
               onClick={() => accept.mutate(userId)}
             >
               <Check />
-              Accepter
+              {t('accepter', 'Accepter')}
             </Button>
             <Button
               variant="outline"
@@ -79,7 +81,7 @@ export function FriendButton({
               disabled={busy}
               onClick={() => decline.mutate(userId)}
             >
-              Refuser
+              {t('refuser', 'Refuser')}
             </Button>
           </>
         )}
@@ -88,7 +90,7 @@ export function FriendButton({
           <>
             <Badge variant="secondary">
               <UserCheck />
-              Friends
+              {t('friends', 'Friends')}
             </Badge>
             <UnfriendDialog
               username={username}

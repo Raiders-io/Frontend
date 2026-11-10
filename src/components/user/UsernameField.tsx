@@ -23,6 +23,7 @@ import {
   USERNAME_REASON_MESSAGES,
   USERNAME_MAX_LENGTH,
 } from "@/utils/types/common"
+import { useTranslation } from 'react-i18next'
 
 export function randomUsername() {
   const suffix = String(Math.floor(Math.random() * 100))
@@ -68,6 +69,7 @@ export function UsernameField({
   current: string
   autoFocus?: boolean
 }) {
+  const { t } = useTranslation()
   const {
     register,
     setValue,
@@ -80,7 +82,7 @@ export function UsernameField({
 
   return (
     <Field data-invalid={invalid}>
-      <FieldLabel htmlFor="username">Username</FieldLabel>
+      <FieldLabel htmlFor="username">{t('username2', 'Username')}</FieldLabel>
       <InputGroup>
         <InputGroupInput
           id="username"
@@ -93,7 +95,7 @@ export function UsernameField({
           <InputGroupButton
             type="button"
             size="icon-xs"
-            aria-label="Generate a random username"
+            aria-label={t('generateARandomUsername', 'Generate a random username')}
             onClick={() =>
               setValue("username", randomUsername(), {
                 shouldValidate: true,
@@ -115,22 +117,17 @@ export function UsernameField({
           </FieldDescription>
         ) : s.isError ? (
           <FieldDescription className="m-0! p-0! text-destructive">
-            Could not check availability. Try again.
+            {t('couldNotCheckAvailabilityTryAgain', 'Could not check availability. Try again.')}
           </FieldDescription>
         ) : s.isChecking ? (
           <FieldDescription className="m-0! p-0! flex items-center gap-1.5">
             <Loader2 className="size-3 animate-spin" />
-            Checking availability...
+            {t('checkingAvailability', 'Checking availability...')}
           </FieldDescription>
         ) : s.available ? (
-          <FieldDescription className="m-0! p-0! text-emerald-600 dark:text-emerald-500">
-            {s.value} is available
-          </FieldDescription>
+          <FieldDescription className="m-0! p-0! text-emerald-600 dark:text-emerald-500">{t('valueIsAvailable', '{{value}} is available', { value: s.value })}</FieldDescription>
         ) : (
-          <FieldDescription className="m-0! p-0!">
-            Up to {USERNAME_MAX_LENGTH} characters: letters, numbers, and
-            underscore.
-          </FieldDescription>
+          <FieldDescription className="m-0! p-0!">{t('username_max_length_characters', 'Up to {{USERNAME_MAX_LENGTH}} characters: letters, numbers, and\n            underscore.', { USERNAME_MAX_LENGTH })}</FieldDescription>
         )}
       </div>
     </Field>

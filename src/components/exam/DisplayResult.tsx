@@ -1,4 +1,5 @@
 import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
+import { useTranslation } from 'react-i18next'
 
 type DisplayResultProps = {
   examPaper: ExamPaperData
@@ -9,6 +10,7 @@ export function DisplayResult({
   examPaper,
   goodAnswersIds,
 }: DisplayResultProps) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col gap-4">
       {examPaper.answers.map((answer) => {
@@ -41,7 +43,7 @@ export function DisplayResult({
                     : "bg-red-100 text-red-900"
                 }`}
               >
-                {isQuestionCorrect ? "OK :D" : "KO :("}
+                {isQuestionCorrect ? t('okD', 'OK :D') : "KO :("}
               </p>
             </div>
           )
