@@ -23,6 +23,10 @@ import {
   GDPRPage,
   MyLessonsPage,
   EditLessonPage,
+  ChooseUsername,
+  ProfilePage,
+  PublicProfilePage,
+  Settings,
 } from "@/utils/router/lazyRoutes"
 
 export const router = createBrowserRouter([
@@ -133,7 +137,7 @@ export const router = createBrowserRouter([
         path: "/exam/paper",
         element: (
           <ProtectedRoute>
-            <ExamPaperList />
+            <ExamPaper />
           </ProtectedRoute>
         ),
       },

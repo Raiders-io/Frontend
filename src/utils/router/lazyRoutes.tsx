@@ -6,7 +6,6 @@ const HomePage = lazy(() => import("@/pages/home"))
 const LessonPage = lazy(() => import("@/pages/lesson/LessonPage"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
-const EditProfile = lazy(() => import("@/pages/user/edit-profile"))
 const AboutPage = lazy(() => import("@/pages/about"))
 const ContactPage = lazy(() => import("@/pages/contact"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
@@ -22,6 +21,10 @@ const SearchPage = lazy(() => import("@/pages/search"))
 const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
 const MyLessonsPage = lazy(() => import("@/pages/lesson/ManageLesson"))
 const EditLessonPage = lazy(() => import("@/pages/lesson/EditLessonPage"))
+const Settings = lazy(() => import("@/pages/user/Settings"))
+const ChooseUsername = lazy(() => import("@/pages/user/ChooseUsername"))
+const ProfilePage = lazy(() => import("@/pages/user/ProfilePage"))
+const PublicProfilePage = lazy(() => import("@/pages/user/ProfilePage").then((m) => ({ default: m.PublicProfilePage })))
 
 export {
   LoginPage,
@@ -30,7 +33,10 @@ export {
   LessonPage,
   FileListPage,
   ChatPage,
-  EditProfile,
+  ChooseUsername,
+  ProfilePage,
+  PublicProfilePage,
+  Settings,
   AboutPage,
   ContactPage,
   NotFound,
