@@ -1,30 +1,9 @@
 import { router } from "@/utils/router";
-
-export const PATHS = {
-  home: "/",
-  login: "/login",
-  signup: "/signup",
-  profile: "/profile",
-  fileList: "/file/list",
-  myLesson: "/myLesson",
-  lessonCreate: "/create/lesson",
-  lessonEdit: (author: string, slug: string) => `/lesson/${author}/${slug}/edit`,
-  lessonView: (author: string, slug: string) => `/lesson/${author}/${slug}`,
-  user: (userId: string) => `/users/${userId}`,
-  chooseUsername: "/onboarding/username",
-  settings: "/settings",
-  chat: "/chat",
-  about: "/about",
-  contact: "/contact",
-  terms: "/terms",
-  privacy: "/privacy",
-  cookies: "/cookies",
-} as const;
+import { PATHS } from "@/utils/router/paths";
 
 const createNavigator = (path: string, options?: { replace?: boolean }) => {
   return () => router.navigate(path, options);
 };
-
 
 export const changePageHome = createNavigator(PATHS.home);
 export const changePageLogin = createNavigator(PATHS.login);

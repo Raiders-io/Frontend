@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom"
 import ProtectedRoute from "@/utils/router/protected_route"
-
 import {
   LoginPage,
   SignupPage,
@@ -28,10 +27,11 @@ import {
   PublicProfilePage,
   Settings,
 } from "@/utils/router/lazyRoutes"
+import { PATHS } from "@/utils/router/paths";
 
 export const router = createBrowserRouter([
   {
-    path: "/onboarding/username",
+    path: PATHS.chooseUsername,
     element: (
       <ProtectedRoute>
         <ChooseUsername />
@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: "/",
+        path: PATHS.home,
         element: (
           <ProtectedRoute>
             <HomePage />
@@ -50,11 +50,11 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/login",
+        path: PATHS.login,
         element: <LoginPage />,
       },
       {
-        path: "/signup",
+        path: PATHS.signup,
         element: <SignupPage />,
       },
       {
@@ -62,15 +62,15 @@ export const router = createBrowserRouter([
         element: <LessonPage />,
       },
       {
-        path: "/file/list",
+        path: PATHS.fileList,
         element: (
-          // <ProtectedRoute>
-          <FileListPage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <FileListPage />
+          </ProtectedRoute>
         ),
       },
       {
-        path: "/chat",
+        path: PATHS.chat,
         element: (
           <ProtectedRoute>
             <ChatPage />
@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/profile",
+        path: PATHS.profile,
         element: (
           <ProtectedRoute>
             <ProfilePage />
@@ -86,11 +86,11 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/users/:identifier",
+        path: PATHS.user(":userId"),
         element: <PublicProfilePage />,
       },
       {
-        path: "/settings",
+        path: PATHS.settings,
         element: (
           <ProtectedRoute>
             <Settings />
@@ -98,35 +98,35 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/about",
+        path: PATHS.about,
         element: <AboutPage />,
       },
       {
-        path: "/contact",
+        path: PATHS.contact,
         element: <ContactPage />,
       },
       {
-        path: "/privacy",
+        path: PATHS.privacy,
         element: <PrivacyPolicy />,
       },
       {
-        path: "/terms",
+        path: PATHS.terms,
         element: <TermsOfService />,
       },
       {
-        path: "/gdpr",
+        path: PATHS.gdpr,
         element: <GDPRPage />,
       },
       {
-        path: "/cookies",
+        path: PATHS.cookies,
         element: <CookiesPage />,
       },
       {
-        path: "/data-request",
+        path: PATHS.dataRequest,
         element: <DataRequestPage />,
       },
       {
-        path: "/exam/authoring",
+        path: PATHS.examAuthoring,
         element: (
           <ProtectedRoute>
             <ExamAuthoring />
@@ -134,7 +134,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/exam/paper",
+        path: PATHS.examPaper,
         element: (
           <ProtectedRoute>
             <ExamPaper />
@@ -142,7 +142,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/exam/paper/:id",
+        path: PATHS.examPaperView(":id"),
         element: (
           <ProtectedRoute>
             <ExamPaper />
@@ -150,30 +150,27 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/search",
+        path: PATHS.search,
         element: <SearchPage />,
       },
       {
-        path: "/create/lesson",
+        path: PATHS.lessonCreate,
         element: <LessonCreatePage />
       },
-      // {
-      //   path: "/lesson/:author",
-      // },
       {
-        path: "/lesson/:author/:slug",
+        path: PATHS.lessonView(":author", ":slug"),
         element: <LessonPage />,
       },
       {
-        path: "/lesson/:author/:slug/edit",
+        path: PATHS.lessonEdit(":author", ":slug"),
         element: <EditLessonPage />,
       },
       {
-        path: "/myLesson",
+        path: PATHS.myLesson,
         element: <MyLessonsPage />,
       },
       {
-        path: "*",
+        path: PATHS.any,
         element: <NotFound />,
       },
     ],
