@@ -91,7 +91,7 @@ export function useAvatar(identifier?: string, version?: string | null) {
     queryKey: userKeys.avatar(identifier, version),
     queryFn: () => userService.fetchAvatar(identifier, version),
     enabled: Boolean(identifier),
-    staleTime: 1000 * 60 * 10,
+    staleTime: Infinity,
   })
 }
 

@@ -16,6 +16,7 @@ import { useMe, useUpdateMe } from "@/services/user/user_queries"
 import type { PrivateProfile } from "@/utils/types/user"
 import { usernameSchema } from "@/utils/types/common"
 import { getErrorMessage } from "./utils"
+import { PATHS } from "@/utils/router/changePage"
 
 const schema = z.object({ username: usernameSchema })
 type FormValues = z.infer<typeof schema>
@@ -31,7 +32,7 @@ export default function ChooseUsername() {
     )
   }
 
-  if (!me) return <Navigate to="/login" replace />
+  if (!me) return <Navigate to={PATHS.home} replace />
 
   return <ChooseUsernameForm me={me} />
 }
