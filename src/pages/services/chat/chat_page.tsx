@@ -20,7 +20,6 @@ export default function ChatPage() {
 	const setMessages = useChatStore((s) => s.setMessages)
 	const setActiveConversation = useChatStore((s) => s.setActiveConversation)
 	const [userMap, setUserMap] = useState<Record<string, string>>({})
-	const [conversationsError, setConversationsError] = useState(false)
 	const [messagesError, setMessagesError] = useState(false)
 
 	const { data: conversations = [], isError } = useQuery({
@@ -71,7 +70,6 @@ export default function ChatPage() {
 					activeId={activeConversationId}
 					onSelect={setActiveConversation}
 					getLabel={conversationLabel}
-					hasError={conversationsError}
 				/>
 				<main className="flex min-w-0 flex-1 flex-col">
 					{activeConversationId ? (

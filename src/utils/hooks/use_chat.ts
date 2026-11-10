@@ -3,6 +3,7 @@ import { socket } from '@/utils/lib/socket'
 import { useChatStore } from '@/utils/stores/chat_store'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import type { Message } from '@/utils/types/chat'
+import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 
