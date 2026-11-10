@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { examApi } from "@/utils/lib/exam_api/requests"
+import { useTranslation } from 'react-i18next'
 
 type ExamOption = {
   id: string
@@ -9,6 +10,7 @@ type ExamOption = {
 }
 
 export default function ExamPaperList() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [exams, setExams] = useState<ExamOption[]>([])
   const [message, setMessage] = useState("")
@@ -31,7 +33,7 @@ export default function ExamPaperList() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <h1 className="text-3xl font-bold">Exams</h1>
+      <h1 className="text-3xl font-bold">{t('exams', 'Exams')}</h1>
       <div className="divide-y divide-gray-300/50 rounded-md border">
         {exams.map((exam) => (
           <button
@@ -43,7 +45,7 @@ export default function ExamPaperList() {
             <span className="block">{exam.title || "Untitled exam"}</span>
             <span className="block text-sm text-muted-foreground/70">
               {exam.description?.substring(0, 100) ||
-                "No description provided."}
+                t('noDescriptionProvided', 'No description provided.')}
             </span>
           </button>
         ))}

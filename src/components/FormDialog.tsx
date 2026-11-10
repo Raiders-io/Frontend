@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { getErrorMessage } from "@/pages/user/utils"
 import { shake } from "../utils/utils/shake"
+import { useTranslation } from 'react-i18next'
 
 interface FormDialogProps<T extends FieldValues> {
   /** The form created by the caller (it owns the schema and the defaults). */
@@ -55,6 +56,7 @@ export function FormDialog<T extends FieldValues>({
   onError,
   children,
 }: FormDialogProps<T>) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
   const { isSubmitting } = form.formState
@@ -109,7 +111,7 @@ export function FormDialog<T extends FieldValues>({
                 disabled={isSubmitting}
                 onClick={close}
               >
-                Cancel
+                {t('cancel', 'Cancel')}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="animate-spin" />}

@@ -36,6 +36,7 @@ import { useActionSettingsStore } from "@/utils/stores/action_settings_store"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { ChangeEmailDialog } from "@/components/settings/ChangeEmailDialog"
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog"
+import { useTranslation } from 'react-i18next'
 
 /* -------------------------------------------------------------------------- */
 /*  Navigation (anchors to the sections below)                                */
@@ -57,6 +58,7 @@ const linkClass =
 /* -------------------------------------------------------------------------- */
 
 function AccountSection() {
+  const { t } = useTranslation()
   const email = useAuthStore((s) => s.user?.email)
   const logout = useAuthStore((s) => s.logout)
   const queryClient = useQueryClient()
@@ -77,10 +79,10 @@ function AccountSection() {
     <SettingsSection
       id="account"
       icon={UserRound}
-      title="Account"
-      description="Your sign-in details and public profile."
+      title={t('account', 'Account')}
+      description={t('yourSigninDetailsAndPublicProfile', 'Your sign-in details and public profile.')}
     >
-      <SettingRow title="Email" description="Used to sign in.">
+      <SettingRow title="Email" description={t('usedToSignIn', 'Used to sign in.')}>
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm text-muted-foreground">{email ?? "—"}</span>
           <ChangeEmailDialog />
@@ -89,7 +91,7 @@ function AccountSection() {
 
       <SettingRow
         title="Profile"
-        description="Username, name, photo, banner and bio are edited from your profile."
+        description={t('usernameDesc', 'Username, name, photo, banner and bio are edited from your profile.')}
       >
         <div className="flex items-center gap-3">
           {isPending ? (
@@ -105,15 +107,15 @@ function AccountSection() {
 
       <SettingRow
         title="Password"
-        description="Change the password you use to sign in."
+        description={t('changeThePasswordYouUseToSignIn', 'Change the password you use to sign in.')}
       >
         <ChangePasswordDialog />
       </SettingRow>
 
-      <SettingRow title="Session" description="Sign out on this device.">
+      <SettingRow title="Session" description={t('signOutOnThisDevice', 'Sign out on this device.')}>
         <Button variant="destructive" size="sm" onClick={handleLogout}>
           <LogOut />
-          Log out
+          {t('logOut', 'Log out')}
         </Button>
       </SettingRow>
     </SettingsSection>
@@ -121,12 +123,13 @@ function AccountSection() {
 }
 
 function AppearanceSection() {
+  const { t } = useTranslation()
   return (
     <SettingsSection
       id="appearance"
       icon={Palette}
-      title="Appearance"
-      description="Choose how Raiders.io looks on this device."
+      title={t('appearance', 'Appearance')}
+      description={t('chooseHowRaidersioLooksOnThisDevice', 'Choose how Raiders.io looks on this device.')}
     >
       <div className="pb-4">
         <ThemeSelector />
@@ -135,18 +138,18 @@ function AppearanceSection() {
       {/* TODO: wire to an i18n solution (e.g. react-i18next) and persist the choice. */}
       <SettingRow
         title="Language"
-        description="Language of the interface."
+        description={t('languageOfTheInterface', 'Language of the interface.')}
         htmlFor="setting-language"
       >
         <div className="flex items-center gap-2">
-          <Badge variant="secondary">Coming soon</Badge>
+          <Badge variant="secondary">{t('comingSoon', 'Coming soon')}</Badge>
           <Select value="en" disabled>
             <SelectTrigger id="setting-language" className="w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="en">English</SelectItem>
-              <SelectItem value="fr">Français</SelectItem>
+              <SelectItem value="en">{t('english', 'English')}</SelectItem>
+              <SelectItem value="fr">{t('franais', 'Français')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -156,6 +159,7 @@ function AppearanceSection() {
 }
 
 function FilesSection() {
+  const { t } = useTranslation()
   const {
     showDownloadButton,
     showVisibilityButton,
@@ -169,22 +173,22 @@ function FilesSection() {
   const options = [
     {
       id: "setting-download",
-      title: "Download button",
-      description: "Download a file straight from the list.",
+      title: t('downloadButton', 'Download button'),
+      description: t('downloadAFileStraightFromTheList', 'Download a file straight from the list.'),
       checked: showDownloadButton,
       onChange: setShowDownloadButton,
     },
     {
       id: "setting-visibility",
-      title: "Visibility button",
-      description: "Switch a file between public and private.",
+      title: t('visibilityButton', 'Visibility button'),
+      description: t('switchAFileBetweenPublicAndPrivate', 'Switch a file between public and private.'),
       checked: showVisibilityButton,
       onChange: setShowVisibilityButton,
     },
     {
       id: "setting-delete",
-      title: "Delete button",
-      description: "Delete a file straight from the list.",
+      title: t('deleteButton', 'Delete button'),
+      description: t('deleteAFileStraightFromTheList', 'Delete a file straight from the list.'),
       checked: showDeleteButton,
       onChange: setShowDeleteButton,
     },
@@ -195,7 +199,7 @@ function FilesSection() {
       id="files"
       icon={FileText}
       title="Files"
-      description="Choose which action buttons appear in your file list."
+      description={t('chooseWhichActionButtonsAppearInYourFileList', 'Choose which action buttons appear in your file list.')}
     >
       {options.map((option) => (
         <SettingRow
@@ -212,14 +216,14 @@ function FilesSection() {
         </SettingRow>
       ))}
 
-      <SettingRow title="Manage files">
+      <SettingRow title={t('manageFiles', 'Manage files')}>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="ghost" size="sm" onClick={resetToDefaults}>
             <RotateCcw />
-            Reset
+            {t('reset', 'Reset')}
           </Button>
           <Button variant="outline" size="sm" onClick={changePageFileList}>
-            Open my files
+            {t('openMyFiles', 'Open my files')}
           </Button>
         </div>
       </SettingRow>
@@ -228,19 +232,20 @@ function FilesSection() {
 }
 
 function PrivacySection() {
+  const { t } = useTranslation()
   const links = [
-    { to: PATHS.privacy, label: "Privacy policy" },
-    { to: PATHS.terms, label: "Terms of service" },
-    { to: PATHS.cookies, label: "Cookies policy" },
-    { to: PATHS.gdpr, label: "Your data & GDPR rights" },
+    { to: PATHS.privacy, label: t('privacyPolicy', 'Privacy policy') },
+    { to: PATHS.terms, label: t('termsOfService', 'Terms of service') },
+    { to: PATHS.cookies, label: t('cookiesPolicy', 'Cookies policy') },
+    { to: PATHS.gdpr, label: t('yourDataGdprRights', 'Your data & GDPR rights') },
   ]
 
   return (
     <SettingsSection
       id="privacy"
       icon={ShieldCheck}
-      title="Privacy & legal"
-      description="How your data is handled and what rights you have."
+      title={t('privacyLegal', 'Privacy & legal')}
+      description={t('howYourDataIsHandledAndWhatRightsYouHave', 'How your data is handled and what rights you have.')}
     >
       <ul className="space-y-3">
         {links.map(({ to, label }) => (
@@ -256,17 +261,18 @@ function PrivacySection() {
 }
 
 function DangerSection() {
+  const { t } = useTranslation()
   return (
     <SettingsSection
       id="danger"
       icon={TriangleAlert}
       tone="danger"
-      title="Danger zone"
-      description="Irreversible actions."
+      title={t('dangerZone', 'Danger zone')}
+      description={t('irreversibleActions', 'Irreversible actions.')}
     >
       <SettingRow
-        title="Delete account"
-        description="Permanently removes your account and its data."
+        title={t('deleteAccount', 'Delete account')}
+        description={t('permanentlyRemovesYourAccountAndItsData', 'Permanently removes your account and its data.')}
       >
         <DeleteAccountDialog />
       </SettingRow>
@@ -279,18 +285,19 @@ function DangerSection() {
 /* -------------------------------------------------------------------------- */
 
 export default function Settings() {
+  const { t } = useTranslation()
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
       <header className="mb-8 space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('settings', 'Settings')}</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your account, appearance and preferences.
+          {t('manageYourAccountAppearanceAndPreferences', 'Manage your account, appearance and preferences.')}
         </p>
       </header>
 
       <div className="grid items-start gap-10 lg:grid-cols-[12rem_minmax(0,1fr)]">
         <nav
-          aria-label="Settings sections"
+          aria-label={t('settingsSections', 'Settings sections')}
           className="sticky top-6 hidden lg:block"
         >
           <ul className="flex flex-col gap-1">

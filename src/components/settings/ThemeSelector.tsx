@@ -1,6 +1,7 @@
 import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react"
 import { useTheme, type Theme } from "@/components/theme-provider"
 import { cn } from "@/utils/lib/shadcn"
+import { useTranslation } from 'react-i18next'
 
 const OPTIONS: {
   value: Theme
@@ -20,12 +21,13 @@ const OPTIONS: {
 
 /** Visual theme picker: three cards, one selected (radio semantics). */
 export function ThemeSelector() {
+  const { t } = useTranslation()
   const { theme, setTheme } = useTheme()
 
   return (
     <div
       role="radiogroup"
-      aria-label="Theme"
+      aria-label={t('theme', 'Theme')}
       className="grid w-full grid-cols-3 gap-3"
     >
       {OPTIONS.map(({ value, label, icon: Icon, preview }) => {

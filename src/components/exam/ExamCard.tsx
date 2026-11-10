@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useTranslation } from 'react-i18next'
 
 type Variant = "preview" | "default"
 
@@ -66,6 +67,7 @@ export default function ExamCard({
   variant = "default",
   className,
 }: ExamCardProps) {
+  const { t } = useTranslation()
   const isPreview = variant === "preview"
   const title = exam.title?.trim() || "Untitled exam"
   const description = exam.description?.trim()
@@ -76,7 +78,7 @@ export default function ExamCard({
 
   const authorNode = exam.authorNickname && (
     <p className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
-      <span>By:</span>
+      <span>{t('by', 'By:')}</span>
       <span className="truncate font-semibold text-foreground">{exam.authorNickname}</span>
     </p>
   )
@@ -89,9 +91,7 @@ export default function ExamCard({
         </Badge>
       ))}
       {hiddenTagCount > 0 && (
-        <Badge variant="outline" className="text-[0.7rem]">
-          +{hiddenTagCount}
-        </Badge>
+        <Badge variant="outline" className="text-[0.7rem]">{t('hiddentagcount', '+{{hiddenTagCount}}', { hiddenTagCount })}</Badge>
       )}
     </div>
   )
@@ -101,8 +101,8 @@ export default function ExamCard({
       if (!createdDate && !updatedDate) return null
       return (
         <p className={examStyle.dates.default}>
-          {createdDate && <span>Created {createdDate}</span>}
-          {updatedDate && <span>Updated {updatedDate}</span>}
+          {createdDate && <span>{t('createdCreateddate', 'Created {{createdDate}}', { createdDate })}</span>}
+          {updatedDate && <span>{t('updatedUpdateddate', 'Updated {{updatedDate}}', { updatedDate })}</span>}
         </p>
       )
     }
@@ -121,7 +121,7 @@ export default function ExamCard({
     <CardDescription
       className={cn(examStyle.description[variant], !description && "italic opacity-50")}
     >
-      {description || "No description"}
+      {description || t('noDescription', 'No description')}
     </CardDescription>
   )
 

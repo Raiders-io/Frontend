@@ -1,6 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from 'react-i18next'
 
 type Key = string | number
 
@@ -21,6 +22,7 @@ export default function CheckBoxTab<T, K extends Key>({
   onSelectionChanged,
   className,
 }: CheckBoxTabProps<T, K>) {
+  const { t } = useTranslation()
   const handleSelectRow = (key: K, checked: boolean) => {
     const newSelected = new Set(selected)
     if (checked) {
@@ -40,11 +42,9 @@ export default function CheckBoxTab<T, K extends Key>({
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <Button variant="outline" size="sm" onClick={unselectAll}>
-          Clear selection
+          {t('clearSelection', 'Clear selection')}
         </Button>
-        <span className="text-sm text-muted-foreground">
-          {selected.size} selected
-        </span>
+        <span className="text-sm text-muted-foreground">{t('sizeSelected', '{{size}} selected', { size: selected.size })}</span>
       </div>
       
       {/* Fixed: className is now applied to the Table, and wrapper ensures proper layout */}
@@ -78,7 +78,7 @@ export default function CheckBoxTab<T, K extends Key>({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
-                  No data available
+                  {t('noDataAvailable', 'No data available')}
                 </TableCell>
               </TableRow>
             )}

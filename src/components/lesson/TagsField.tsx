@@ -5,6 +5,7 @@ import { useTagStore } from "@/utils/stores/tag_store"
 import type { Tag } from "@/utils/types/lesson"
 import TagsSelector from "@/components/lesson/TagsSelector"
 import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field"
+import { useTranslation } from 'react-i18next'
 
 interface TagsFieldProps {
   value: Tag[]
@@ -25,6 +26,7 @@ export default function TagsField({
   disabled,
   className,
 }: TagsFieldProps) {
+  const { t } = useTranslation()
   const store = useTagStore()
   const tags = availableTags ?? store.tags
   const loading = availableTags ? false : store.loading
@@ -38,11 +40,11 @@ export default function TagsField({
   return (
     <Field className={className}>
       <div className="flex items-center gap-2">
-        <FieldLabel className="text-lg font-medium">Tags</FieldLabel>
+        <FieldLabel className="text-lg font-medium">{t('tags', 'Tags')}</FieldLabel>
         <FieldContent className="items-end">
           {loading ? (
             <div className="flex h-10 items-center rounded-md border border-input bg-transparent px-3 text-sm text-muted-foreground">
-              Loading tags...
+              {t('loadingTags', 'Loading tags...')}
             </div>
           ) : (
             <div className={disabled ? "pointer-events-none opacity-60" : undefined}>
@@ -57,8 +59,8 @@ export default function TagsField({
       </div>
       <FieldDescription>
         {value.length > 0
-          ? `${value.length} tag(s) selected`
-          : "Select relevant tags for this lesson."}
+          ? t('lengthTagsSelected', '{{length}} tag(s) selected', { length: value.length })
+          : t('selectRelevantTagsForThisLesson', 'Select relevant tags for this lesson.')}
       </FieldDescription>
     </Field>
   )

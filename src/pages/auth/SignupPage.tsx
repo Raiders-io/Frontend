@@ -23,6 +23,8 @@ import { AuthLayout } from "@/pages/auth/AuthLayout"
 import { changePageChooseUsername } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
 import { emailSchema, newPasswordSchema } from "@/utils/schema/authSchema"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
@@ -98,7 +100,7 @@ function parseSignupError(error: unknown): SignupFailure {
     return error.code === "ECONNABORTED" || error.code === "ETIMEDOUT"
       ? banner("The server is taking too long to respond. Please try again in a moment.")
       : banner(
-          "Can't reach the server. Check your internet connection and try again.",
+          i18next.t('cantReachServer', 'Can\'t reach the server. Check your internet connection and try again.'),
         )
   }
 
@@ -121,11 +123,11 @@ function parseSignupError(error: unknown): SignupFailure {
         )
         failure.email = isTaken
           ? { type: "taken", message: EMAIL_TAKEN_MESSAGE }
-          : { type: "invalid", message: "This email address isn't accepted." }
+          : { type: "invalid", message: i18next.t('thisEmailAddressIsntAccepted', 'This email address isn\'t accepted.') }
       }
       if (apiError.field === "password" && !failure.password) {
         failure.password =
-          "This password isn't accepted. Please try another one."
+          i18next.t('thisPasswordIsntAcceptedPleaseTryAnotherOne', 'This password isn\'t accepted. Please try another one.')
       }
     }
 
@@ -140,7 +142,7 @@ function parseSignupError(error: unknown): SignupFailure {
 
   if (status >= 500) {
     return banner(
-      "Something went wrong on our side. Please try again in a moment.",
+      i18next.t('somethingWentWrongOnOurSidePleaseTryAgainInAMoment', 'Something went wrong on our side. Please try again in a moment.'),
     )
   }
 
@@ -204,6 +206,7 @@ function ConsentField({
 /* -------------------------------------------------------------------------- */
 
 export default function SignupPage() {
+  const { t } = useTranslation()
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -272,13 +275,13 @@ export default function SignupPage() {
 
   return (
     <AuthLayout
-      title="Create an account"
+      title={t('createAnAccount', 'Create an account')}
       subtitle="A few details and you're ready to go."
       footer={
         <>
-          Already have an account?{" "}
+          {t('alreadyHaveAnAccount', 'Already have an account?')}{" "}
           <Link to={PATHS.login} className={inlineLinkClass}>
-            Sign in
+            {t('signIn', 'Sign in')}
           </Link>
         </>
       }
@@ -289,7 +292,7 @@ export default function SignupPage() {
         {/* Email */}
         <div className="space-y-1.5">
           <Label htmlFor="email" className="text-xs font-medium text-foreground">
-            Email
+            {t('email', 'Email')}
           </Label>
           <Input
             id="email"
@@ -311,7 +314,7 @@ export default function SignupPage() {
               <>
                 {" "}
                 <Link to={PATHS.login} className={inlineLinkClass}>
-                  Sign in?
+                  {t('signIn2', 'Sign in?')}
                 </Link>
               </>
             )}
@@ -324,7 +327,7 @@ export default function SignupPage() {
             htmlFor="password"
             className="text-xs font-medium text-foreground"
           >
-            Password
+            {t('password', 'Password')}
           </Label>
           <PasswordInput
             id="password"
@@ -348,9 +351,7 @@ export default function SignupPage() {
             </FormMessage>
           ) : (
             <FormMessage id="password-message" tone={isLengthOk ? "success" : "muted"}>
-              {isLengthOk && <Check className="size-3" aria-hidden />}
-              At least {PASSWORD_MIN_LENGTH} characters.
-            </FormMessage>
+              {isLengthOk && <Check className="size-3" aria-hidden />}{t('atLeastPassword_min_lengthCharacters', 'At least {{PASSWORD_MIN_LENGTH}} characters.', { PASSWORD_MIN_LENGTH })}</FormMessage>
           )}
         </div>
 
@@ -360,7 +361,7 @@ export default function SignupPage() {
             htmlFor="passwordConfirmation"
             className="text-xs font-medium text-foreground"
           >
-            Confirm password
+            {t('confirmPassword', 'Confirm password')}
           </Label>
           <PasswordInput
             id="passwordConfirmation"
@@ -381,7 +382,7 @@ export default function SignupPage() {
               tone={doPasswordsMatch ? "success" : "muted"}
             >
               {doPasswordsMatch && <Check className="size-3" aria-hidden />}
-              {doPasswordsMatch ? "Passwords match." : null}
+              {doPasswordsMatch ? t('passwordsMatch', 'Passwords match.') : null}
             </FormMessage>
           )}
         </div>
@@ -393,7 +394,7 @@ export default function SignupPage() {
             name="ageConfirmed"
             error={errors.ageConfirmed}
           >
-            I'm at least 18 years old
+            {t('imAtLeast18YearsOld', 'I\'m at least 18 years old')}
           </ConsentField>
 
           <ConsentField
@@ -401,23 +402,23 @@ export default function SignupPage() {
             name="termsAccepted"
             error={errors.termsAccepted}
           >
-            I agree to the{" "}
+            {t('iAgreeToThe', 'I agree to the')}{" "}
             <Link
               to={PATHS.terms}
               target="_blank"
               rel="noreferrer"
               className={inlineLinkClass}
             >
-              terms of service
+              {t('termsOfService2', 'terms of service')}
             </Link>{" "}
-            and the{" "}
+            {t('andThe', 'and the')}{" "}
             <Link
               to={PATHS.privacy}
               target="_blank"
               rel="noreferrer"
               className={inlineLinkClass}
             >
-              privacy policy
+              {t('privacyPolicy2', 'privacy policy')}
             </Link>
             .
           </ConsentField>
@@ -427,16 +428,16 @@ export default function SignupPage() {
             name="prohibitedActivitiesAccepted"
             error={errors.prohibitedActivitiesAccepted}
           >
-            I won't use this service for prohibited activities (listed in the{" "}
+            {t('iWontUseThisServiceForProhibitedActivitiesListedInThe', 'I won\'t use this service for prohibited activities (listed in the')}{" "}
             <Link
               to={PATHS.terms}
               target="_blank"
               rel="noreferrer"
               className={inlineLinkClass}
             >
-              terms of service
+              {t('termsOfService2', 'terms of service')}
             </Link>
-            ).
+            {t('key', ').')}
           </ConsentField>
         </div>
 
@@ -457,7 +458,7 @@ export default function SignupPage() {
           className="mt-2 h-11 w-full"
         >
           {isSubmitting && <Loader2 className="animate-spin" />}
-          {isSubmitting ? "Creating account…" : "Create account"}
+          {isSubmitting ? "Creating account…" : t('createAccount', 'Create account')}
         </Button>
       </form>
     </AuthLayout>

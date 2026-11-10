@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { BookOpen, ListChecks, PenLine } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface AuthLayoutProps {
     title: string
@@ -44,6 +45,7 @@ const NOTES = [
 ]
 
 export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
+    const { t } = useTranslation()
     return (
         <div className="grid w-full flex-1 min-h-[calc(100svh-8rem)] bg-background text-foreground lg:grid-cols-2">
             <style>{CSS}</style>
@@ -68,12 +70,11 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
                             className="rh-line text-muted-foreground"
                             style={{ '--i': 1 } as CSSProperties}
                         >
-                            <span>Then share.</span>
+                            <span>{t('thenShare', 'Then share.')}</span>
                         </span>
                     </h2>
                     <p className="mt-6 max-w-sm text-base leading-relaxed text-muted-foreground">
-                        Lessons written by members, for members. Publish your own
-                        and check what stuck with exams.
+                        {t('lessonsWrittenByMembers', 'Lessons written by members, for members. Publish your own\n                        and check what stuck with exams.')}
                     </p>
                 </div>
 
@@ -111,7 +112,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
                     {/* Brand line, only when the left half is hidden */}
                     <p className="rh-display mb-6 text-2xl leading-none lg:hidden">
                         Learn.{' '}
-                        <span className="text-muted-foreground">Then share.</span>
+                        <span className="text-muted-foreground">{t('thenShare', 'Then share.')}</span>
                     </p>
 
                     <h1 className="text-[28px] font-semibold leading-tight tracking-tight text-foreground">

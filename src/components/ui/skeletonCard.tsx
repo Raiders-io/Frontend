@@ -2,6 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/utils/lib/shadcn"
 import { useState } from "react"
+import { useTranslation } from 'react-i18next'
 
 type Variant = "preview" | "default" | "small"
 
@@ -49,6 +50,7 @@ export default function SkeletonCard({
   variant = "default",
   className,
 }: SkeletonCardProps) {
+  const { t } = useTranslation()
   const [tagCount] = useState(() => getRandomInt(1, 4))
 
   /* ---------- preview: icon | title+summary | tags | metadata ---------- */
@@ -134,7 +136,7 @@ export default function SkeletonCard({
       {/* footer: author + dates */}
       <CardFooter className="mt-auto shrink-0 flex-col items-start gap-1.5 border-t border-border/60 px-4 py-2">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-muted-foreground">By:</span>
+          <span className="text-xs text-muted-foreground">{t('by', 'By:')}</span>
           <Skeleton className="h-3 w-20" />
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1">

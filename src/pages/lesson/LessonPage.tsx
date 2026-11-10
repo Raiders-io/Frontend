@@ -13,12 +13,14 @@ import type { Lesson } from "@/utils/types/lesson"
 import { ArrowLeft, PanelLeftClose, PanelRightClose } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/lib/shadcn"
+import { useTranslation } from 'react-i18next'
 
 interface LessonPageProps {
   className?: string
 }
 
 export default function LessonPage({ className }: LessonPageProps) {
+  const { t } = useTranslation()
   const files = mockFiles
   const { author, slug } = useParams<{ author: string; slug: string }>()
   const [lesson, setLesson] = useState<Lesson | null>(null)
@@ -51,9 +53,9 @@ export default function LessonPage({ className }: LessonPageProps) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
-          <p className="text-lg font-semibold">Lesson not found.</p>
+          <p className="text-lg font-semibold">{t('lessonNotFound', 'Lesson not found.')}</p>
           <Link to="/">
-            <Button variant="link" className="mt-2">← Back to lessons</Button>
+            <Button variant="link" className="mt-2">{t('backToLessons', '← Back to lessons')}</Button>
           </Link>
         </div>
       </div>
@@ -72,7 +74,7 @@ export default function LessonPage({ className }: LessonPageProps) {
               className="gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">All lessons</span>
+              <span className="hidden sm:inline">{t('allLessons', 'All lessons')}</span>
             </Button>
           </Link>
           <div className="h-5 w-px bg-border" />
@@ -86,7 +88,7 @@ export default function LessonPage({ className }: LessonPageProps) {
             variant="ghost"
             size="icon"
             onClick={toggleLeft}
-            aria-label={leftCollapsed ? "Show lesson panel" : "Hide lesson panel"}
+            aria-label={leftCollapsed ? t('showLessonPanel', 'Show lesson panel') : t('hideLessonPanel', 'Hide lesson panel')}
             className="text-muted-foreground hover:text-foreground"
           >
             <PanelLeftClose
@@ -100,7 +102,7 @@ export default function LessonPage({ className }: LessonPageProps) {
             variant="ghost"
             size="icon"
             onClick={toggleRight}
-            aria-label={rightCollapsed ? "Show exam panel" : "Hide exam panel"}
+            aria-label={rightCollapsed ? t('showExamPanel', 'Show exam panel') : t('hideExamPanel', 'Hide exam panel')}
             className="text-muted-foreground hover:text-foreground"
           >
             <PanelRightClose
@@ -139,9 +141,9 @@ export default function LessonPage({ className }: LessonPageProps) {
             <CustomResizablePanelRightZone>
               <div className="h-full overflow-y-auto p-6">
                 <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6">
-                  <h2 className="text-lg font-semibold tracking-tight">Exam</h2>
+                  <h2 className="text-lg font-semibold tracking-tight">{t('exam', 'Exam')}</h2>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    This section is under development.
+                    {t('thisSectionIsUnderDevelopment', 'This section is under development.')}
                   </p>
                 </div>
               </div>
@@ -153,7 +155,7 @@ export default function LessonPage({ className }: LessonPageProps) {
         {leftCollapsed && (
           <button
             onClick={toggleLeft}
-            aria-label="Open lesson panel"
+            aria-label={t('openLessonPanel', 'Open lesson panel')}
             className="absolute left-3 top-3 z-10 rounded-md border border-border bg-background/90 p-2 text-muted-foreground shadow-sm backdrop-blur transition hover:border-primary/50 hover:text-foreground"
           >
             <PanelLeftClose className="h-4 w-4" />
@@ -162,7 +164,7 @@ export default function LessonPage({ className }: LessonPageProps) {
         {rightCollapsed && (
           <button
             onClick={toggleRight}
-            aria-label="Open exam panel"
+            aria-label={t('openExamPanel', 'Open exam panel')}
             className="absolute right-3 top-3 z-10 rounded-md border border-border bg-background/90 p-2 text-muted-foreground shadow-sm backdrop-blur transition hover:border-primary/50 hover:text-foreground"
           >
             <PanelRightClose className="h-4 w-4 -scale-x-100" />

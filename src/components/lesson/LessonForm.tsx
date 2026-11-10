@@ -26,6 +26,7 @@ import {
   CreateLessonSchema,
   type CreateLessonPayload,
 } from "@/utils/schema/lessonSchema"
+import { useTranslation } from 'react-i18next'
 
 export interface LessonFormProps {
   mode?: "create" | "edit"
@@ -70,6 +71,7 @@ export default function LessonForm({
   // renderAttachmentPicker,
   footerActions,
 }: LessonFormProps) {
+  const { t } = useTranslation()
   const copy = COPY[mode]
 
   const values = useMemo<CreateLessonPayload>(
@@ -109,7 +111,7 @@ export default function LessonForm({
         <FieldGroup className="space-y-8">
           <Field data-invalid={!!errors.title}>
             <FieldLabel htmlFor="title" className="text-xl font-medium">
-              Lesson Title
+              {t('lessonTitle', 'Lesson Title')}
             </FieldLabel>
             <FieldContent>
               <Controller
@@ -118,7 +120,7 @@ export default function LessonForm({
                 render={({ field }) => (
                   <Input
                     id="title"
-                    placeholder="e.g., Mathematics for Beginners"
+                    placeholder={t('egMathematicsForBeginners', 'e.g., Mathematics for Beginners')}
                     aria-invalid={!!errors.title}
                     {...field}
                   />
@@ -130,7 +132,7 @@ export default function LessonForm({
 
           <Field>
             <FieldLabel htmlFor="description" className="text-lg font-medium">
-              Description
+              {t('description', 'Description')}
             </FieldLabel>
             <FieldContent>
               <Controller
@@ -139,7 +141,7 @@ export default function LessonForm({
                 render={({ field }) => (
                   <Textarea
                     id="description"
-                    placeholder="Briefly describe what this lesson covers..."
+                    placeholder={t('brieflyDescribeWhatThisLessonCovers', 'Briefly describe what this lesson covers...')}
                     className="resize-none"
                     rows={5}
                     {...field}
@@ -205,7 +207,7 @@ export default function LessonForm({
             variant="outline"
             onClick={onCancel ?? (() => window.history.back())}
           >
-            Cancel
+            {t('cancel', 'Cancel')}
           </Button>
           <Button type="submit" disabled={loading || isSubmitting}>
             {submitLabel ?? copy.submit}

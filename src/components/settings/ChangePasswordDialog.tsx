@@ -11,6 +11,7 @@ import {
   PASSWORD_MIN_LENGTH,
   newPasswordSchema,
 } from "@/utils/schema/authSchema"
+import { useTranslation } from 'react-i18next'
 
 const schema = z
   .object({
@@ -30,6 +31,7 @@ const schema = z
 type PasswordForm = z.infer<typeof schema>
 
 export function ChangePasswordDialog() {
+  const { t } = useTranslation()
   const form = useForm<PasswordForm>({
     resolver: zodResolver(schema),
     mode: "onTouched",
@@ -46,11 +48,11 @@ export function ChangePasswordDialog() {
       trigger={
         <Button variant="outline" size="sm">
           <KeyRound />
-          Change password
+          {t('changePassword', 'Change password')}
         </Button>
       }
-      title="Change password"
-      description="Enter your current password, then choose a new one."
+      title={t('changePassword', 'Change password')}
+      description={t('enterYourCurrentPasswordThenChooseANewOne', 'Enter your current password, then choose a new one.')}
       submitLabel="Update password"
       pendingLabel="Updating…"
       successMessage="Password updated."
@@ -65,7 +67,7 @@ export function ChangePasswordDialog() {
         )
       }}
     >
-      <FormField<PasswordForm> name="currentPassword" label="Current password">
+      <FormField<PasswordForm> name="currentPassword" label={t('currentPassword', 'Current password')}>
         {(control) => (
           <PasswordInput {...control} autoComplete="current-password" />
         )}
@@ -73,8 +75,8 @@ export function ChangePasswordDialog() {
 
       <FormField<PasswordForm>
         name="password"
-        label="New password"
-        hint={`At least ${PASSWORD_MIN_LENGTH} characters.`}
+        label={t('newPassword', 'New password')}
+        hint={t('atLeastPassword_min_lengthCharacters', 'At least {{PASSWORD_MIN_LENGTH}} characters.', { PASSWORD_MIN_LENGTH })}
         options={{
           // Keep the confirmation in sync once it has been filled in.
           onChange: () => {
@@ -89,7 +91,7 @@ export function ChangePasswordDialog() {
 
       <FormField<PasswordForm>
         name="passwordConfirmation"
-        label="Confirm new password"
+        label={t('confirmNewPassword', 'Confirm new password')}
       >
         {(control) => <PasswordInput {...control} autoComplete="new-password" />}
       </FormField>

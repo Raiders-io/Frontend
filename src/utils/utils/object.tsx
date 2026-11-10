@@ -42,7 +42,7 @@ export const formatDate = (dateString?: string) => {
 }
 
 export const getFileIcon = (mimeType?: string, fileName?: string) => {
-  const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
+  const label = i18next.t('valVal2', '{{val}} {{val2}}', { val: mimeType ?? "", val2: fileName?.match(/\.[^.]+$/)?.[0] ?? "" }).toLowerCase() ?? ""
 
   if (label.includes("image")) 
     return <FileImageIcon className="h-4 w-4" />

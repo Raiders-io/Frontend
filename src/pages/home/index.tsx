@@ -27,6 +27,7 @@ import { useSearch } from "@/utils/hooks/useSearch"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { PATHS } from "@/utils/router/paths"
 import type { Lesson, LessonSearchParams } from "@/utils/types/lesson"
+import { useTranslation } from 'react-i18next'
 
 /* ------------------------------------------------------------------ */
 /*  Visual system                                                      */
@@ -148,18 +149,19 @@ function LessonStack({
   lessons: Lesson[]
   loading: boolean
 }) {
+  const { t } = useTranslation()
   const slots: (Lesson | null)[] = loading ? [null, null, null] : lessons.slice(0, 3)
   const n = slots.length
 
   if (n === 0) {
     return (
       <div className="rounded-3xl bg-card p-8 text-center ring-1 ring-foreground/10">
-        <p className="rh-display text-2xl">No lessons yet</p>
+        <p className="rh-display text-2xl">{t('noLessonsYet', 'No lessons yet')}</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          The shelf is empty. Be the first to publish.
+          {t('theShelfIsEmptyBeTheFirstToPublish', 'The shelf is empty. Be the first to publish.')}
         </p>
         <Button asChild className="mt-6 rounded-xl">
-          <Link to={PATHS.lessonCreate}>Create a lesson</Link>
+          <Link to={PATHS.lessonCreate}>{t('createALesson', 'Create a lesson')}</Link>
         </Button>
       </div>
     )
@@ -197,7 +199,7 @@ function LessonStack({
                   {lesson.title}
                 </h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                  {description || "No description provided."}
+                  {description || t('noDescriptionProvided', 'No description provided.')}
                 </p>
                 <div className="mt-auto flex items-center justify-between gap-3">
                   <div className="flex min-w-0 gap-1.5">
@@ -207,9 +209,7 @@ function LessonStack({
                       </Badge>
                     ))}
                   </div>
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    @{lesson.author.username}
-                  </span>
+                  <span className="shrink-0 text-xs text-muted-foreground">{t('username', '@{{username}}', { username: lesson.author.username })}</span>
                 </div>
               </Link>
             ) : (
@@ -231,6 +231,7 @@ function LessonStack({
 /* ------------------------------------------------------------------ */
 
 export default function HomePage() {
+  const { t } = useTranslation()
   const isAuthenticated = useAuthStore((s) => !!s.user)
 
   // Same hook + service the search page already relies on
@@ -259,9 +260,7 @@ export default function HomePage() {
                 to={`${PATHS.search}?resource=lesson`}
                 className="mb-8 inline-flex items-center gap-2 rounded-full bg-muted py-1.5 pl-3 pr-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/70 focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                <BookOpen className="size-4" />
-                {total} lessons written by the community
-                <ArrowUpRight className="size-4" />
+                <BookOpen className="size-4" />{t('totalLessonsWrittenByTheCommunity', '{{total}} lessons written by the community', { total })}<ArrowUpRight className="size-4" />
               </Link>
             )}
 
@@ -270,34 +269,32 @@ export default function HomePage() {
                 <span>Learn.</span>
               </span>
               <span className="rh-line text-muted-foreground" style={delay(1)}>
-                <span>Then share.</span>
+                <span>{t('thenShare', 'Then share.')}</span>
               </span>
             </h1>
 
             <p className="mt-8 max-w-md text-base leading-relaxed text-muted-foreground">
-              Raiders.io is an online course platform. Read what the community
-              writes, publish your own lessons, and check what stuck with
-              exams.
+              {t('raidersOnlinePlatform', 'Raiders.io is an online course platform. Read what the community\n              writes, publish your own lessons, and check what stuck with\n              exams.')}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
                   <Button asChild className={heroBtn}>
-                    <Link to={PATHS.lessonCreate}>Write a lesson</Link>
+                    <Link to={PATHS.lessonCreate}>{t('writeALesson', 'Write a lesson')}</Link>
                   </Button>
                   <Button asChild variant="outline" className={heroBtn}>
-                    <Link to={PATHS.myLesson}>My lessons</Link>
+                    <Link to={PATHS.myLesson}>{t('myLessons', 'My lessons')}</Link>
                   </Button>
                 </>
               ) : (
                 <>
                   <Button asChild className={heroBtn}>
-                    <Link to={PATHS.signup}>Create an account</Link>
+                    <Link to={PATHS.signup}>{t('createAnAccount', 'Create an account')}</Link>
                   </Button>
                   <Button asChild variant="outline" className={heroBtn}>
                     <Link to={`${PATHS.search}?resource=lesson`}>
-                      Browse lessons
+                      {t('browseLessons', 'Browse lessons')}
                     </Link>
                   </Button>
                 </>
@@ -314,7 +311,7 @@ export default function HomePage() {
       {/* ------------------------------ Steps ------------------------------ */}
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         <h2 className="rh-display max-w-2xl text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-          Read it, write it, test it.
+          {t('readItWriteItTestIt', 'Read it, write it, test it.')}
         </h2>
 
         <div className="mt-10 grid gap-1 rounded-[2rem] bg-muted/50 p-2 ring-1 ring-foreground/10 md:grid-cols-3">
@@ -363,11 +360,11 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="rh-display text-4xl leading-none tracking-tight sm:text-5xl">
-            Latest lessons
+            {t('latestLessons', 'Latest lessons')}
           </h2>
           <Button asChild variant="outline" className="h-10 rounded-full px-5">
             <Link to={`${PATHS.search}?resource=lesson&sort=created_at&order=desc`}>
-              View all
+              {t('viewAll', 'View all')}
               <ArrowUpRight className="size-4" />
             </Link>
           </Button>
@@ -377,10 +374,9 @@ export default function HomePage() {
           {error ? (
             <Empty className="rounded-3xl border bg-card">
               <EmptyHeader>
-                <EmptyTitle>Unable to load lessons</EmptyTitle>
+                <EmptyTitle>{t('unableToLoadLessons', 'Unable to load lessons')}</EmptyTitle>
                 <EmptyDescription>
-                  The latest lessons could not be retrieved. Please try again
-                  later.
+                  {t('theLatestLessonsCouldNotBeRetrievedPleaseTryAgainLater', 'The latest lessons could not be retrieved. Please try again\n                  later.')}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -394,14 +390,14 @@ export default function HomePage() {
               emptyState={
                 <Empty className="rounded-3xl border bg-card">
                   <EmptyHeader>
-                    <EmptyTitle>No lessons yet</EmptyTitle>
+                    <EmptyTitle>{t('noLessonsYet', 'No lessons yet')}</EmptyTitle>
                     <EmptyDescription>
-                      Nothing has been published so far. Be the first.
+                      {t('nothingHasBeenPublishedSoFarBeTheFirst', 'Nothing has been published so far. Be the first.')}
                     </EmptyDescription>
                   </EmptyHeader>
                   <EmptyContent>
                     <Button asChild size="sm">
-                      <Link to={PATHS.lessonCreate}>Create a lesson</Link>
+                      <Link to={PATHS.lessonCreate}>{t('createALesson', 'Create a lesson')}</Link>
                     </Button>
                   </EmptyContent>
                 </Empty>
@@ -424,39 +420,39 @@ export default function HomePage() {
           />
 
           <h2 className="rh-display relative max-w-3xl text-[clamp(2.8rem,7vw,5.5rem)] leading-[0.98] tracking-[-0.02em]">
-            {isAuthenticated ? "Your turn to teach." : "Your turn."}
+            {isAuthenticated ? t('yourTurnToTeach', 'Your turn to teach.') : t('yourTurn', 'Your turn.')}
           </h2>
           <p className="relative mt-5 max-w-md text-sm leading-relaxed text-primary-foreground/70">
             {isAuthenticated
-              ? "Publish a lesson or build an exam to test other members."
-              : "Create an account, follow the lessons you care about and publish your own."}
+              ? t('publishALessonOrBuildAnExamToTestOtherMembers', 'Publish a lesson or build an exam to test other members.')
+              : t('createAccountForLesson', 'Create an account, follow the lessons you care about and publish your own.')}
           </p>
 
           <div className="relative mt-8 flex flex-wrap gap-3">
             {isAuthenticated ? (
               <>
                 <Button asChild variant="secondary" className={heroBtn}>
-                  <Link to={PATHS.lessonCreate}>Write a lesson</Link>
+                  <Link to={PATHS.lessonCreate}>{t('writeALesson', 'Write a lesson')}</Link>
                 </Button>
                 <Button
                   asChild
                   variant="ghost"
                   className={`${heroBtn} text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground`}
                 >
-                  <Link to={PATHS.examAuthoring}>Build an exam</Link>
+                  <Link to={PATHS.examAuthoring}>{t('buildAnExam', 'Build an exam')}</Link>
                 </Button>
               </>
             ) : (
               <>
                 <Button asChild variant="secondary" className={heroBtn}>
-                  <Link to={PATHS.signup}>Create an account</Link>
+                  <Link to={PATHS.signup}>{t('createAnAccount', 'Create an account')}</Link>
                 </Button>
                 <Button
                   asChild
                   variant="ghost"
                   className={`${heroBtn} text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground`}
                 >
-                  <Link to={PATHS.login}>Log in</Link>
+                  <Link to={PATHS.login}>{t('logIn', 'Log in')}</Link>
                 </Button>
               </>
             )}

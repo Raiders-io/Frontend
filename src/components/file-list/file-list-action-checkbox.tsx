@@ -35,7 +35,7 @@ export const ActionSettings = () => {
           <PopoverHeader className="font-bold">
             <PopoverTitle>{i18next.t('actionsButtonsSelector', 'Actions buttons Selector')}</PopoverTitle>
             <PopoverDescription>
-              {i18next.t('selectWhichActionButtonsYouWantToDisplayInTheFileList', 'Select which action buttons you want to display in the file list.')}
+              {i18next.t('select_which_action_buttons', 'Select which action buttons you want to display in the file list.')}
             </PopoverDescription>
           </PopoverHeader>
           <FieldGroup className="gap-3">

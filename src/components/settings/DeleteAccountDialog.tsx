@@ -19,11 +19,13 @@ import { Input } from "@/components/ui/input"
 import { authService } from "@/services/auth_service"
 import { changePageLogin } from "@/utils/router/changePage"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import { useTranslation } from 'react-i18next'
 
 const REQUIRED_PHRASE = "delete my account"
 const COUNTDOWN_SECONDS = 5
 
 export function DeleteAccountDialog() {
+  const { t } = useTranslation()
   const logout = useAuthStore((s) => s.logout)
   const queryClient = useQueryClient()
 
@@ -61,13 +63,13 @@ export function DeleteAccountDialog() {
     const toastId = toast.loading("Deleting your account...")
     try {
       await authService.deleteAccount()
-      toast.success("Account deleted successfully.", { id: toastId })
+      toast.success(t('accountDeletedSuccessfully', 'Account deleted successfully.'), { id: toastId })
       logout()
       queryClient.clear() // don't keep the deleted user's data in cache
       changePageLogin()
     } catch (error) {
       console.error("Error deleting account:", error)
-      toast.error("Failed to delete account. Please try again.", {
+      toast.error(t('failedToDeleteAccountPleaseTryAgain', 'Failed to delete account. Please try again.'), {
         id: toastId,
       })
     }
@@ -76,9 +78,9 @@ export function DeleteAccountDialog() {
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" aria-label="Delete account">
+        <Button variant="destructive" aria-label={t('deleteAccount', 'Delete account')}>
           <UserX />
-          Delete account
+          {t('deleteAccount', 'Delete account')}
         </Button>
       </AlertDialogTrigger>
 
@@ -87,16 +89,15 @@ export function DeleteAccountDialog() {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <UserX />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete account</AlertDialogTitle>
+          <AlertDialogTitle>{t('deleteAccount', 'Delete account')}</AlertDialogTitle>
           <AlertDialogDescription>
-            Your account will be permanently deleted and you will be logged
-            out. This action cannot be undone.
+            {t('accountWillBeDeleted', 'Your account will be permanently deleted and you will be logged\n            out. This action cannot be undone.')}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="space-y-2">
           <label htmlFor="delete-account-confirmation" className="text-sm">
-            To confirm, type{" "}
+            {t('toConfirmType', 'To confirm, type')}{" "}
             <strong className="select-none">{REQUIRED_PHRASE}</strong>
           </label>
           <Input
@@ -110,7 +111,7 @@ export function DeleteAccountDialog() {
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{t('cancel', 'Cancel')}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             disabled={!isConfirmed || isWaiting}
@@ -118,13 +119,11 @@ export function DeleteAccountDialog() {
           >
             {isWaiting ? (
               <>
-                <Loader2 className="animate-spin" />
-                Please wait {countdown}s
-              </>
+                <Loader2 className="animate-spin" />{t('pleaseWaitCountdowns', 'Please wait {{countdown}}s', { countdown })}</>
             ) : (
               <>
                 <UserX />
-                Delete account
+                {t('deleteAccount', 'Delete account')}
               </>
             )}
           </AlertDialogAction>

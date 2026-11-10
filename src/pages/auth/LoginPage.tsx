@@ -15,6 +15,8 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/AuthLayout"
 import { changePageHome } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
@@ -71,7 +73,7 @@ function parseLoginError(error: unknown): LoginFailure {
   const { status } = response
 
   if (status === 400 || status === 401 || status === 422) {
-    return failure("Incorrect email or password.", true)
+    return failure(i18next.t('incorrectEmailOrPassword', 'Incorrect email or password.'), true)
   }
   if (status === 429) {
     return failure("Too many attempts. Please wait a moment before trying again.")
@@ -87,6 +89,7 @@ function parseLoginError(error: unknown): LoginFailure {
 /* -------------------------------------------------------------------------- */
 
 export default function LoginPage() {
+  const { t } = useTranslation()
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<LoginFailure | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -132,16 +135,16 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Sign in"
+      title={t('signIn', 'Sign in')}
       subtitle="Enter your credentials to access your account."
       footer={
         <>
-          Don't have an account?{" "}
+          {t('dontHaveAnAccount', 'Don\'t have an account?')}{" "}
           <Link
             to={PATHS.signup}
             className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
           >
-            Create an account
+            {t('createAnAccount', 'Create an account')}
           </Link>
         </>
       }
@@ -152,7 +155,7 @@ export default function LoginPage() {
         {/* Email */}
         <div className="space-y-1.5">
           <Label htmlFor="email" className="text-xs font-medium text-foreground">
-            Email
+            {t('email', 'Email')}
           </Label>
           <Input
             id="email"
@@ -179,7 +182,7 @@ export default function LoginPage() {
             htmlFor="password"
             className="text-xs font-medium text-foreground"
           >
-            Password
+            {t('password', 'Password')}
           </Label>
           <PasswordInput
             id="password"
@@ -212,7 +215,7 @@ export default function LoginPage() {
           className="mt-2 h-11 w-full"
         >
           {isSubmitting && <Loader2 className="animate-spin" />}
-          {isSubmitting ? "Signing in…" : "Sign in"}
+          {isSubmitting ? t('signingIn', 'Signing in…') : t('signIn', 'Sign in')}
         </Button>
       </form>
     </AuthLayout>

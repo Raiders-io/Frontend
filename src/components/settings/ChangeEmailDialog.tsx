@@ -12,6 +12,8 @@ import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import { emailSchema } from "@/utils/schema/authSchema"
 import { getErrorStatus } from "@/utils/utils/misc"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 const makeSchema = (currentEmail: string) =>
   z
@@ -20,13 +22,14 @@ const makeSchema = (currentEmail: string) =>
       password: z.string().min(1, "Enter your password to confirm."),
     })
     .refine((d) => d.email !== currentEmail.trim().toLowerCase(), {
-      message: "This is already your email address.",
+      message: i18next.t('thisIsAlreadyYourEmailAddress', 'This is already your email address.'),
       path: ["email"],
     })
 
 type EmailForm = z.infer<ReturnType<typeof makeSchema>>
 
 export function ChangeEmailDialog() {
+  const { t } = useTranslation()
   const user = useAuthStore((s) => s.user)
   const token = useAuthStore((s) => s.token)
   const setAuth = useAuthStore((s) => s.setAuth)
@@ -46,14 +49,13 @@ export function ChangeEmailDialog() {
       trigger={
         <Button variant="outline" size="sm" disabled={!user}>
           <Mail />
-          Change email
+          {t('changeEmail', 'Change email')}
         </Button>
       }
-      title="Change email"
+      title={t('changeEmail', 'Change email')}
       description={
         <>
-          Your current address is <strong>{currentEmail}</strong>. Confirm with
-          your password to change it.
+          {t('yourCurrentAddressIs', 'Your current address is')} <strong>{currentEmail}</strong>{t('confirmPasswordChange', '. Confirm with\n          your password to change it.')}
         </>
       }
       submitLabel="Update email"
@@ -69,7 +71,7 @@ export function ChangeEmailDialog() {
         form.setError(field, { type: "server", message }, { shouldFocus: true })
       }}
     >
-      <FormField<EmailForm> name="email" label="New email">
+      <FormField<EmailForm> name="email" label={t('newEmail', 'New email')}>
         {(control) => (
           <Input
             {...control}

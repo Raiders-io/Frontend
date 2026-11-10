@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input"
+import { useTranslation } from 'react-i18next'
 
 export function ChooseQuestionWeight({
   currentPoints,
@@ -7,9 +8,10 @@ export function ChooseQuestionWeight({
   currentPoints: number
   setCurrentPoints: (points: number) => void
 }) {
+  const { t } = useTranslation()
   return (
     <fieldset className="flex items-center gap-4">
-      <legend className="mr-2 text-sm font-medium">Question weight</legend>
+      <legend className="mr-2 text-sm font-medium">{t('questionWeight', 'Question weight')}</legend>
       {[1, 2, 3].map((points) => (
         <label
           key={points}

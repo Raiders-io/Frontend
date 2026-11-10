@@ -23,6 +23,8 @@ import { FriendButton } from "../../components/user/FriendButton"
 import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
 import NotFound from "../NotFound"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 type ProfileMode = "owner" | "visitor" | "guest"
 
@@ -36,7 +38,7 @@ function getMode(
   return userId ? "visitor" : "owner"
 }
 
-function LoginButton({ label = "Log in" }: { label?: string }) {
+function LoginButton({ label = i18next.t('logIn', 'Log in') }: { label?: string }) {
   return (
     <Button size="sm" onClick={() => changePageLogin()}>
       {label}
@@ -127,6 +129,7 @@ function FriendsSkeleton() {
 }
 
 function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
+  const { t } = useTranslation()
   const isOwner = mode === "owner"
 
   return (
@@ -136,7 +139,7 @@ function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
       aria-busy="true"
       aria-live="polite"
     >
-      <span className="sr-only">Loading profile…</span>
+      <span className="sr-only">{t('loadingProfile', 'Loading profile…')}</span>
 
       {/* Header : avatar + nom + action (présente dans les 3 modes) */}
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
@@ -179,6 +182,7 @@ function ProfileError({
   message: string
   onRetry: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <Empty>
       <EmptyHeader>
@@ -186,7 +190,7 @@ function ProfileError({
       </EmptyHeader>
       <EmptyContent>
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Retry
+          {t('retry', 'Retry')}
         </Button>
       </EmptyContent>
     </Empty>
@@ -194,10 +198,11 @@ function ProfileError({
 }
 
 function LoginRequired() {
+  const { t } = useTranslation()
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyTitle>You need to be logged in to see your profile.</EmptyTitle>
+        <EmptyTitle>{t('youNeedToBeLoggedInToSeeYourProfile', 'You need to be logged in to see your profile.')}</EmptyTitle>
       </EmptyHeader>
       <EmptyContent>
         <LoginButton />
@@ -213,13 +218,14 @@ function ProfileContent({
   userId?: string
   mode: ProfileMode
 }) {
+  const { t } = useTranslation()
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
   if (axios.isAxiosError(error) && error.response?.status === 404) {
     return (
       <NotFound
-        title="Profile not found"
-        description="This profile does not exist."
+        title={t('profileNotFound', 'Profile not found')}
+        description={t('thisProfileDoesNotExist', 'This profile does not exist.')}
       />
     )
   }
@@ -236,7 +242,7 @@ function ProfileContent({
       case "visitor":
         return <FriendButton userId={user.id} username={user.username} />
       case "guest":
-        return <LoginButton label="Log in to add friend" />
+        return <LoginButton label={t('logInToAddFriend', 'Log in to add friend')} />
     }
   }
 

@@ -9,6 +9,7 @@ import {
   ImageCropReset,
   useImageCrop,
 } from "@/components/ui/image-crop"
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   file: File | null
@@ -24,18 +25,20 @@ interface Props {
 }
 
 function ApplyButton() {
+  const { t } = useTranslation()
   const { isApplying } = useImageCrop()
   return (
     <ImageCropApply asChild>
       <Button type="button">
         {isApplying && <Loader2 className="animate-spin" />}
-        {isApplying ? "Applying..." : "Apply"}
+        {isApplying ? "Applying..." : t('apply', 'Apply')}
       </Button>
     </ImageCropApply>
   )
 }
 
 export function ImageCropDialog({ file, aspect, circular, maxBytes, maxOutputSize, onCancel, onCrop }: Props) {
+  const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -46,7 +49,7 @@ export function ImageCropDialog({ file, aspect, circular, maxBytes, maxOutputSiz
     <Dialog open={!!file} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Crop image</DialogTitle>
+          <DialogTitle>{t('cropImage', 'Crop image')}</DialogTitle>
         </DialogHeader>
 
         {file && (
@@ -72,7 +75,7 @@ export function ImageCropDialog({ file, aspect, circular, maxBytes, maxOutputSiz
               <ImageCropReset />
               <div className="flex gap-2">
                 <Button type="button" variant="ghost" onClick={onCancel}>
-                  Cancel
+                  {t('cancel', 'Cancel')}
                 </Button>
                 <ApplyButton />
               </div>

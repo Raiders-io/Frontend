@@ -57,7 +57,7 @@ export function SearchPreview({ isFocus, query, children, className }: SearchPre
                   className="w-full max-h-20"
                 />
               ))
-                : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
+                : <p className="px-2 py-1 text-sm text-muted-foreground">{t('noResultsFound', 'No results found')}</p>}
           </div>
         </PopoverContent>
       </Popover>
