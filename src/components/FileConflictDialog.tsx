@@ -13,6 +13,7 @@ import {
 import { AlertTriangle } from "lucide-react"
 import { objectService } from "@/services/object_service"
 import type { ObjectError } from "@/utils/types/object"
+import i18next from 'i18next'
 
 export type FileConflictDialogProps = {
   conflicts: ObjectError[]
@@ -70,17 +71,17 @@ export const FileConflictDialog = ({
           </AlertDialogMedia>
           <AlertDialogTitle className="text-wrap wrap-anywhere">
             {conflictCount > 1
-              ? `${conflictCount} files already exist`
-              : "File already exists"}
+              ? i18next.t('conflictcountFilesAlreadyExist', '{{conflictCount}} files already exist', { conflictCount })
+              : i18next.t('fileAlreadyExists', 'File already exists')}
           </AlertDialogTitle>
           <AlertDialogDescription style={{ whiteSpace: "pre-line" }}>
             {conflictCount > 1
-              ? `The following files already exist and cannot be overwritten with a standard upload:\n\n${Array.from(
+              ? i18next.t('theFollowingFilesAlreadyExistAndCannotBeOverwrittenWithAStandardUploadValWouldYouLikeToReplaceThem', 'The following files already exist and cannot be overwritten with a standard upload:\n\n{{val}}\n\nWould you like to replace them?', { val: Array.from(
                   conflictFileNames,
                 )
                   .map((element) => `- ${element}`)
-                  .join("\n")}\n\nWould you like to replace them?`
-              : `The file "${conflictFileNames[0]}" already exists. Would you like to replace it?`}
+                  .join("\n") })
+              : i18next.t('theFileValAlreadyExistsWouldYouLikeToReplaceIt', 'The file "{{val}}" already exists. Would you like to replace it?', { val: conflictFileNames[0] })}
             {updateError && (
               <div className="mt-4 text-destructive">{updateError}</div>
             )}
@@ -91,15 +92,15 @@ export const FileConflictDialog = ({
             variant="outline"
             onClick={onCancel}
             disabled={isUpdating}
-            aria-label="Cancel"
+            aria-label={i18next.t('cancel', 'Cancel')}
           >
-            Cancel
+            {i18next.t('cancel', 'Cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
             variant="default"
             onClick={handleUpdateAll}
             disabled={isUpdating}
-            aria-label="Replace Files"
+            aria-label={i18next.t('replaceFiles', 'Replace Files')}
           >
             {isUpdating ? "Replacing..." : "Replace"}
           </AlertDialogAction>

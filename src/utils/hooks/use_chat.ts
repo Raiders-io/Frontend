@@ -47,9 +47,12 @@ export function useChat() {
     socket.on('connect', onConnect)
 
     return () => {
-      socket.off('conversation:created', onCreated)
-      socket.off('message:received', onReceived)
-      socket.off('error', onError)
+      socket.off("conversation:created", onCreated)
+      socket.off("message:received", onReceived)
+      socket.off("error", onError)
+	  socket.off("disconnect", onDisconnect)
+      socket.off("connect", onConnect)
+      socket.disconnect()
     }
   }, [token, addMessage, queryClient, setActiveConversation])
 

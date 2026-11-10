@@ -19,6 +19,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
+import { useTranslation } from 'react-i18next'
 
 const signupSchema = z
   .object({
@@ -36,6 +37,7 @@ type SignupForm = z.infer<typeof signupSchema>
 type CheckedState = boolean | "indeterminate"
 
 export default function SignupPage() {
+	const { t } = useTranslation()
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -76,24 +78,24 @@ export default function SignupPage() {
       console.error("Signup error:", error)
       setFormError(
         isAxiosError(error) && error.response?.status === 422
-          ? "Cet email est déjà utilisé."
-          : "La création du compte a échoué. Réessaie dans un instant.",
+          ? t('email-already-used', 'Cet email est déjà utilisé.')
+					: t('account-creation-failed', 'La création du compte a échoué. Réessaie dans un instant.'),
       )
     }
   }
 
   return (
     <AuthLayout
-      title="Créer un compte"
+      title={t('create-account')}
       subtitle="Quelques informations et tu peux commencer."
       footer={
         <>
-          Déjà un compte ?{" "}
+          {t('already-account')}{' '}
           <Link
             to="/login"
             className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
           >
-            Se connecter
+            {t('seConnecter', 'Se connecter')}
           </Link>
         </>
       }
@@ -105,7 +107,7 @@ export default function SignupPage() {
               htmlFor="email"
               className="text-xs font-medium text-foreground"
             >
-              Email
+              {t('email', 'Email')}
             </Label>
             <Input
               id="email"
@@ -125,7 +127,7 @@ export default function SignupPage() {
               htmlFor="password"
               className="text-xs font-medium text-foreground"
             >
-              Mot de passe
+              {t('motDePasse')}
             </Label>
             <Input
               id="password"
@@ -139,7 +141,7 @@ export default function SignupPage() {
                 errors.password ? "text-destructive" : "text-muted-foreground"
               }`}
             >
-              {errors.password?.message ?? "8 caractères minimum."}
+              {errors.password?.message ?? t('8CaractresMinimum', '8 caractères minimum.')}
             </p>
           </div>
 
@@ -148,7 +150,7 @@ export default function SignupPage() {
               htmlFor="passwordConfirmation"
               className="text-xs font-medium text-foreground"
             >
-              Confirmer le mot de passe
+              {t('confirmerLeMotDePasse', 'Confirmer le mot de passe')}
             </Label>
             <Input
               id="passwordConfirmation"
@@ -177,11 +179,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="age-confirmation">
-                I am at least 18 years old
+                {t('iAmAtLeast18YearsOld', 'I am at least 18 years old')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you confirm that you are at least 18
-                years old.
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouConfirmThatYouAreAtLeast18YearsOld', 'By clicking this checkbox, you confirm that you are at least 18\n                years old.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -194,10 +195,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="terms-checkbox-desc">
-                I agree to the terms and conditions
+                {t('iAgreeToTheTermsAndConditions', 'I agree to the terms and conditions')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you agree to the Terms of Service.
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouAgreeToTheTermsOfService', 'By clicking this checkbox, you agree to the Terms of Service.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -210,11 +211,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
-                I will not use this service for prohibited activities
+                {t('iWillNotUseThisServiceForProhibitedActivities', 'I will not use this service for prohibited activities')}
               </FieldLabel>
-              <FieldDescription className="mt-0!">
-                By clicking this checkbox, you agree not to use this service for
-                any prohibited activities (listed in the Terms of Service).
+              <FieldDescription className="!mt-0">
+                {t('byClickingThisCheckboxYouAgreeNotToUseThisServiceForAnyProhibitedActivitiesListedInTheTermsOfService', 'By clicking this checkbox, you agree not to use this service for\n                any prohibited activities (listed in the Terms of Service).')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -223,9 +223,9 @@ export default function SignupPage() {
             type="submit"
             disabled={isSubmitting || !areCheckboxesValid}
             className="mt-2 h-11 w-full"
-            aria-label="Créer un compte"
+            aria-label={t('crerUnCompte', 'Créer un compte')}
           >
-            {isSubmitting ? "Création…" : "Créer un compte"}
+            {isSubmitting ? "Création…" : t('crerUnCompte', 'Créer un compte')}
           </Button>
         </form>
       </FieldGroup>

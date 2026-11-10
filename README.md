@@ -6,12 +6,14 @@ _This project has been created as part of the 42 curriculum by halnuma, ppontet,
 
 ## Introduction
 
+<img src="https://img.shields.io/badge/dynamic/json.svg?style=plastic&color=2096F3&label=locize&query=%24.translatedPercentage&url=https://api.lite.locize.app/badgedata/3f48acab-3b26-4486-bac3-78a0758b8abd&suffix=%+translated&link=https://www.locize.com" alt="Percentage of Translated strings"/>
+
 This project is the frontend for the project [Transcendence](https://github.com/Raiders-io/Transcendence). It regroups all the pages, components, style and API calls for all the services. It ouputs files that are given to the web server (nginx), to be shown to users.
 
 ## Features
 
 - Interface to interact with a lot of routes from the services
-- View Lessons through file preview directly in the browser 
+- View Lessons through file preview directly in the browser
 - In-browser chat application
 
 ## AI / LLM Usage
@@ -109,3 +111,24 @@ Zod is used to validate on user's browser forms before sending them to APIs. It'
 ### TanStack Query
 
 TanStack Query is used to manage cache, loading states, and synchronise the data with the APIs.
+gère le cache, les états de chargement, les erreurs, la synchronisation des données avec l'API
+
+### i18n
+
+Generate i18n types.
+
+```sh
+npx i18next-cli types
+```
+
+Find hard coded strings.
+
+```sh
+npx i18next-cli instrument
+```
+
+Extract hard coded strings into i18n translations files.
+
+```sh
+npx i18next-cli extract
+```

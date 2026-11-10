@@ -1,5 +1,7 @@
 import type { Conversation } from '@/utils/types/chat'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { avatarColor, initials } from '@/utils/lib/avatar'
+import { useTranslation } from 'react-i18next'
 
 interface ConversationListProps {
 	conversations: Conversation[]
@@ -10,10 +12,12 @@ interface ConversationListProps {
 }
 
 export function ConversationList({ conversations, activeId, onSelect, getLabel, hasError }: ConversationListProps) {
+	const { t } = useTranslation()
+
 	return (
 		<aside className="flex w-72 shrink-0 flex-col border-r">
 			<div className="flex h-14 shrink-0 items-center justify-between border-b px-5">
-				<h2 className="text-sm font-medium text-foreground">Conversations</h2>
+				<h2 className="text-sm font-medium text-foreground">{t('conversations', 'Conversations')}</h2>
 				<span className="font-mono text-[11px] text-muted-foreground">
 					{conversations.length}
 				</span>
@@ -26,7 +30,7 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel, 
 					</p>
 				) : conversations.length === 0 ? (
 					<p className="px-3 py-8 text-center text-sm text-muted-foreground">
-						Aucune conversation.
+						{t('no-conversation', 'Aucune conversation.')}
 					</p>
 				) : (
 					<ul className="space-y-px">
@@ -42,11 +46,11 @@ export function ConversationList({ conversations, activeId, onSelect, getLabel, 
 											isActive ? 'bg-secondary' : 'hover:bg-muted/50'
 										}`}
 									>
-										<span
-											className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-medium text-white ${avatarColor(label)}`}
-										>
-											{initials(label)}
-										</span>
+										<Avatar className="size-8 shrink-0">
+											<AvatarFallback className={`text-[10px] font-medium text-white ${avatarColor(label)}`}>
+												{initials(label)}
+											</AvatarFallback>
+										</Avatar>
 										<span
 											className={`truncate text-sm ${
 												isActive ? 'font-medium text-foreground' : 'text-foreground/80'
