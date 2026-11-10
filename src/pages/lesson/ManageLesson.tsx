@@ -36,9 +36,7 @@ export default function MyLessonsPage() {
       try {
         const response = await lessonService.getAllLessons()
 
-        const lessonsData = Array.isArray(response)
-          ? response
-          : (response && Array.isArray((response as any).data) ? (response as any).data : [])
+        const lessonsData = Array.isArray(response) ? response : [];
         setLessons(lessonsData)
 
         const allFiles = new Map<string, FileItem>()
@@ -81,7 +79,7 @@ export default function MyLessonsPage() {
     }
   }
 
-  const PanelRender = (option: String) => {
+  const PanelRender = (option: string) => {
     switch (option) {
       case "all":
         return (
