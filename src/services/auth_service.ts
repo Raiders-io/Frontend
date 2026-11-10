@@ -4,6 +4,7 @@ import type {
   Credentials,
   LoginPayload,
   SignupPayload,
+  User,
 } from "@/utils/types/auth"
 
 export const authService = {
@@ -26,6 +27,11 @@ export const authService = {
 
   logout: async (): Promise<void> => {
     await api.post("/api/v1/account/logout")
+  },
+
+  fetchUsers: async (): Promise<User[]> => {
+	const { data } = await api.get<{ data: User[] }>("/api/v1/auth/users")
+	return data.data
   },
 
   fetchUserByIds: async (): Promise<Credentials[]> => {

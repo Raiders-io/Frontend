@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ConversationList } from './conversation_list'
 import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
-import type { Credentials } from '@/utils/types/auth'
 import { authService } from '@/services/auth_service'
 import { useTranslation } from 'react-i18next'
 
@@ -32,14 +31,11 @@ export default function ChatPage() {
 	})
 
 	useEffect(() => {
-		authService.fetchUserByIds()
-			.then((users: Credentials[]) => {
-				const map: Record<string, string> = {}
-				for (const u of users)
-					map[u.id] = u.email
-				setUserMap(map)
-			})
-			.catch(console.error)
+	authService.fetchUsers()
+		.then((users) =>
+		setUserMap(Object.fromEntries(users.map((u) => [u.id, u.fullName]))),
+		)
+		.catch(console.error)
 	}, [])
 
 	useEffect(() => {
@@ -100,9 +96,6 @@ export default function ChatPage() {
 								<div className="min-w-0 [&>p]:mt-0">
 									<p className="truncate text-sm font-medium text-foreground">
 										{activeLabel}
-									</p>
-									<p className="font-mono text-[11px] text-muted-foreground">
-										{t('lengthMessage', '{{length}} message', { length: activeMessages.length })}
 									</p>
 								</div>
 							</header>

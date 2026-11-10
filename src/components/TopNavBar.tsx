@@ -7,7 +7,6 @@ import type {
 } from "@/utils/types/component"
 import { UserMenu } from "./user/UserMenu"
 import i18next from 'i18next'
-import { useTranslation } from 'react-i18next'
 import { useEffect, useRef } from "react"
 
 const resources: SearchResourceOption[] = [
@@ -25,7 +24,6 @@ const sortOptions: { label: string; value: SearchSortValue }[] = [
 ]
 
 const TopNavBar = () => {
-	const { t } = useTranslation()
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
