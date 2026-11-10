@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useTranslation } from 'react-i18next'
 
 type ExactAnswerEditorProps = {
   answers: string[]
@@ -16,13 +17,14 @@ export function ExactAnswerEditor({
   onAddAnswer,
   onRemoveAnswer,
 }: ExactAnswerEditorProps) {
+  const { t } = useTranslation()
   return (
     <>
       <div className="flex gap-2">
         <Input
           value={currentAnswer}
           onChange={(event) => onCurrentAnswerChange(event.target.value)}
-          placeholder="Add a possible answer"
+          placeholder={t('addAPossibleAnswer', 'Add a possible answer')}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault()
@@ -37,7 +39,7 @@ export function ExactAnswerEditor({
 
       {answers.length > 0 && (
         <div className="border rounded-md p-2 bg-gray-0">
-          <p className="font-semibold text-sm mb-2">Accepted answers:</p>
+          <p className="font-semibold text-sm mb-2">{t('acceptedAnswers', 'Accepted answers:')}</p>
           {answers.map((answer, index) => (
             <div
               key={`${answer}-${index}`}
@@ -50,7 +52,7 @@ export function ExactAnswerEditor({
                 size="sm"
                 onClick={() => onRemoveAnswer(index)}
               >
-                Delete
+                {t('delete', 'Delete')}
               </Button>
             </div>
           ))}
@@ -58,7 +60,7 @@ export function ExactAnswerEditor({
       )}
 
       <Button type="submit" disabled={answers.length === 0}>
-        Submit
+        {t('submit', 'Submit')}
       </Button>
     </>
   )

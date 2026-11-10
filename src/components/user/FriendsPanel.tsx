@@ -40,6 +40,7 @@ import { SectionCard } from "./SectionCard"
 import { UnfriendDialog } from "@/pages/user/UnfriendDialog"
 import { getErrorMessage } from "@/pages/user/utils"
 import { changePageUser } from "@/utils/router/changePage"
+import { useTranslation } from 'react-i18next'
 
 interface FriendsPanelProps {
   onMessage?: (friend: PublicProfile) => void
@@ -52,11 +53,12 @@ function PersonItem({
   user: PublicProfile
   children?: ReactNode
 }) {
+  const { t } = useTranslation()
   return (
     <Item size="sm">
       <ItemMedia>
         <UserAvatarButton
-          label={`View ${user.username}'s profile`}
+          label={t('viewUsernamesProfile', 'View {{username}}\'s profile', { username: user.username })}
           className="size-10"
           onClick={() => changePageUser(user.id)}
         >
@@ -66,7 +68,7 @@ function PersonItem({
 
       <ItemContent>
         <ItemTitle>{user.username}</ItemTitle>
-        <ItemDescription className="mt-0!">@{user.username}</ItemDescription>
+        <ItemDescription className="mt-0!">{t('username', '@{{username}}', { username: user.username })}</ItemDescription>
       </ItemContent>
 
       {children && <ItemActions>{children}</ItemActions>}
@@ -75,6 +77,7 @@ function PersonItem({
 }
 
 export function FriendsPanel({ onMessage }: FriendsPanelProps) {
+  const { t } = useTranslation()
   const { data, error: loadError, refetch } = useFriendships()
 
   const accept = useAcceptFriendRequest()
@@ -99,7 +102,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
         {error ? (
           <Empty className="border">
             <EmptyHeader>
-              <EmptyTitle>Loading failed</EmptyTitle>
+              <EmptyTitle>{t('loadingFailed', 'Loading failed')}</EmptyTitle>
               <EmptyDescription>{error}</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
@@ -108,7 +111,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                 size="sm"
                 onClick={() => void refetch()}
               >
-                Try again
+                {t('tryAgain', 'Try again')}
               </Button>
             </EmptyContent>
           </Empty>
@@ -132,7 +135,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       )}
 
       {data.received.length > 0 && (
-        <SectionCard title="Received requests" count={data.received.length}>
+        <SectionCard title={t('receivedRequests', 'Received requests')} count={data.received.length}>
           <ItemGroup className="divide-y">
             {data.received.map((req) => (
               <PersonItem key={req.id} user={req.user}>
@@ -142,7 +145,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   onClick={() => accept.mutate(req.user.id)}
                 >
                   <Check />
-                  Accept
+                  {t('accept', 'Accept')}
                 </Button>
 
                 <Button
@@ -152,7 +155,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   onClick={() => decline.mutate(req.user.id)}
                 >
                   <X />
-                  Decline
+                  {t('decline', 'Decline')}
                 </Button>
               </PersonItem>
             ))}
@@ -167,9 +170,9 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
               <EmptyMedia variant="icon">
                 <Users />
               </EmptyMedia>
-              <EmptyTitle>No friends yet</EmptyTitle>
+              <EmptyTitle>{t('noFriendsYet', 'No friends yet')}</EmptyTitle>
               <EmptyDescription>
-                Search for users to send them a request.
+                {t('searchForUsersToSendThemARequest', 'Search for users to send them a request.')}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -179,8 +182,8 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
               <PersonItem key={friend.id} user={friend}>
                 <IconAction
                   icon={MessageCircle}
-                  label={`Message ${friend.username}`}
-                  tooltip={onMessage ? "Send message" : "Messaging coming soon"}
+                  label={t('messageUsername', 'Message {{username}}', { username: friend.username })}
+                  tooltip={onMessage ? t('sendMessage', 'Send message') : t('messagingComingSoon', 'Messaging coming soon')}
                   disabled={!onMessage}
                   onClick={() => onMessage?.(friend)}
                 />
@@ -197,13 +200,13 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
       </SectionCard>
 
       {data.sent.length > 0 && (
-        <SectionCard title="Sent requests" count={data.sent.length}>
+        <SectionCard title={t('sentRequests', 'Sent requests')} count={data.sent.length}>
           <ItemGroup className="divide-y">
             {data.sent.map((req) => (
               <PersonItem key={req.id} user={req.friend}>
                 <Badge variant="secondary">
                   <Clock />
-                  Pending
+                  {t('pending', 'Pending')}
                 </Badge>
 
                 <Button
@@ -212,7 +215,7 @@ export function FriendsPanel({ onMessage }: FriendsPanelProps) {
                   disabled={isBusy(req.friend.id)}
                   onClick={() => cancel.mutate(req.friend.id)}
                 >
-                  Cancel
+                  {t('cancel', 'Cancel')}
                 </Button>
               </PersonItem>
             ))}

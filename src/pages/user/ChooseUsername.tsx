@@ -17,6 +17,7 @@ import type { PrivateProfile } from "@/utils/types/user"
 import { usernameSchema } from "@/utils/types/common"
 import { getErrorMessage } from "./utils"
 import { PATHS } from "@/utils/router/paths"
+import { useTranslation } from 'react-i18next'
 
 const schema = z.object({ username: usernameSchema })
 type FormValues = z.infer<typeof schema>
@@ -38,6 +39,7 @@ export default function ChooseUsername() {
 }
 
 function ChooseUsernameForm({ me }: { me: PrivateProfile }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const updateMe = useUpdateMe()
 
@@ -83,10 +85,9 @@ function ChooseUsernameForm({ me }: { me: PrivateProfile }) {
           <div className="flex flex-col items-center gap-3 text-center">
             <UserAvatar user={me} className="size-18" />
             <div className="space-y-1">
-              <h1 className="text-xl font-semibold">Choose your username</h1>
+              <h1 className="text-xl font-semibold">{t('chooseYourUsername', 'Choose your username')}</h1>
               <p className="text-sm text-muted-foreground">
-                This is how other users will see you. You can change it later in
-                your profile.
+                {t('this_how_other_users', 'This is how other users will see you. You can change it later in\n                your profile.')}
               </p>
             </div>
           </div>
@@ -107,7 +108,7 @@ function ChooseUsernameForm({ me }: { me: PrivateProfile }) {
                 ? "Saving..."
                 : unchanged
                   ? "Continue"
-                  : "Save and continue"}
+                  : t('saveAndContinue', 'Save and continue')}
             </Button>
             {!unchanged && (
               <Button
@@ -116,9 +117,7 @@ function ChooseUsernameForm({ me }: { me: PrivateProfile }) {
                 className="w-full"
                 disabled={isSubmitting}
                 onClick={done}
-              >
-                Keep {me.username}
-              </Button>
+              >{t('keepUsername', 'Keep {{username}}', { username: me.username })}</Button>
             )}
           </div>
         </form>

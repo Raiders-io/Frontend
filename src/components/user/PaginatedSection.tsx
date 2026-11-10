@@ -34,6 +34,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import type { PaginationParams, Paginated } from "@/utils/types/common"
 import { SectionCard } from "./SectionCard"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 const PAGE_SIZE = 10
 const DISABLED = "pointer-events-none opacity-50"
@@ -83,9 +85,10 @@ export function PaginatedSection<T extends { id: string | number }>({
   title,
   fetcher,
   emptyText,
-  errorText = "Failed to load this section.",
+  errorText = i18next.t('failedToLoadThisSection', 'Failed to load this section.'),
   renderItem,
 }: Props<T>) {
+  const { t } = useTranslation()
   const [items, setItems] = useState<T[]>([])
   const [page, setPage] = useState(1)
   const [lastPage, setLastPage] = useState(1)
@@ -143,12 +146,12 @@ export function PaginatedSection<T extends { id: string | number }>({
     body = (
       <Empty className="border">
         <EmptyHeader>
-          <EmptyTitle>Loading failed</EmptyTitle>
+          <EmptyTitle>{t('loadingFailed', 'Loading failed')}</EmptyTitle>
           <EmptyDescription>{errorText}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <Button variant="outline" size="sm" onClick={() => void loadPage(1)}>
-            Try again
+            {t('tryAgain', 'Try again')}
           </Button>
         </EmptyContent>
       </Empty>

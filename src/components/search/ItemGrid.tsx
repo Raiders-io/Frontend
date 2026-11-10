@@ -1,5 +1,6 @@
 import React from "react"
 import SkeletonCard from "@/components/ui/skeletonCard"
+import { useTranslation } from 'react-i18next'
 
 export type ItemLayout = "grid" | "list"
 
@@ -43,12 +44,13 @@ export default function ItemGrid<T>({
   emptyState,
   className,
 }: ItemGridProps<T>) {
+  const { t } = useTranslation()
   if (!loading && (!items || items.length === 0)) {
     return (
       <>
         {emptyState ?? (
           <div className="p-12 text-center text-2xl font-bold">
-            <h1>No items found</h1>
+            <h1>{t('noItemsFound', 'No items found')}</h1>
           </div>
         )}
       </>

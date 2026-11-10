@@ -182,7 +182,7 @@ export default function SignupPage() {
                 {t('iAmAtLeast18YearsOld', 'I am at least 18 years old')}
               </FieldLabel>
               <FieldDescription className="!mt-0">
-                {t('byClickingThisCheckboxYouConfirmThatYouAreAtLeast18YearsOld', 'By clicking this checkbox, you confirm that you are at least 18\n                years old.')}
+                {t('clicking_this_checkbox', 'By clicking this checkbox, you confirm that you are at least 18\n                years old.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -198,7 +198,7 @@ export default function SignupPage() {
                 {t('iAgreeToTheTermsAndConditions', 'I agree to the terms and conditions')}
               </FieldLabel>
               <FieldDescription className="!mt-0">
-                {t('byClickingThisCheckboxYouAgreeToTheTermsOfService', 'By clicking this checkbox, you agree to the Terms of Service.')}
+                {t('clicking_this', 'By clicking this checkbox, you agree to the Terms of Service.')}
               </FieldDescription>
             </FieldContent>
           </Field>
@@ -211,10 +211,10 @@ export default function SignupPage() {
             />
             <FieldContent>
               <FieldLabel htmlFor="terms-prohibited-activities-checkbox-desc">
-                {t('iWillNotUseThisServiceForProhibitedActivities', 'I will not use this service for prohibited activities')}
+                {t('will_not_use_this', 'I will not use this service for prohibited activities')}
               </FieldLabel>
               <FieldDescription className="!mt-0">
-                {t('byClickingThisCheckboxYouAgreeNotToUseThisServiceForAnyProhibitedActivitiesListedInTheTermsOfService', 'By clicking this checkbox, you agree not to use this service for\n                any prohibited activities (listed in the Terms of Service).')}
+                {t('clicking_this_checkbox_you', 'By clicking this checkbox, you agree not to use this service for\n                any prohibited activities (listed in the Terms of Service).')}
               </FieldDescription>
             </FieldContent>
           </Field>

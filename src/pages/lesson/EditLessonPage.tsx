@@ -11,8 +11,10 @@ import type { FileObject } from "@/utils/types/object";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
+import { useTranslation } from 'react-i18next'
 
 export default function EditLessonPage() {
+  const { t } = useTranslation()
   const { author, slug } = useParams<{ author: string; slug: string }>()
   const [lesson, setLesson] = useState<Lesson>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -93,7 +95,7 @@ export default function EditLessonPage() {
             <div className="mt-6">
               <div className="flex justify-end mb-4">
                 <Button variant="destructive" onClick={clearSelectedFiles}>
-                  Supprimer tout
+                  {t('supprimerTout', 'Supprimer tout')}
                 </Button>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -109,7 +111,7 @@ export default function EditLessonPage() {
                           e.stopPropagation();
                           handleFileSelect(file);
                         }}
-                        aria-label={`Supprimer ${file.name}`}
+                        aria-label={t('supprimerName', 'Supprimer {{name}}', { name: file.name })}
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>
@@ -119,7 +121,7 @@ export default function EditLessonPage() {
                         {file.mimeType ?? "Unknown type"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {file.sizeBytes ? `${(file.sizeBytes / 1024).toFixed(2)} KB` : "Unknown size"}
+                        {file.sizeBytes ? t('valKb', '{{val}} KB', { val: (file.sizeBytes / 1024).toFixed(2) }) : "Unknown size"}
                       </p>
                     </CardContent>
                   </Card>
@@ -129,7 +131,7 @@ export default function EditLessonPage() {
           )}
           </>
         )
-          : <h2 className="text-lg font-bold" >Failed to load lesson</h2>
+          : <h2 className="text-lg font-bold" >{t('failedToLoadLesson', 'Failed to load lesson')}</h2>
       }
     </>
   )

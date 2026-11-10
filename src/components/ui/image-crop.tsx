@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/lib/shadcn";
 
 import "react-image-crop/dist/ReactCrop.css";
+import i18next from 'i18next'
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                    */
@@ -175,7 +176,7 @@ const cropToFile = async ({
   }
 
   throw new Error(
-    "The image is still too heavy after compression. Select a smaller area."
+    i18next.t('the_image_still_too', 'The image is still too heavy after compression. Select a smaller area.')
   );
 };
 
@@ -403,7 +404,7 @@ export const ImageCropContent = ({
       >
         {imgSrc && (
           <img
-            alt="Image to crop"
+            alt={i18next.t('imageToCrop', 'Image to crop')}
             className="block max-h-[inherit] max-w-full"
             onLoad={onImageLoad}
             ref={imgRef}
@@ -490,7 +491,7 @@ export const ImageCropReset = ({
 
   return (
     <Button
-      aria-label="Reset crop"
+      aria-label={i18next.t('resetCrop', 'Reset crop')}
       disabled={isDisabled}
       onClick={handleClick}
       size="icon"

@@ -41,7 +41,7 @@ export default function GdprPage() {
           {t('dataProtectionGdpr', 'Data Protection & GDPR')}
         </h1>
         <p className="text-muted-foreground leading-7">
-          {t('youHaveRightsRegardingYourPersonalDataUnderApplicableDataProtectionLawsIncludingTheGdpr', 'You have rights regarding your personal data under applicable data\n          protection laws, including the GDPR.')}
+          {t('you_have_rights_regarding', 'You have rights regarding your personal data under applicable data\n          protection laws, including the GDPR.')}
         </p>
       </header>
       <section className="mb-12">
@@ -68,7 +68,7 @@ export default function GdprPage() {
         </h2>
         <p className="text-sm leading-7 text-muted-foreground">
           
-          {t('youMayContactTheDataControllerToExerciseYourRightsUnderApplicableDataProtectionLaws', 'You may contact the data controller to exercise your rights under\n          applicable data protection laws.')}
+          {t('you_may_contact_the', 'You may contact the data controller to exercise your rights under\n          applicable data protection laws.')}
         </p>
       </section>
     </main>

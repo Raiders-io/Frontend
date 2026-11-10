@@ -48,6 +48,7 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { UserAvatar } from "./UserAvatar"
 import type { PrivateProfile } from "@/utils/types/user"
 import { Button } from "../ui/button"
+import { useTranslation } from 'react-i18next'
 
 type MenuEntry = {
   label: string
@@ -75,6 +76,7 @@ const GUEST_GROUPS: MenuEntry[][] = [
 ]
 
 export function UserMenu() {
+  const { t } = useTranslation()
   const isAuthenticated = useAuthStore((state) => !!state.user)
   const { data } = useMe()
   const user = isAuthenticated ? data : undefined
@@ -107,14 +109,14 @@ export function UserMenu() {
           onClick={() => changePageLogin()}
           className="cursor-pointer"
         >
-          Log in
+          {t('logIn', 'Log in')}
         </Button>
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <UserAvatarButton
             label={
-              user ? `Open user menu (${user.username})` : "Open account menu"
+              user ? t('openUserMenuUsername', 'Open user menu ({{username}})', { username: user.username }) : t('openAccountMenu', 'Open account menu')
             }
           >
             <MenuAvatar isAuthenticated={isAuthenticated} user={user} />
@@ -181,6 +183,7 @@ function MenuAvatar({
 }
 
 function LogOutItem() {
+  const { t } = useTranslation()
   const logout = useAuthStore((state) => state.logout)
   const qc = useQueryClient()
 
@@ -204,7 +207,7 @@ function LogOutItem() {
           className="cursor-pointer"
         >
           <LogOutIcon />
-          Log out
+          {t('logOut', 'Log out')}
         </DropdownMenuItem>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -212,15 +215,15 @@ function LogOutItem() {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <LogOutIcon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Log out</AlertDialogTitle>
+          <AlertDialogTitle>{t('logOut', 'Log out')}</AlertDialogTitle>
           <AlertDialogDescription>
-            You will be signed out of your account.
+            {t('youWillBeSignedOutOfYourAccount', 'You will be signed out of your account.')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{t('cancel', 'Cancel')}</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={handleLogout}>
-            Log out
+            {t('logOut', 'Log out')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

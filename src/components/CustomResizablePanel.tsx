@@ -36,7 +36,7 @@ function useResizableZones(): ResizableZonesContextType {
   const ctx = useContext(ResizableZonesContext)
   if (!ctx) {
     throw new Error(
-      i18next.t('CustomResizablePanel-needs-CustomResizablePanelGroup', 'CustomResizablePanelLeftZone/B/Handle doit être utilisé à l\'intérieur de CustomResizablePanelGroup'),
+      i18next.t('customresizablepanelleftzone_handle_must', 'CustomResizablePanelLeftZone/B/Handle doit être utilisé à l\'intérieur de CustomResizablePanelGroup'),
     )
   }
   return ctx

@@ -73,7 +73,7 @@ export default function ChatPage() {
 
 	return isError ? (
 		<div className="flex h-full items-center justify-center">
-			<p className="text-sm text-destructive">Erreur de chargement</p>
+			<p className="text-sm text-destructive">{t('erreurDeChargement', 'Erreur de chargement')}</p>
 		</div>
 	) : (
 		<div className="flex h-full flex-col">

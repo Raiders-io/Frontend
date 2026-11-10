@@ -5,6 +5,7 @@ import { MultipleChoiceEditor } from "@/components/exam/MultipleChoiceEditor"
 import type { Question, QuestionChoice } from "@/utils/types/exam"
 import { ChooseQuestionWeight } from "@/components/exam/ChooseQuestionWeight"
 import { CodeQuestionEditor } from "@/components/exam/CodeQuestionEditor"
+import { useTranslation } from 'react-i18next'
 
 type CreateQuestionProps = { onAdd?: (question: Question) => Promise<boolean> }
 
@@ -13,6 +14,7 @@ export default function Question({ onAdd }: CreateQuestionProps) {
 }
 
 export function CreateQuestion({ onAdd }: CreateQuestionProps) {
+  const { t } = useTranslation()
   const [questionTitle, setQuestionTitle] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const [referenceFile, setReferenceFile] = useState<File | null>(null)
@@ -120,7 +122,7 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
       setFileError(
         error instanceof Error
           ? error.message
-          : "Unable to read the selected C files",
+          : t('unableToReadTheSelectedCFiles', 'Unable to read the selected C files'),
       )
     }
   }
@@ -164,9 +166,9 @@ export function CreateQuestion({ onAdd }: CreateQuestionProps) {
           handleTypeChange(event.target.value as Question["type"])
         }
       >
-        <option value="multiple_choice">Multiple choice question</option>
-        <option value="written_answer">Written answer</option>
-        <option value="c_function">C function</option>
+        <option value="multiple_choice">{t('multipleChoiceQuestion', 'Multiple choice question')}</option>
+        <option value="written_answer">{t('writtenAnswer', 'Written answer')}</option>
+        <option value="c_function">{t('cFunction', 'C function')}</option>
       </select>
       {(() => {
         switch (type) {

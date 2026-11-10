@@ -5,6 +5,7 @@ import LessonCard from "@/components/lesson/LessonCard"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { FileText, ChevronDown, ChevronRight, FolderOpen } from "lucide-react"
+import { useTranslation } from 'react-i18next'
 
 interface FileLessonsViewProps {
   lessons: Lesson[]
@@ -17,6 +18,7 @@ export default function FileLessonsView({
   files,
   selectedFilename,
 }: FileLessonsViewProps) {
+  const { t } = useTranslation()
   const [openFiles, setOpenFiles] = useState<Set<string>>(new Set())
 
   const lessonsByFile = new Map<string, Lesson[]>()
@@ -56,9 +58,9 @@ export default function FileLessonsView({
         <div className="rounded-full bg-muted p-4">
           <FolderOpen className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="mt-4 text-lg font-semibold">No files found</h3>
+        <h3 className="mt-4 text-lg font-semibold">{t('noFilesFound', 'No files found')}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Upload files to your lessons to organize them here.
+          {t('upload_files_your_lessons', 'Upload files to your lessons to organize them here.')}
         </p>
       </div>
     )
@@ -109,7 +111,7 @@ export default function FileLessonsView({
                     </div>
                   ) : (
                     <p className="py-4 text-center text-sm text-muted-foreground">
-                      No lessons use this file.
+                      {t('noLessonsUseThisFile', 'No lessons use this file.')}
                     </p>
                   )}
                 </div>
@@ -124,9 +126,7 @@ export default function FileLessonsView({
         <div className="rounded-lg border border-dashed border-border bg-muted/30 p-6">
           <div className="mb-4 flex items-center gap-2">
             <FolderOpen className="h-5 w-5 text-muted-foreground" />
-            <h3 className="text-sm font-semibold text-muted-foreground">
-              Lessons without files ({lessonsWithoutFiles.length})
-            </h3>
+            <h3 className="text-sm font-semibold text-muted-foreground">{t('lessonsWithoutFilesLength', 'Lessons without files ({{length}})', { length: lessonsWithoutFiles.length })}</h3>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {lessonsWithoutFiles.map((lesson) => (

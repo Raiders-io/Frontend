@@ -7,8 +7,10 @@ import { toQuestion } from "@/utils/lib/exam_api/utils"
 import { GripVertical } from "lucide-react"
 import { useState } from "react"
 import { InitExam } from "@/components/exam/InitExam"
+import { useTranslation } from 'react-i18next'
 
 export default function ExamAuthoring() {
+  const { t } = useTranslation()
   const [questions, setQuestions] = useState<Question[]>([])
   const [title, setTitle] = useState("")
   const [titleTags, setTitleTags] = useState<string[]>([])
@@ -159,7 +161,7 @@ export default function ExamAuthoring() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <h1 className="text-3xl font-bold">Create an exam</h1>
+      <h1 className="text-3xl font-bold">{t('createAnExam', 'Create an exam')}</h1>
       <InitExam
         title={title}
         setTitle={handleTitleChange}
@@ -184,7 +186,7 @@ export default function ExamAuthoring() {
         handleCreateExam={handleCreateExam}
       />
       <section>
-        <p>Questions added: {questions.length}</p>
+        <p>{t('questionsAddedLength', 'Questions added: {{length}}', { length: questions.length })}</p>
         {questions.map((question, index) => (
           <div
             key={question.id}
@@ -203,7 +205,7 @@ export default function ExamAuthoring() {
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <div>
-                  <strong>Question {question.pos}:</strong> {question.title}
+                  <strong>{t('questionPos', 'Question {{pos}}:', { pos: question.pos })}</strong> {question.title}
                 </div>
 
                 <DeleteQuestion

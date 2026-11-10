@@ -21,6 +21,8 @@ import { UserBackground } from "@/components/user/UserBackground"
 import { changePageLogin } from "@/utils/router/changePage"
 import { useAuthStore } from "@/utils/stores/auth_store"
 import axios from "axios"
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 type ProfileMode = "owner" | "visitor" | "guest"
 
@@ -34,7 +36,7 @@ function getMode(
   return userId ? "visitor" : "owner"
 }
 
-function LoginButton({ label = "Log in" }: { label?: string }) {
+function LoginButton({ label = i18next.t('logIn', 'Log in') }: { label?: string }) {
   return (
     <Button size="sm" onClick={() => changePageLogin()}>
       {label}
@@ -43,9 +45,10 @@ function LoginButton({ label = "Log in" }: { label?: string }) {
 }
 
 function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
+  const { t } = useTranslation()
   const isOwner = mode === "owner"
   return (
-    <div className="space-y-10" aria-busy="true" aria-label="Loading profile">
+    <div className="space-y-10" aria-busy="true" aria-label={t('loadingProfile', 'Loading profile')}>
       <div className="flex items-center gap-6">
         <Skeleton className="size-24 shrink-0 rounded-full" />
         <div className="flex-1 space-y-2">
@@ -80,6 +83,7 @@ function ProfileError({
   message: string
   onRetry: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <Empty>
       <EmptyHeader>
@@ -87,7 +91,7 @@ function ProfileError({
       </EmptyHeader>
       <EmptyContent>
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Retry
+          {t('retry', 'Retry')}
         </Button>
       </EmptyContent>
     </Empty>
@@ -95,10 +99,11 @@ function ProfileError({
 }
 
 function LoginRequired() {
+  const { t } = useTranslation()
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyTitle>You need to be logged in to see your profile.</EmptyTitle>
+        <EmptyTitle>{t('youNeedToBeLoggedInToSeeYourProfile', 'You need to be logged in to see your profile.')}</EmptyTitle>
       </EmptyHeader>
       <EmptyContent>
         <LoginButton />
@@ -114,11 +119,12 @@ function ProfileContent({
   userId?: string
   mode: ProfileMode
 }) {
+  const { t } = useTranslation()
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
   const errorMessage = error
     ? axios.isAxiosError(error) && error.response?.status === 404
-      ? "This profile does not exist."
+      ? t('thisProfileDoesNotExist', 'This profile does not exist.')
       : getErrorMessage(error, "Failed to load profile")
     : null
 
@@ -130,7 +136,7 @@ function ProfileContent({
       case "visitor":
         return <FriendButton userId={user.id} username={user.username} />
       case "guest":
-        return <LoginButton label="Log in to add friend" />
+        return <LoginButton label={t('logInToAddFriend', 'Log in to add friend')} />
     }
   }
 

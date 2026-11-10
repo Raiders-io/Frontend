@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { QuestionChoice } from "@/utils/types/exam"
+import { useTranslation } from 'react-i18next'
 
 type MultipleChoiceEditorProps = {
   choices: QuestionChoice[]
@@ -19,13 +20,14 @@ export function MultipleChoiceEditor({
   onToggleChoice,
   onRemoveChoice,
 }: MultipleChoiceEditorProps) {
+  const { t } = useTranslation()
   return (
     <>
       <div className="flex gap-2">
         <Input
           value={currentChoice}
           onChange={(event) => onCurrentChoiceChange(event.target.value)}
-          placeholder="Add an answer choice"
+          placeholder={t('addAnAnswerChoice', 'Add an answer choice')}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault()
@@ -40,7 +42,7 @@ export function MultipleChoiceEditor({
 
       {choices.length > 0 && (
         <div className="border rounded-md p-2 bg-gray-0">
-          <p className="font-semibold text-sm mb-2">Available choices:</p>
+          <p className="font-semibold text-sm mb-2">{t('availableChoices', 'Available choices:')}</p>
           {choices.map((choice) => (
             <div
               key={choice.id}
@@ -60,7 +62,7 @@ export function MultipleChoiceEditor({
                 size="sm"
                 onClick={() => onRemoveChoice(choice.id)}
               >
-                Delete
+                {t('delete', 'Delete')}
               </Button>
             </div>
           ))}
@@ -73,7 +75,7 @@ export function MultipleChoiceEditor({
           choices.length < 2 || !choices.some((choice) => choice.isCorrect)
         }
       >
-        Submit
+        {t('submit', 'Submit')}
       </Button>
     </>
   )

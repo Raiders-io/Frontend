@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import CodeEditor from "@/components/exam/CodeEditor"
 import { toQuestion } from "@/utils/lib/exam_api/utils"
 import type { ExamPaper as ExamPaperData } from "@/utils/lib/exam_api/types"
+import { useTranslation } from 'react-i18next'
 
 type ExamPaperProps = {
   paper: ExamPaperData
@@ -26,11 +27,12 @@ export default function ExamPaper({
   onAnswerChange,
   onSubmit,
 }: ExamPaperProps) {
+  const { t } = useTranslation()
   return (
     <form className="flex flex-col gap-6" onSubmit={onSubmit}>
       <h2 className="text-2xl font-semibold">{paper.exam?.title}</h2>
       <p className="text-lg text-muted-foreground">
-        {paper.exam?.description?.trim() || "No description provided."}
+        {paper.exam?.description?.trim() || t('noDescriptionProvided', 'No description provided.')}
       </p>
       {paper.answers.map((answer, index) => {
         const backendQuestion = answer.examsQuestion?.question
@@ -48,8 +50,7 @@ export default function ExamPaper({
         return (
           <fieldset className="flex flex-col gap-2" key={answer.id}>
             <legend className="font-semibold">
-              {index + 1}. {question.title}
-            </legend>
+              {index + 1}{t('title', '. {{title}}', { title: question.title })}</legend>
             {question.type === "multiple_choice" &&
               question.choices?.map((choice) => (
                 <label className="flex items-center gap-2" key={choice.id}>
@@ -98,7 +99,7 @@ export default function ExamPaper({
           </fieldset>
         )
       })}
-      <Button type="submit">Submit answers</Button>
+      <Button type="submit">{t('submitAnswers', 'Submit answers')}</Button>
     </form>
   )
 }

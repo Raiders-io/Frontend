@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card"
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { changePageLessonView } from "@/utils/router/changePage"
+import { useTranslation } from 'react-i18next'
 
 type Variant = "preview" | "default" | "small"
 
@@ -169,6 +170,7 @@ export default function LessonCard({
   actions,
   className,
 }: LessonCardProps) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { author, title, slug, tags, createdAt, updatedAt } = lesson
   const description = lesson.description?.trim()
@@ -226,7 +228,7 @@ export default function LessonCard({
     <CardDescription
       className={cn(lessonStyle.Description[variant], "italic opacity-50")}
     >
-      No description
+      {t('noDescription', 'No description')}
     </CardDescription>
   )
 
@@ -240,9 +242,7 @@ export default function LessonCard({
           </Badge>
         ))}
         {hiddenTagCount > 0 && (
-          <Badge variant="outline" className="text-[0.7rem]">
-            +{hiddenTagCount}
-          </Badge>
+          <Badge variant="outline" className="text-[0.7rem]">{t('hiddentagcount', '+{{hiddenTagCount}}', { hiddenTagCount })}</Badge>
         )}
       </div>
     )
@@ -250,7 +250,7 @@ export default function LessonCard({
   /* ⑧ author = muted "By:" + bold inline link (never a boxed Button) */
   const authorNode = author && (
     <div className={lessonStyle.Author[variant]}>
-      <span>By:</span>
+      <span>{t('by', 'By:')}</span>
       <Link
         to={`/users/${author.username}/`}
         className={cn("relative z-10", lessonStyle.AuthorLink[variant])}
@@ -265,8 +265,8 @@ export default function LessonCard({
       if (!createdLabel && !updatedLabel) return null
       return (
         <p className={lessonStyle.Dates[variant]}>
-          {createdLabel && <span>Created {createdLabel}</span>}
-          {updatedLabel && <span>Updated {updatedLabel}</span>}
+          {createdLabel && <span>{t('createdCreatedlabel', 'Created {{createdLabel}}', { createdLabel })}</span>}
+          {updatedLabel && <span>{t('updatedUpdatedlabel', 'Updated {{updatedLabel}}', { updatedLabel })}</span>}
         </p>
       )
     }

@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { IconAction } from "../../components/homemade/IconAction"
+import { useTranslation } from 'react-i18next'
 
 interface UnfriendDialogProps {
   username: string
@@ -23,12 +24,13 @@ export function UnfriendDialog({
   disabled,
   onConfirm,
 }: UnfriendDialogProps) {
+  const { t } = useTranslation()
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <IconAction
           icon={UserMinus}
-          label={`Remove ${username}`}
+          label={t('removeUsername', 'Remove {{username}}', { username })}
           tooltip="Remove from friends"
           disabled={disabled}
         />
@@ -36,15 +38,13 @@ export function UnfriendDialog({
 
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
-          <AlertDialogTitle>Remove friend ?</AlertDialogTitle>
-          <AlertDialogDescription>
-            @{username} will be removed from your friends list.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t('removeFriend', 'Remove friend ?')}</AlertDialogTitle>
+          <AlertDialogDescription>{t('usernameWillBeRemovedFromYourFriendsList', '@{{username}} will be removed from your friends list.', { username })}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">{t('cancel', 'Cancel')}</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={onConfirm}>
-            Remove
+            {t('remove', 'Remove')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

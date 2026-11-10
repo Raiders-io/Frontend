@@ -15,6 +15,7 @@ import type {
   UpdateMePayload,
   UserSearchResult } from "@/utils/types/user"
 import { validate as isUUID } from 'uuid'
+import i18next from 'i18next'
 
 const PROFILE = "/api/v1/profile"
 const ME = `${PROFILE}/me`
@@ -172,7 +173,7 @@ export const userService = {
     userId: string,
     params: PaginationParams = {}
   ): Promise<Paginated<CreatedLesson>> => {
-    const { data } = await api.get<Paginated<CreatedLesson>>(`${PROFILE}/${userId}/lessons`, { params })
+    const { data } = await api.get<Paginated<CreatedLesson>>(i18next.t('profileuseridlessons', '{{PROFILE}}/{{userId}}/lessons', { PROFILE, userId }), { params })
     return data
   },
 
@@ -180,7 +181,7 @@ export const userService = {
     userId: string,
     params: PaginationParams = {}
   ): Promise<Paginated<CreatedExam>> => {
-    const { data } = await api.get<Paginated<CreatedExam>>(`${PROFILE}/${userId}/exams`, { params })
+    const { data } = await api.get<Paginated<CreatedExam>>(i18next.t('profileuseridexams', '{{PROFILE}}/{{userId}}/exams', { PROFILE, userId }), { params })
     return data
   },
 }

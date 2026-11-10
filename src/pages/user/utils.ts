@@ -5,6 +5,7 @@ interface ApiError {
   errors?: { message: string }[]
 }
 
+/* i18next-disable */
 export function getErrorMessage(
   error: unknown,
   fallback = "Failed to load data",
@@ -15,6 +16,7 @@ export function getErrorMessage(
   }
   return fallback
 }
+/* i18next-enable */
 
 export function formatDate(iso?: string | null): string {
   if (!iso) return "—"

@@ -102,11 +102,11 @@ export default function FileListWidget({
           return newSet
         })
       })
-      .then(() => toast.success("Files loaded successfully.", { id: toastId }))
+      .then(() => toast.success(t('filesLoadedSuccessfully', 'Files loaded successfully.'), { id: toastId }))
       .catch((e) => {
         console.error("File list error:", e)
         setError("Impossible to load the file list.")
-        toast.error("Impossible to load the file list.", { id: toastId })
+        toast.error(t('impossibleToLoadTheFileList', 'Impossible to load the file list.'), { id: toastId })
         setFiles([])
         setMeta(null)
       })
@@ -463,7 +463,7 @@ export default function FileListWidget({
               onCancel={() => {
                 setConflictDialog(null)
                 setUploadSuccess(
-                  t('valFilesUploadedSuccessfullyLengthFilesSkipped', '{{val}} file(s) uploaded successfully. {{length}} file(s) skipped.', { val: conflictDialog.originalFiles.length - conflictDialog.conflicts.length, length: conflictDialog.conflicts.length }),
+                  t('val_file_uploaded_successfully', '{{val}} file(s) uploaded successfully. {{length}} file(s) skipped.', { val: conflictDialog.originalFiles.length - conflictDialog.conflicts.length, length: conflictDialog.conflicts.length }),
                 )
               }}
             />

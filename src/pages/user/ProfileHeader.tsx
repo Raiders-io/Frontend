@@ -6,6 +6,7 @@ import { UserAvatar } from "@/components/user/UserAvatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/utils/lib/shadcn"
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   user: PublicProfile
@@ -41,6 +42,7 @@ const STATS: StatConfig[] = [
 ]
 
 export function ProfileHeader({ user, actions }: Props) {
+  const { t } = useTranslation()
   const fullName = getDisplayName(user)
 
   return (
@@ -56,9 +58,7 @@ export function ProfileHeader({ user, actions }: Props) {
 
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight sm:text-2xl">
-                  @{user.username}
-                </h1>
+                <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight sm:text-2xl">{t('username', '@{{username}}', { username: user.username })}</h1>
                 {actions && (
                   <div className="flex shrink-0 flex-wrap items-center gap-2">
                     {actions}

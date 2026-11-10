@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import type { Lesson } from "@/utils/types/lesson"
 import { changePageLessonEdit } from "@/utils/router/changePage"
+import { useTranslation } from 'react-i18next'
 
 interface LessonActionsProps {
   lesson: Lesson
@@ -28,6 +29,7 @@ export default function LessonActions({
   onTogglePrivacy,
   onDelete,
 }: LessonActionsProps) {
+  const { t } = useTranslation()
   const { author, slug, lessonId } = lesson
 
   // Fix: Use 'id' instead of 'UUID'
@@ -39,7 +41,7 @@ export default function LessonActions({
           variant="ghost"
           size="icon"
           className="relative z-10 h-8 w-8"
-          aria-label="Lesson actions"
+          aria-label={t('lessonActions', 'Lesson actions')}
         >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
@@ -52,7 +54,7 @@ export default function LessonActions({
           }}
         >
           <Edit className="h-4 w-4" />
-          Edit lesson
+          {t('editLesson', 'Edit lesson')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={(e) => {
@@ -65,12 +67,12 @@ export default function LessonActions({
           {lesson.isPrivate ? (
             <>
               <Globe className="h-4 w-4" />
-              Make public
+              {t('makePublic', 'Make public')}
             </>
           ) : (
             <>
               <Lock className="h-4 w-4" />
-              Make private
+              {t('makePrivate', 'Make private')}
             </>
           )}
         </DropdownMenuItem>
@@ -82,7 +84,7 @@ export default function LessonActions({
           }}
         >
           <FileText className="h-4 w-4" />
-          Manage files
+          {t('manageFiles', 'Manage files')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -90,7 +92,7 @@ export default function LessonActions({
           className="gap-2 cursor-pointer text-destructive focus:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
-          Delete lesson
+          {t('deleteLesson', 'Delete lesson')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

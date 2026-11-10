@@ -30,11 +30,11 @@ export function QuotaTable({ mode = "full" }) {
     const toastId = toast.info("Loading quota...")
     withTimeout(objectService.quotaRetrieve(), 10000)
       .then(setQuota)
-      .then(() => toast.success("Quota loaded successfully.", { id: toastId }))
+      .then(() => toast.success(t('quotaLoadedSuccessfully', 'Quota loaded successfully.'), { id: toastId }))
       .finally(() => setLoading(false))
       .catch((e) => {
         console.error("Quota error:", e)
-        toast.error("Impossible to load the quota.", { id: toastId })
+        toast.error(t('impossibleToLoadTheQuota', 'Impossible to load the quota.'), { id: toastId })
         setError(true)
         setQuota(null)
       })

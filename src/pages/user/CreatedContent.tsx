@@ -7,9 +7,11 @@ import {
   ItemRow,
   PaginatedSection,
 } from "../../components/user/PaginatedSection"
+import { useTranslation } from 'react-i18next'
 
 /** Public: what this profile has created (lessons and exams). */
 export function CreatedContent({ userId }: { userId: string }) {
+  const { t } = useTranslation()
   const fetchLessons = useCallback(
     (p: PaginationParams) => userService.fetchCreatedLessons(userId, p),
     [userId],
@@ -22,7 +24,7 @@ export function CreatedContent({ userId }: { userId: string }) {
   return (
     <div className="space-y-6">
       <PaginatedSection
-        title="Lessons created"
+        title={t('lessonsCreated', 'Lessons created')}
         fetcher={fetchLessons}
         emptyText="No lessons created yet."
         errorText="Failed to load lessons."
@@ -30,12 +32,12 @@ export function CreatedContent({ userId }: { userId: string }) {
           <ItemRow
             icon={BookOpen}
             title={l.title}
-            subtitle={`Created on ${formatDate(l.created_at)}`}
+            subtitle={t('createdOnVal', 'Created on {{val}}', { val: formatDate(l.created_at) })}
           />
         )}
       />
       <PaginatedSection
-        title="Exams created"
+        title={t('examsCreated', 'Exams created')}
         fetcher={fetchExams}
         emptyText="No exams created yet."
         errorText="Failed to load exams."
@@ -43,7 +45,7 @@ export function CreatedContent({ userId }: { userId: string }) {
           <ItemRow
             icon={ClipboardList}
             title={e.title}
-            subtitle={`Created on ${formatDate(e.created_at)}`}
+            subtitle={t('createdOnVal', 'Created on {{val}}', { val: formatDate(e.created_at) })}
           />
         )}
       />

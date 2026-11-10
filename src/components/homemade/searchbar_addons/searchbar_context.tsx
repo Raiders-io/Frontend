@@ -15,7 +15,7 @@ export const useSearchBar = () => {
   const context = useContext(SearchBarContext)
   if (!context)
     throw new Error(
-      i18next.t('searchbarSubcomponentsMustBeRenderedWithinSearchbar', 'SearchBar sub-components must be rendered within <SearchBar />'),
+      i18next.t('searchbar_sub_components_must', 'SearchBar sub-components must be rendered within <SearchBar />'),
     )
   return context
 }
