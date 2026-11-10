@@ -6,11 +6,31 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import FileListWidget from "@/components/FileListWidget";
+import type { FileObject } from "@/utils/types/object";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { TrashIcon } from "lucide-react";
 
 export default function EditLessonPage() {
   const { author, slug } = useParams<{ author: string; slug: string }>()
   const [lesson, setLesson] = useState<Lesson>()
   const [loading, setLoading] = useState<boolean>(false)
+  const [selectedFiles, setSelectedFiles] = useState<FileObject[]>([])
+
+  const handleFileSelect = (file: FileObject) => {
+    setSelectedFiles((prev) => {
+      const exists = prev.some((f) => f.name === file.name);
+      if (exists) {
+        return prev.filter((f) => f.name !== file.name);
+      }
+      return [...prev, file];
+    });
+  }
+
+  const clearSelectedFiles = () => {
+    setSelectedFiles([]);
+  }
 
   useEffect(() => {
     const fetcher = async () => {
@@ -23,6 +43,7 @@ export default function EditLessonPage() {
         setLesson(item)
       } catch (error) {
         setLesson(undefined)
+        setSelectedFiles([])
         toast.error(error instanceof Error)
       } finally {
         setLoading(false)
@@ -52,12 +73,62 @@ export default function EditLessonPage() {
           <Spinner className="gap-2" />
         </div>
         : lesson ?
+        (
+          <>
           <LessonForm
-            mode="edit"
-            loading={loading}
-            onSubmit={handleSubmit}
-            initialValues={LessonToSchema(lesson)}
+          mode="edit"
+          loading={loading}
+          onSubmit={handleSubmit}
+          initialValues={LessonToSchema(lesson)}
           />
+          <FileListWidget 
+          mode="compact"
+          showPagination={true}
+          showUpload={false}
+          initialLimit={5}
+          showActionSettings={false}
+          onFileSelect={handleFileSelect} />
+          
+          {selectedFiles.length > 0 && (
+            <div className="mt-6">
+              <div className="flex justify-end mb-4">
+                <Button variant="destructive" onClick={clearSelectedFiles}>
+                  Supprimer tout
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {selectedFiles.map((file) => (
+                  <Card key={file.name} className="cursor-pointer hover:shadow-lg transition-shadow">
+                    <CardHeader className="relative">
+                      <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2 h-6 w-6 p-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFileSelect(file);
+                        }}
+                        aria-label={`Supprimer ${file.name}`}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs text-muted-foreground">
+                        {file.mimeType ?? "Unknown type"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {file.sizeBytes ? `${(file.sizeBytes / 1024).toFixed(2)} KB` : "Unknown size"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+          </>
+        )
           : <h2 className="text-lg font-bold" >Failed to load lesson</h2>
       }
     </>
