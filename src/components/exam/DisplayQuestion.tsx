@@ -10,7 +10,7 @@ export function DisplayQuestion({ question }: DisplayQuestionProps)
     const { t } = useTranslation()
     return (
         <div>
-            <strong>{t('question', 'Question:')}</strong> {question.text}
+            <strong>{t('question', 'Question:')}</strong> {question.title}
             <br />
 
             <strong>{t('type', 'Type:')}</strong> {question.type}
@@ -29,7 +29,7 @@ export function DisplayQuestion({ question }: DisplayQuestionProps)
                 </>
             )}
 
-            {question.type === 'exact_answer' && (
+            {question.type === 'written_answer' && (
                 <>
                     <strong>{t('rponsesAcceptes', 'Réponses acceptées:')}</strong>
                     <ul className="ml-4 list-disc">
