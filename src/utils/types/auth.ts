@@ -19,3 +19,9 @@ export interface AuthResponse {
     token: string
   }
 }
+
+export interface User {
+  id: string
+  fullName: string
+  email: string
+}
