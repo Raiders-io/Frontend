@@ -132,8 +132,8 @@ export default function FileListWidget({
     }
   }, [])
 
-  const currentPage = meta?.current_page ?? page
-  const lastPage = meta?.last_page ?? Math.max(page, 1)
+  const currentPage = meta?.currentPage ?? page
+  const lastPage = meta?.lastPage ?? Math.max(page, 1)
   const totalFiles = meta?.total ?? files.length
 
   const totalSize = useMemo(() => {
