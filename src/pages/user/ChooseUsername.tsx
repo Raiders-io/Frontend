@@ -16,7 +16,7 @@ import { useMe, useUpdateMe } from "@/services/user/user_queries"
 import type { PrivateProfile } from "@/utils/types/user"
 import { usernameSchema } from "@/utils/types/common"
 import { getErrorMessage } from "./utils"
-import { PATHS } from "@/utils/router/changePage"
+import { PATHS } from "@/utils/router/paths"
 
 const schema = z.object({ username: usernameSchema })
 type FormValues = z.infer<typeof schema>
