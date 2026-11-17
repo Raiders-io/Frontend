@@ -1,3 +1,5 @@
+import type { PaginationMeta } from "@/utils/types/common"
+
 export interface file {
   filename: string
 }
@@ -13,8 +15,8 @@ export interface Lesson {
   slug: string
   authorId: string
   author: {
-    username: string,
-    id: string,
+    username: string
+    id: string
   }
   isPrivate?: boolean
   description?: string
@@ -24,33 +26,9 @@ export interface Lesson {
   updatedAt?: string
 }
 
-export interface PaginationMeta {
-  currentPage: number
-  lastPage: number
-  perPage: number
-  total: number
-  firstPage: number
-  firstPageUrl: string | null
-  lastPageUrl: string | null
-  nextPageUrl: string | null
-  previousPageUrl: string | null
-}
-
 export interface PaginatedLessonsResponse {
   meta: PaginationMeta
   data: Lesson[]
-}
-
-export interface PaginationMeta {
-  total: number
-  per_page: number
-  current_page: number
-  last_page: number
-  first_page: number
-  first_page_url: string
-  last_page_url: string
-  next_page_url: string | null
-  previous_page_url: string | null
 }
 
 export interface LessonSearchParams {

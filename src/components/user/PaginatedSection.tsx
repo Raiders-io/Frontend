@@ -99,8 +99,8 @@ export function PaginatedSection<T extends { id: string | number }>({
       try {
         const res = await fetcher({ page: target, limit: PAGE_SIZE })
         setItems(res.data)
-        setPage(res.meta.current_page)
-        setLastPage(res.meta.last_page)
+        setPage(res.meta.currentPage)
+        setLastPage(res.meta.lastPage)
         setTotal(res.meta.total ?? null)
         setError(false)
       } catch {
