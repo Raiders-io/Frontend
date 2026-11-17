@@ -6,7 +6,7 @@ export const examService = {
     params: ExamSearchParams,
     signal?: AbortSignal,
   ): Promise<PaginatedExamResponse> => {
-    const { data } = await api.get<PaginatedExamResponse>("/exam-authorings", {
+    const { data } = await api.get<PaginatedExamResponse>("/api/v1/exam-authorings", {
       params,
       signal,
     })

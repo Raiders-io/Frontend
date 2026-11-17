@@ -33,7 +33,7 @@ export function useSearchExam({ enabled = true, useMock = false }: UseSearchExam
     }
 
     const exams = mockExams
-    const normalizedQuery = searchParams.q.trim().toLowerCase()
+    const normalizedQuery = (searchParams.q ?? "").trim().toLowerCase()
     const matchingExams = exams.filter((exam) => {
       const title = exam.title?.toLowerCase() ?? ""
       const description = exam.description?.toLowerCase() ?? ""

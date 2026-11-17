@@ -38,7 +38,11 @@ export function useSearchFiles({
   const fetcher = useCallback(
     async (p: SearchFilesParams, signal?: AbortSignal) => {
       const res = await objectService.search(p.q, p.page, p.limit, signal)
-      return { data: res.objects.data as FileObject[], meta: { total: res.objects.meta.total } }
+      const objects = res?.objects
+      return {
+        data: Array.isArray(objects?.data) ? objects.data : [],
+        meta: { total: objects?.meta?.total ?? 0 },
+      }
     },
     [],
   )

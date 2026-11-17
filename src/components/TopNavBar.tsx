@@ -8,7 +8,6 @@ import type {
 import { UserMenu } from "./user/UserMenu"
 
 const resources: SearchResourceOption[] = [
-  { label: "All", value: "all" },
   { label: "Lessons", value: "lesson" },
   { label: "Users", value: "user" },
   { label: "Exam", value: "exam" },
