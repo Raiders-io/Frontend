@@ -36,12 +36,23 @@ export const useSearch = <TParams, TItem>(
       setLoading(true)
       setError(null)
       try {
-        const { data, meta } = await fetcher(params, controller.signal)
+        const result = (await fetcher(params, controller.signal)) as
+          | { data?: TItem[] | null; meta?: { total?: number } | null }
+          | null
+          | undefined
+        if (controller.signal.aborted) return
+
+        // The API may answer with an empty body (204, null, ...): never let an
+        // empty response reach the UI as a non-array.
+        const data = Array.isArray(result?.data) ? result.data : []
         setItems(data)
-        setTotal(meta.total)
+        setTotal(result?.meta?.total ?? data.length)
       } catch (err: any) {
         if (err?.code !== "ERR_CANCELED" && err?.name !== "AbortError") {
           setError(err as Error)
+          // Never keep results that belong to a previous query/resource.
+          setItems([])
+          setTotal(0)
         }
       } finally {
         if (!controller.signal.aborted) setLoading(false)

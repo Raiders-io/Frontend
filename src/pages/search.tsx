@@ -6,11 +6,9 @@ import type { ExamSummary } from "@/utils/types/exam"
 import type { FileObject } from "@/utils/types/object"
 import type { SerializedSearchItem } from "@/utils/types/component"
 import PaginatedGrid from "@/components/search/PaginatedGrid"
-import { useSearchLesson } from "@/utils/hooks/useSearch"
-import { useSearchExam } from "@/utils/hooks/useSearchExam"
-import { useSearchFiles } from "@/utils/hooks/useSearchFiles"
+import { useSearchResource } from "@/utils/hooks/useSearchResource"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { LayoutGrid, List } from "lucide-react"
 import SelectPanel from "@/components/search/SelectPanel"
@@ -18,18 +16,9 @@ import BackgroundPanel from "@/components/homemade/BackgroundPanel"
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams()
-  const { page, limit, resource, setPage } = useSearchQueryParams()
-  const isExamSearch = resource === "exam"
-  const isFileSearch = resource === "file"
+  const { page, limit, setPage } = useSearchQueryParams()
   const useExamMock = import.meta.env.DEV && searchParams.get("mock") === "exams"
-  const lessonSearch = useSearchLesson({ enabled: !isExamSearch && !isFileSearch })
-  const examSearch = useSearchExam({ enabled: isExamSearch, useMock: useExamMock })
-  const fileSearch = useSearchFiles({ enabled: isFileSearch })
-  const { total, loading } = isExamSearch
-    ? examSearch
-    : isFileSearch
-      ? fileSearch
-      : lessonSearch
+  const { items: serializedItems, total, loading } = useSearchResource({ useMock: useExamMock })
 
   // State to toggle between 'grid' (default card) and 'list' (preview/inline card)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -44,16 +33,6 @@ export default function SearchPage() {
 
     return <ExamCard exam={item.data as ExamSummary} variant={viewMode === "grid" ? "default" : "preview"} />
   }
-
-  const serializedItems: SerializedSearchItem<Lesson | ExamSummary | FileObject>[] = useMemo(() => {
-    if (isExamSearch) {
-      return examSearch.items.map((exam) => ({ kind: "exam", data: exam }))
-    }
-    if (isFileSearch) {
-      return fileSearch.items.map((file) => ({ kind: "file", data: file }))
-    }
-    return lessonSearch.items.map((lesson) => ({ kind: "lesson", data: lesson }))
-  }, [isExamSearch, isFileSearch, examSearch.items, fileSearch.items, lessonSearch.items])
 
   return (
     <BackgroundPanel
