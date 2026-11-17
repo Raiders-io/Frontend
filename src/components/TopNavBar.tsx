@@ -12,6 +12,7 @@ const resources: SearchResourceOption[] = [
   { label: "Lessons", value: "lesson" },
   { label: "Users", value: "user" },
   { label: "Exam", value: "exam" },
+  { label: "Files", value: "file" },
 ]
 
 const sortOptions: { label: string; value: SearchSortValue }[] = [

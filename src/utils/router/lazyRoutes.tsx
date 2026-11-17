@@ -5,6 +5,7 @@ const SignupPage = lazy(() => import("@/pages/auth/SignupPage"))
 const HomePage = lazy(() => import("@/pages/home"))
 const LessonPage = lazy(() => import("@/pages/lesson/LessonPage"))
 const FileListPage = lazy(() => import("@/pages/file/index"))
+const FileViewPage = lazy(() => import("@/pages/file/view"))
 const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
 const AboutPage = lazy(() => import("@/pages/about"))
 const ContactPage = lazy(() => import("@/pages/contact"))
@@ -32,6 +33,7 @@ export {
   HomePage,
   LessonPage,
   FileListPage,
+  FileViewPage,
   ChatPage,
   ChooseUsername,
   ProfilePage,

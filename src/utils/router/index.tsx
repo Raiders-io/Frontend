@@ -6,6 +6,7 @@ import {
   HomePage,
   LessonPage,
   FileListPage,
+  FileViewPage,
   ChatPage,
   AboutPage,
   ContactPage,
@@ -66,6 +67,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <FileListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: PATHS.fileView(":name"),
+        element: (
+          <ProtectedRoute>
+            <FileViewPage />
           </ProtectedRoute>
         ),
       },

@@ -10,6 +10,7 @@ import type {
 } from "@/utils/types/object"
 
 // get '/?page&limit' 'index'
+// get '/?q&page&limit' 'search' (search files of the authenticated user by name)
 // post 'store'
 // put 'updateMany'
 // delete 'destroyMany'
@@ -24,6 +25,21 @@ export const objectService = {
   ): Promise<ObjectIndexResponse> => {
     const { data } = await api.get<ObjectIndexResponse>(
       `/api/v1/storage/objects/?page=${page}&limit=${limit}`,
+    )
+
+    return data
+  },
+
+  // search files of the authenticated user by name (substring match on 'q')
+  search: async (
+    q: string,
+    page: number = 1,
+    limit: number = 10,
+    signal?: AbortSignal,
+  ): Promise<ObjectIndexResponse> => {
+    const { data } = await api.get<ObjectIndexResponse>(
+      `/api/v1/storage/objects/?q=${encodeURIComponent(q)}&page=${page}&limit=${limit}`,
+      { signal },
     )
 
     return data
