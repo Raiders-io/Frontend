@@ -1,5 +1,5 @@
 export type SearchResource =
-  "all" | "lesson" | "user" | "exam" | "exercise" | "video"
+  "all" | "lesson" | "user" | "exam" | "exercise" | "video" | "file"
 
 export interface SearchResourceOption {
   label: string
