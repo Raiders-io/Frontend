@@ -1,5 +1,5 @@
-import SkeletonCard from "@/components/ui/skeletonCard"
 import Pagination from "@/components/search/Pagination"
+import ItemGrid, { type ItemLayout } from "@/components/search/ItemGrid"
 import type { SerializedSearchItem } from "@/utils/types/component"
 import React from "react"
 
@@ -13,8 +13,10 @@ interface PaginatedGridProps<T> {
   totalPages: number
   onPageChange: (page: number) => void
   className?: string
+  layout?: ItemLayout
 }
 
+/** ItemGrid + pagination controls above and below. */
 export default function PaginatedGrid<T>({
   items,
   loading,
@@ -24,32 +26,40 @@ export default function PaginatedGrid<T>({
   totalPages,
   renderItem,
   getKey,
-  onPageChange
+  onPageChange,
+  layout = "grid",
 }: PaginatedGridProps<T>) {
-  
+  const pagination = (
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={onPageChange}
+    />
+  )
+
   return (
     <div className={className}>
       {totalPages > 1 && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+        <>
+          {pagination}
+          <hr className="my-6 border-t border-border" />
+        </>
       )}
-      <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(280px,_1fr))] items-stretch">
-        {loading ? (
-          Array.from({ length: limit }).map((_, index) => (
-            <SkeletonCard key={index} className="" />
-          ))
-        ) : items && items.length > 0 ? (
-          items.map((item, index) => {
-            const key = getKey ? getKey(item) : index
-            return <React.Fragment key={key}>{renderItem(item)}</React.Fragment>
-          })
-        ) : (
-          <div className="text-center font-bold text-2xl p-6">
-            <h1>No items found</h1>
-          </div>
-        )}
-      </div>
+
+      <ItemGrid
+        items={items}
+        loading={loading}
+        skeletonCount={limit}
+        layout={layout}
+        renderItem={renderItem}
+        getKey={getKey}
+      />
+
       {totalPages > 1 && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+        <>
+          <hr className="my-6 border-t border-border" />
+          {pagination}
+        </>
       )}
     </div>
   )

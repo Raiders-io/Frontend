@@ -1,55 +1,37 @@
-import { createBrowserRouter, Outlet } from "react-router-dom"
-import { lazy } from "react"
+import { createBrowserRouter } from "react-router-dom"
 import ProtectedRoute from "@/utils/router/protected_route"
-import TopNavBar from "@/components/TopNavBar"
-import ProfilePage, { PublicProfilePage } from "@/pages/user/ProfilePage"
-
-const LoginPage = lazy(() => import("@/pages/auth/login"))
-const SignupPage = lazy(() => import("@/pages/auth/signup"))
-const HomePage = lazy(() => import("@/pages/home"))
-const LessonPage = lazy(() => import("@/pages/lesson/lesson_page"))
-const FileListPage = lazy(() => import("@/pages/file/index"))
-const ChatPage = lazy(() => import("@/pages/services/chat/chat_page"))
-const Settings = lazy(() => import("@/pages/user/Settings"))
-const AboutPage = lazy(() => import("@/pages/about"))
-const ContactPage = lazy(() => import("@/pages/contact"))
-const NotFound = lazy(() => import("@/pages/NotFound"))
-const ExamAuthoring = lazy(() => import("@/pages/exam/ExamAuthoring"))
-const ExamPaper = lazy(() => import("@/pages/exam/ExamPaper"))
-const ExamPaperList = lazy(() => import("@/pages/exam/ExamPaperList"))
-const PrivacyPolicy = lazy(() => import("@/pages/legal/privacy"))
-const TermsOfService = lazy(() => import("@/pages/legal/terms"))
-const GDPRPage = lazy(() => import("@/pages/legal/gdpr"))
-const CookiesPage = lazy(() => import("@/pages/legal/cookies"))
-const DataRequestPage = lazy(() => import("@/pages/legal/gdpr"))
-const SearchPage = lazy(() => import("@/pages/search"))
-const ChooseUsername = lazy(() => import("@/pages/user/ChooseUsername"))
-import { Toaster } from "@/components/ui/sonner"
-import { FooterComponent } from "@/components/FooterComponent"
-
-export function RootLayout() {
-  return (
-    <>
-      <div>
-        <TopNavBar />
-        <Toaster
-          visibleToasts={5}
-          position="bottom-right"
-          expand={false}
-          closeButton={true}
-        />
-        <main>
-          <Outlet /> {/* Child routes render here */}
-        </main>
-      </div>
-      <FooterComponent />
-    </>
-  )
-}
+import {
+  LoginPage,
+  SignupPage,
+  HomePage,
+  LessonPage,
+  FileListPage,
+  ChatPage,
+  AboutPage,
+  ContactPage,
+  NotFound,
+  ExamAuthoring,
+  ExamPaper,
+  PrivacyPolicy,
+  TermsOfService,
+  CookiesPage,
+  DataRequestPage,
+  LessonCreatePage,
+  RootLayout,
+  SearchPage,
+  GDPRPage,
+  MyLessonsPage,
+  EditLessonPage,
+  ChooseUsername,
+  ProfilePage,
+  PublicProfilePage,
+  Settings,
+} from "@/utils/router/lazyRoutes"
+import { PATHS } from "@/utils/router/paths";
 
 export const router = createBrowserRouter([
   {
-    path: "/onboarding/username",
+    path: PATHS.chooseUsername,
     element: (
       <ProtectedRoute>
         <ChooseUsername />
@@ -60,7 +42,7 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: "/",
+        path: PATHS.home,
         element: (
           <ProtectedRoute>
             <HomePage />
@@ -68,11 +50,11 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/login",
+        path: PATHS.login,
         element: <LoginPage />,
       },
       {
-        path: "/signup",
+        path: PATHS.signup,
         element: <SignupPage />,
       },
       {
@@ -80,15 +62,15 @@ export const router = createBrowserRouter([
         element: <LessonPage />,
       },
       {
-        path: "/file/list",
+        path: PATHS.fileList,
         element: (
-          // <ProtectedRoute>
-          <FileListPage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <FileListPage />
+          </ProtectedRoute>
         ),
       },
       {
-        path: "/chat",
+        path: PATHS.chat,
         element: (
           <ProtectedRoute>
             <ChatPage />
@@ -96,7 +78,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/profile",
+        path: PATHS.profile,
         element: (
           <ProtectedRoute>
             <ProfilePage />
@@ -104,11 +86,11 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/users/:identifier",
+        path: PATHS.user(":userId"),
         element: <PublicProfilePage />,
       },
       {
-        path: "/settings",
+        path: PATHS.settings,
         element: (
           <ProtectedRoute>
             <Settings />
@@ -116,35 +98,35 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/about",
+        path: PATHS.about,
         element: <AboutPage />,
       },
       {
-        path: "/contact",
+        path: PATHS.contact,
         element: <ContactPage />,
       },
       {
-        path: "/privacy",
+        path: PATHS.privacy,
         element: <PrivacyPolicy />,
       },
       {
-        path: "/terms",
+        path: PATHS.terms,
         element: <TermsOfService />,
       },
       {
-        path: "/gdpr",
+        path: PATHS.gdpr,
         element: <GDPRPage />,
       },
       {
-        path: "/cookies",
+        path: PATHS.cookies,
         element: <CookiesPage />,
       },
       {
-        path: "/data-request",
+        path: PATHS.dataRequest,
         element: <DataRequestPage />,
       },
       {
-        path: "/exam/authoring",
+        path: PATHS.examAuthoring,
         element: (
           <ProtectedRoute>
             <ExamAuthoring />
@@ -152,15 +134,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/exam/paper",
-        element: (
-          <ProtectedRoute>
-            <ExamPaperList />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/exam/paper/:id",
+        path: PATHS.examPaper,
         element: (
           <ProtectedRoute>
             <ExamPaper />
@@ -168,11 +142,35 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/search",
+        path: PATHS.examPaperView(":id"),
+        element: (
+          <ProtectedRoute>
+            <ExamPaper />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: PATHS.search,
         element: <SearchPage />,
       },
       {
-        path: "*",
+        path: PATHS.lessonCreate,
+        element: <LessonCreatePage />
+      },
+      {
+        path: PATHS.lessonView(":author", ":slug"),
+        element: <LessonPage />,
+      },
+      {
+        path: PATHS.lessonEdit(":author", ":slug"),
+        element: <EditLessonPage />,
+      },
+      {
+        path: PATHS.myLesson,
+        element: <MyLessonsPage />,
+      },
+      {
+        path: PATHS.any,
         element: <NotFound />,
       },
     ],

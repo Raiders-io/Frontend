@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom"
 import { useAuthStore } from "@/utils/stores/auth_store"
-import { PATHS } from "./changePage"
+import { PATHS } from "@/utils/router/paths"
 
 export default function ProtectedRoute({
   children,

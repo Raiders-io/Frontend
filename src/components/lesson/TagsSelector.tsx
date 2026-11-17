@@ -14,30 +14,28 @@ import {
 import { useState } from "react"
 import CheckBoxTab from "../homemade/checkbox_tab"
 import { cn } from "@/utils/lib/shadcn"
+import { mockTag } from "@/utils/mock"
 
 
 interface TagsTableProps {
   tags: Tag[]
-  variant?: "compact" | "extended"
   className?: string
   selected: Tag[]
   setSelection: (items: Tag[]) => void
 }
 export default function TagsSelector({
   tags,
-  variant = "compact",
   className,
   selected,
   setSelection,
 }: TagsTableProps) {
   const [draft, setDraft] = useState("")
 
-  if (variant == "compact")
     return (
       <div className={cn("rounded-none")}>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-l-none">
+            <Button variant="outline" className={className}>
               <h1 className="font-bold">Select tag</h1>
             </Button>
           </PopoverTrigger>
@@ -65,9 +63,10 @@ export default function TagsSelector({
             <div className="max-h-[400px] overflow-y-auto">
             <CheckBoxTab
               className={className}
-              data={tags.filter((tag) =>
+              data={Array.isArray(tags) ? tags.filter((tag) =>
                 tag.name.toLowerCase().includes(draft.toLowerCase()),
-              )}
+              ): mockTag.filter((tag) =>
+                tag.name.toLowerCase().includes(draft.toLowerCase()))}
               getKey={(tag) => tag.id}
               getLabel={(tag) => tag.name}
               selected={new Set(selected.map((tag) => tag.id))}
@@ -81,6 +80,4 @@ export default function TagsSelector({
         </Popover>
       </div>
     )
-
-  return <h1>wiiii</h1>
 }
