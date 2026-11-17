@@ -5,6 +5,7 @@ export const PATHS = {
   signup: "/signup",
   profile: "/profile",
   fileList: "/file/list",
+  fileView: (fileName: string) => `/file/view/${fileName}`,
   search: "/search",
   myLesson: "/myLesson",
   lessonCreate: "/create/lesson",

@@ -48,7 +48,12 @@ export default function CustomSearchBar({
   } = useSearchController(resources, sortOptions)
 
   return (
-    <SearchPreview isFocus={isFocus} query={debouncedSearch} className={className}>
+    <SearchPreview
+      isFocus={isFocus}
+      resource={currResource?.value}
+      query={debouncedSearch}
+      className={className}
+    >
     <SearchBar
       search={search}
       onSearch={onQueryChange}
