@@ -31,6 +31,7 @@ export default defineConfig({
                   return "forms"
                 if (id.includes("lucide-react")) return "icons"
                 if (id.includes("@radix-ui")) return "radix"
+                if (id.includes("axios")) return "axios"
                 return "vendor"
               },
             },

@@ -50,6 +50,7 @@ import { formatFileSize, formatDate, getFileIcon } from "@/utils/utils/object"
 import { type ObjectSuccess } from "@/utils/types/object"
 import { toast } from "sonner"
 import { withTimeout } from "@/utils/utils/timeout"
+import { useTranslation } from 'react-i18next'
 
 export default function FileListWidget({
   mode = "full",
@@ -60,6 +61,7 @@ export default function FileListWidget({
   maxHeight,
   onFileSelect,
 }: FileListWidgetProps & { showActionSettings?: boolean }) {
+  const { t } = useTranslation()
   const [files, setFiles] = useState<FileObject[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -277,20 +279,15 @@ export default function FileListWidget({
   }
 
   const containerClassName =
-    mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
-
-  const hasAnyActionButton =
-    actionSettings.showDownloadButton ||
-    actionSettings.showVisibilityButton ||
+    mode === "compact" ? "w-full p-4" : t('mxautoWfullMaxw6xlP6', 'mx-auto w-full max-w-6xl p-6')
+  
+  const hasAnyActionButton = 
+    actionSettings.showDownloadButton || 
+    actionSettings.showVisibilityButton || 
     actionSettings.showDeleteButton
 
   const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
-  const fullColumns: FileListTableColumn[] = [
-    ...baseColumns,
-    "Type",
-    "Visibility",
-    "Created at",
-  ]
+  const fullColumns: FileListTableColumn[] = [...baseColumns, "Type", "Visibility", t('createdAt', 'Created at')]
   const columnsWithActions: FileListTableColumn[] = [...fullColumns, "Actions"]
 
   const visibleColumns: FileListTableColumn[] =
@@ -408,25 +405,24 @@ export default function FileListWidget({
           <CardHeader className="space-y-2">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <CardTitle>File Explorer</CardTitle>
+                <CardTitle>{t('fileExplorer', 'File Explorer')}</CardTitle>
                 <CardDescription>
-                  Browse and manage your files. You can upload files by clicking
-                  the button or dragging and dropping them into this area.
+                  {t('manage-file-list', 'Browse and manage your files. You can upload files by clicking\n                  the button or dragging and dropping them into this area.')}
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2">
-                {showUpload && (
-                  <Button
-                    type="button"
-                    onClick={openFilePicker}
-                    disabled={uploading}
-                    aria-label="Upload Files"
-                  >
-                    {uploading ? "Upload in progress..." : "Upload Files"}
-                  </Button>
-                )}
-                {showActionSettings && <ActionSettings />}
-              </div>
+              {showUpload && (
+                <Button
+                  type="button"
+                  onClick={openFilePicker}
+                  disabled={uploading}
+                  aria-label={t('uploadFiles', 'Upload Files')}
+                >
+                  {uploading ? t('uploadInProgress') : t('uploadFiles')}
+                </Button>
+              )}
+              {showActionSettings && <ActionSettings />}
+            </div>
             </div>
           </CardHeader>
         )}
@@ -434,13 +430,13 @@ export default function FileListWidget({
         {mode === "compact" && showUpload && (
           <CardHeader className="py-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Files</CardTitle>
+              <CardTitle className="text-lg">{t('files', 'Files')}</CardTitle>
               <Button
                 type="button"
                 size="sm"
                 onClick={openFilePicker}
                 disabled={uploading}
-                aria-label="Upload Files"
+                aria-label={t('uploadFiles', 'Upload Files')}
               >
                 {uploading ? "Upload..." : "Upload"}
               </Button>
@@ -460,14 +456,14 @@ export default function FileListWidget({
               onComplete={async () => {
                 setConflictDialog(null)
                 setUploadSuccess(
-                  `${conflictDialog.originalFiles.length} file(s) replaced successfully.`,
+                  t('lengthFilesReplacedSuccessfully', '{{length}} file(s) replaced successfully.', { length: conflictDialog.originalFiles.length }),
                 )
                 await refreshFiles()
               }}
               onCancel={() => {
                 setConflictDialog(null)
                 setUploadSuccess(
-                  `${conflictDialog.originalFiles.length - conflictDialog.conflicts.length} file(s) uploaded successfully. ${conflictDialog.conflicts.length} file(s) skipped.`,
+                  t('valFilesUploadedSuccessfullyLengthFilesSkipped', '{{val}} file(s) uploaded successfully. {{length}} file(s) skipped.', { val: conflictDialog.originalFiles.length - conflictDialog.conflicts.length, length: conflictDialog.conflicts.length }),
                 )
               }}
             />
@@ -493,7 +489,7 @@ export default function FileListWidget({
 
           {loading ? (
             <p className="py-8 text-sm text-muted-foreground">
-              Loading files...
+              {t('loadingFiles', 'Loading files...')}
             </p>
           ) : error ? (
             <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
@@ -501,7 +497,7 @@ export default function FileListWidget({
             </div>
           ) : files.length === 0 ? (
             <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
-              No files found.
+              {t('noFilesFound', 'No files found.')}
             </div>
           ) : (
             <div className="overflow-hidden rounded-lg border">
@@ -540,39 +536,41 @@ export default function FileListWidget({
                     <TableRow>
                       <TableCell colSpan={5} className="text-left">
                         <div className="flex items-center gap-2">
-                          {selectedFiles.size > 0 &&
+							{selectedFiles.size > 0 &&
                             actionSettings.showDeleteButton && (
                               <DeleteButton
                                 action={handleBulkDelete}
-                                title="Delete Selected Files"
-                                description={`The following files will be deleted:\n\n${Array.from(
-                                  selectedFiles,
-                                )
-                                  .map((element) => `- ${element}`)
-                                  .join(
-                                    "\n",
-                                  )}.\n\nThis action cannot be undone.`}
+                                title={t('deleteSelectedFiles', 'Delete Selected Files')}
+                                description={t(
+                                  'selected-files-deletion-message',
+                                  'The following files will be deleted:\n\n{{val}}.\n\nThis action cannot be undone.',
+                                  {
+                                    val: Array.from(selectedFiles)
+                                      .map((element) => `- ${element}`)
+                                      .join('\n'),
+                                  },
+                                )}
                               >
                                 <Button
                                   variant="destructive"
                                   size="sm"
-                                  aria-label="Delete Selected Files"
+                                  aria-label={t('deleteSelectedFiles', 'Delete Selected Files')}
                                 >
                                   <TrashIcon />
-                                  Delete Selected
+                                  {t('deleteSelected', 'Delete Selected')}
                                 </Button>
                               </DeleteButton>
                             )}
                         </div>
                       </TableCell>
                       <TableCell
-                        colSpan={visibleColumns.includes("Actions") ? 2 : 1}
+                        colSpan={visibleColumns.includes('Actions') ? 2 : 1}
                         className="text-right"
                       >
-                        Total: {totalFiles} file(s)
+                        {t('totalTotalfilesFiles', 'Total: {{totalFiles}} file(s)', { totalFiles })}
                       </TableCell>
-                      <TableCell colSpan={1} className="text-right">
-                        Total space used: {formatFileSize(totalSize)}
+                      <TableCell colSpan={3} className="text-right">
+                        {t('totalSpaceUsed', 'Total space used:')} {formatFileSize(totalSize)}
                       </TableCell>
                     </TableRow>
                   </TableFooter>

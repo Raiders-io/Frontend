@@ -6,13 +6,15 @@ import { useChatStore } from '@/utils/stores/chat_store'
 import { useAuthStore } from '@/utils/stores/auth_store'
 import { chatService } from '@/services/chat_service'
 import { avatarColor, initials } from '@/utils/lib/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ConversationList } from './conversation_list'
 import { MessageThread } from './message_thread'
 import { MessageInput } from './message_input'
-import type { Credentials } from '@/utils/types/auth'
 import { authService } from '@/services/auth_service'
+import { useTranslation } from 'react-i18next'
 
 export default function ChatPage() {
+	const { t } = useTranslation()
 	const { sendMessage } = useChat()
 	const currentUserId = useAuthStore((s) => s.user?.id ?? '')
 	const messages = useChatStore((s) => s.messages)
@@ -20,7 +22,8 @@ export default function ChatPage() {
 	const setMessages = useChatStore((s) => s.setMessages)
 	const setActiveConversation = useChatStore((s) => s.setActiveConversation)
 	const [userMap, setUserMap] = useState<Record<string, string>>({})
-	const [messagesError, setMessagesError] = useState(false)
+	const prependMessages = useChatStore((s) => s.prependMessages)
+	const [hasMore, setHasMore] = useState(true)
 
 	const { data: conversations = [], isError } = useQuery({
 		queryKey: ['conversations'],
@@ -28,30 +31,40 @@ export default function ChatPage() {
 	})
 
 	useEffect(() => {
-		authService.fetchUserByIds()
-			.then((users: Credentials[]) => {
-				const map: Record<string, string> = {}
-				for (const u of users)
-					map[u.id] = u.email
-				setUserMap(map)
-			})
-			.catch(console.error)
+	authService.fetchUsers()
+		.then((users) =>
+		setUserMap(Object.fromEntries(users.map((u) => [u.id, u.fullName]))),
+		)
+		.catch(console.error)
 	}, [])
 
 	useEffect(() => {
 		if (activeConversationId === null)
 			return
-		setMessagesError(false)
+		setHasMore(true)
 		chatService.fetchMessages(activeConversationId)
 			.then((history) => setMessages(activeConversationId, history))
-			.catch(() => setMessagesError(true))
+			.catch(console.error)
 	}, [activeConversationId])
 
 	const conversationLabel = (participantIds: string[] = []): string => {
 		const names = participantIds
 			.filter((id) => id !== currentUserId)
-			.map((id) => userMap[id] ?? 'Utilisateur inconnu')
-		return names.length > 0 ? names.join(', ') : 'Conversation vide'
+			.map((id) => userMap[id] ?? t('unknown-user', 'Utilisateur inconnu'))
+		return names.length > 0 ? names.join(', ') : t('empty-conversation', 'Conversation vide')
+	}
+
+	const loadOlder = async () => {
+		if (activeConversationId === null)
+			return
+		const current = messages[activeConversationId] ?? []
+		const oldest = current[0]
+		if (!oldest)
+			return
+		const older = await chatService.fetchMessages(activeConversationId, oldest.id)
+		prependMessages(activeConversationId, older)
+		if (older.length < 30)
+			setHasMore(false)
 	}
 
 	const activeConversation = conversations.find((c) => c.id === activeConversationId)
@@ -75,32 +88,26 @@ export default function ChatPage() {
 					{activeConversationId ? (
 						<>
 							<header className="flex h-14 shrink-0 items-center gap-3 border-b px-6">
-								<span
-									className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-medium text-white ${avatarColor(activeLabel)}`}
-								>
-									{initials(activeLabel)}
-								</span>
-								<div className="min-w-0">
+								<Avatar className="size-8 shrink-0">
+									<AvatarFallback className={`text-[10px] font-medium text-white ${avatarColor(activeLabel)}`}>
+										{initials(activeLabel)}
+									</AvatarFallback>
+								</Avatar>
+								<div className="min-w-0 [&>p]:mt-0">
 									<p className="truncate text-sm font-medium text-foreground">
 										{activeLabel}
-									</p>
-									<p className="font-mono text-[11px] text-muted-foreground">
-										{activeMessages.length} message{activeMessages.length > 1 ? 's' : ''}
 									</p>
 								</div>
 							</header>
 
-							{messagesError ? (
-								<div className="flex flex-1 items-center justify-center px-6">
-									<p className="text-sm text-destructive">
-										Impossible de charger les messages.
-									</p>
-								</div>
-							) : (
-								<MessageThread messages={activeMessages} currentUserId={currentUserId} />
-							)}
+							<MessageThread 
+								messages={activeMessages} 
+								currentUserId={currentUserId} 
+								hasMore={hasMore}
+								onLoadOlder={loadOlder}
+							/>
 							<MessageInput
-								placeholder={`Écrire à ${activeLabel}…`}
+								placeholder={t('writeActivelabel', 'Write to {{activeLabel}}…', { activeLabel })}
 								onSend={(content) => sendMessage(activeConversationId, content)}
 							/>
 						</>
@@ -111,11 +118,10 @@ export default function ChatPage() {
 								strokeWidth={1.25}
 							/>
 							<p className="text-sm font-medium text-foreground">
-								Aucune conversation ouverte
+								{t('no-conversation-opened', 'No conversation opened')}
 							</p>
 							<p className="max-w-xs text-center text-sm text-muted-foreground">
-								Sélectionne une conversation à gauche, ou démarres-en une depuis
-								la liste des membres.
+								{t('select-conversation-or-start-one', 'Select a conversation to the left, or start one from your friends list.')}
 							</p>
 						</div>
 					)}

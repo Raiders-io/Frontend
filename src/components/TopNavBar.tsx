@@ -6,6 +6,8 @@ import type {
   SearchSortValue,
 } from "@/utils/types/component"
 import { UserMenu } from "./user/UserMenu"
+import i18next from 'i18next'
+import { useEffect, useRef } from "react"
 
 const resources: SearchResourceOption[] = [
   { label: "All", value: "all" },
@@ -22,13 +24,29 @@ const sortOptions: { label: string; value: SearchSortValue }[] = [
 ]
 
 const TopNavBar = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
+
   return (
     <nav className="flex items-center justify-between gap-6 border-b p-4">
       <Button
         variant="ghost"
         className="h-10 shrink-0 cursor-pointer gap-2.5 rounded-full py-0 pr-4 pl-1.5 transition-colors"
         onClick={changePageHome}
-        aria-label="Raiders.io, go to home page"
+        aria-label={i18next.t('goToHomePage', 'Go to Home Page')}
       >
         <img
           src="/favicon.png"

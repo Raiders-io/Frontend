@@ -1,0 +1,16 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "baseLocale": "en",
+  "locales": [
+    "en",
+    "fr"
+  ],
+  "modules": [
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-i18next@6.2.1/dist/index.js"
+  ],
+  "plugin.inlang.i18next": {
+    "pathPattern": {
+      "translation": "./public/locales/{locale}/translation.json"
+    }
+  }
+}
