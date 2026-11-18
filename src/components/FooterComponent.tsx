@@ -1,115 +1,120 @@
 import {
-	changePageHome,
-	changePageChat,
-	changePageFileList,
-	changePageLessons,
-	changePageProfile,
-	changePageEditProfile,
-	changePageAbout,
-	changePageContact,
-	changePageCookies,
-	changePageTerms,
-	changePagePrivacy,
+  changePageHome,
+  changePageChat,
+  changePageFileList,
+  changePageLessons,
+  changePageProfile,
+  changePageEditProfile,
+  changePageAbout,
+  changePageContact,
+  changePageCookies,
+  changePageTerms,
+  changePagePrivacy,
 } from "@/utils/router/changePage"
 import { GithubLogo } from "@/components/GithubLogo"
 import { Button } from "@/components/ui/button"
 
-const NAV_COLUMNS = [
-	{
-		heading: "Plateforme",
-		links: [
-			{ label: "Home", onClick: changePageHome },
-			{ label: "Lessons", onClick: changePageLessons },
-			{ label: "Files", onClick: changePageFileList },
-		],
-	},
-	{
-		heading: "Compte",
-		links: [
-			{ label: "Profile", onClick: changePageProfile },
-			{ label: "Messages", onClick: changePageChat },
-		],
-	},
-	{
-		heading: "À propos",
-		links: [
-			{ label: "Settings", onClick: changePageEditProfile },
-			{ label: "About", onClick: changePageAbout },
-			{ label: "Contact", onClick: changePageContact },
-		],
-	},
-	{
-		heading: "Legal",
-		links: [
-			{ label: "Cookies Policy", onClick: changePageCookies },
-			{ label: "Terms Of Service", onClick: changePageTerms },
-			{ label: "Privacy Policy", onClick: changePagePrivacy },
-		],
-	},
+const NAV_COLUMNS: {
+  heading: string
+  links: { label: string; onClick: () => void }[]
+}[] = [
+  {
+    heading: "Plateforme",
+    links: [
+      { label: "Home", onClick: changePageHome },
+      { label: "Lessons", onClick: changePageLessons },
+      { label: "Files", onClick: changePageFileList },
+    ],
+  },
+  {
+    heading: "Compte",
+    links: [
+      { label: "Profile", onClick: changePageProfile },
+      { label: "Messages", onClick: changePageChat },
+    ],
+  },
+  {
+    heading: "À propos",
+    links: [
+      { label: "Settings", onClick: changePageEditProfile },
+      { label: "About", onClick: changePageAbout },
+      { label: "Contact", onClick: changePageContact },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      { label: "Cookies Policy", onClick: changePageCookies },
+      { label: "Terms Of Service", onClick: changePageTerms },
+      { label: "Privacy Policy", onClick: changePagePrivacy },
+    ],
+  },
 ]
 
 export const FooterComponent = () => {
-	return (
-		<footer className="w-full border-t bg-background">
-			<div className="mx-auto max-w-6xl px-6 py-12">
-				<div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-					<div className="col-span-2 sm:col-span-1">
-						<Button
-							onClick={changePageHome}
-							className="flex items-center gap-2.5"
-							variant="link"
-							aria-label="Go to Home Page"
-						>
-							<img
-								src="/favicon.png"
-								alt="Raiders.io"
-								className="size-7 rounded-md object-contain"
-							/>
-							<span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-								Raiders.io
-							</span>
-						</Button>
-						<p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-							Apprends, publie tes cours et teste tes connaissances.
-						</p>
-					</div>
-					{NAV_COLUMNS.map((column) => (
-						<nav key={column.heading} className="flex flex-col gap-3">
-							<h3 className="text-xs font-medium uppercase tracking-wider text-foreground">
-								{column.heading}
-							</h3>
-							<ul className="flex flex-col gap-2">
-								{column.links.map((link) => (
-									<li key={link.label}>
-										<Button
-											onClick={link.onClick}
-											aria-label={link.label}
-											className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-											variant="link"
-										>
-											{link.label}
-										</Button>
-									</li>
-								))}
-							</ul>
-						</nav>
-					))}
-				</div>
-				<div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
-					<p className="text-xs text-muted-foreground">
-						© {new Date().getFullYear()} Raiders.io - Project Transcendence
-					</p>
-					<Button
-						onClick={() => window.open("https://github.com/Raiders-io", "_blank")}
-						aria-label="View Project on GitHub"
-						className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
-						variant="link"
-					>
-						<GithubLogo />
-						GitHub
-					</Button>
-				</div>
-			</div>
-		</footer>
-	)
+  return (
+    <footer className="w-full border-t bg-background">
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-5 sm:grid-cols-4">
+          <div className="col-span-2 sm:col-span-1">
+            <Button
+              onClick={changePageHome}
+              className="flex items-center gap-2.5"
+              variant="link"
+              aria-label="Go to Home Page"
+            >
+              <img
+                src="/favicon.png"
+                alt="Raiders.io"
+                className="size-7 rounded-md object-contain"
+              />
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                Raiders.io
+              </span>
+            </Button>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              Apprends, publie tes cours et teste tes connaissances.
+            </p>
+          </div>
+          {NAV_COLUMNS.map((column) => (
+            <nav key={column.heading} className="flex flex-col gap-3">
+              <h3 className="text-xs font-medium uppercase tracking-wider text-foreground">
+                {column.heading}
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Button
+                      onClick={link.onClick}
+                      aria-label={link.label}
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      variant="link"
+                    >
+                      {link.label}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Raiders.io - Project Transcendence
+          </p>
+          <Button
+            onClick={() =>
+              window.open("https://github.com/Raiders-io", "_blank")
+            }
+            aria-label="View Project on GitHub"
+            className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            variant="link"
+          >
+            <GithubLogo />
+            GitHub
+          </Button>
+        </div>
+      </div>
+    </footer>
+  )
 }
