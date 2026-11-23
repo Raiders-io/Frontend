@@ -1,7 +1,7 @@
 import { lazy } from "react"
 
-const LoginPage = lazy(() => import("@/pages/auth/login"))
-const SignupPage = lazy(() => import("@/pages/auth/signup"))
+const LoginPage = lazy(() => import("@/pages/auth/SignupPage"))
+const SignupPage = lazy(() => import("@/pages/auth/LoginPage"))
 const HomePage = lazy(() => import("@/pages/home"))
 const LessonPage = lazy(() => import("@/pages/lesson/LessonPage"))
 const FileListPage = lazy(() => import("@/pages/file/index"))

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Link } from "react-router-dom"
 import { isAxiosError } from "axios"
-import { AlertCircle, Check, Eye, EyeOff, Loader2 } from "lucide-react"
+import { AlertCircle, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,18 +15,13 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group"
+import { PasswordInput } from "@/components/auth/PasswordInput"
+import { FormMessage } from "@/components/auth/FormMessage"
 import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
-import { AuthLayout } from "@/pages/auth/auth_layout"
+import { AuthLayout } from "@/pages/auth/AuthLayout"
 import { changePageChooseUsername } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
-import { cn } from "@/utils/lib/shadcn"
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
@@ -165,70 +160,6 @@ function parseSignupError(error: unknown): SignupFailure {
 /* -------------------------------------------------------------------------- */
 /*  Small internal components                                                 */
 /* -------------------------------------------------------------------------- */
-
-type MessageTone = "error" | "muted" | "success"
-
-function Message({
-  id,
-  tone,
-  children,
-}: {
-  id: string
-  tone: MessageTone
-  children?: React.ReactNode
-}) {
-  return (
-    <p
-      id={id}
-      role={tone === "error" ? "alert" : undefined}
-      className={cn(
-        "flex min-h-4 items-center gap-1.5 text-xs leading-4",
-        tone === "error" && "text-destructive",
-        tone === "muted" && "text-muted-foreground",
-        tone === "success" && "text-emerald-600 dark:text-emerald-500",
-      )}
-    >
-      {children}
-    </p>
-  )
-}
-
-function PasswordInput({
-  visible,
-  onToggle,
-  invalid,
-  ...props
-}: Omit<React.ComponentProps<"input">, "type"> & {
-  visible: boolean
-  onToggle: () => void
-  invalid: boolean
-}) {
-  // overflow-hidden: the browser's autofill tint is painted as a square inside
-  // the input; clipping the group keeps it flush with the rounded border.
-  return (
-    <InputGroup className="h-11 overflow-hidden bg-background">
-      <InputGroupInput
-        {...props}
-        type={visible ? "text" : "password"}
-        aria-invalid={invalid}
-        className="h-full"
-      />
-      <InputGroupAddon align="inline-end">
-        <InputGroupButton
-          type="button"
-          size="icon-xs"
-          aria-label={
-            visible ? "Hide password" : "Show password"
-          }
-          aria-pressed={visible}
-          onClick={onToggle}
-        >
-          {visible ? <EyeOff /> : <Eye />}
-        </InputGroupButton>
-      </InputGroupAddon>
-    </InputGroup>
-  )
-}
 
 const inlineLinkClass =
   "font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
@@ -383,7 +314,7 @@ export default function SignupPage() {
             className="h-11 bg-background"
             {...register("email")}
           />
-          <Message id="email-message" tone="error">
+          <FormMessage id="email-message" tone="error">
             {errors.email?.message}
             {errors.email?.type === "taken" && (
               <>
@@ -393,7 +324,7 @@ export default function SignupPage() {
                 </Link>
               </>
             )}
-          </Message>
+          </FormMessage>
         </div>
 
         {/* Password */}
@@ -421,14 +352,14 @@ export default function SignupPage() {
             })}
           />
           {errors.password ? (
-            <Message id="password-message" tone="error">
+            <FormMessage id="password-message" tone="error">
               {errors.password.message}
-            </Message>
+            </FormMessage>
           ) : (
-            <Message id="password-message" tone={isLengthOk ? "success" : "muted"}>
+            <FormMessage id="password-message" tone={isLengthOk ? "success" : "muted"}>
               {isLengthOk && <Check className="size-3" aria-hidden />}
               At least {PASSWORD_MIN_LENGTH} characters.
-            </Message>
+            </FormMessage>
           )}
         </div>
 
@@ -450,17 +381,17 @@ export default function SignupPage() {
             {...register("passwordConfirmation")}
           />
           {errors.passwordConfirmation ? (
-            <Message id="passwordConfirmation-message" tone="error">
+            <FormMessage id="passwordConfirmation-message" tone="error">
               {errors.passwordConfirmation.message}
-            </Message>
+            </FormMessage>
           ) : (
-            <Message
+            <FormMessage
               id="passwordConfirmation-message"
               tone={doPasswordsMatch ? "success" : "muted"}
             >
               {doPasswordsMatch && <Check className="size-3" aria-hidden />}
               {doPasswordsMatch ? "Passwords match." : null}
-            </Message>
+            </FormMessage>
           )}
         </div>
 
