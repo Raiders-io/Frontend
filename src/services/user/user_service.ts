@@ -8,6 +8,7 @@ import type {
   LessonOngoing,
   LessonStatus,
   PrivateProfile,
+  Profile,
   PublicProfile,
   ReceivedFriendRequest,
   RelationshipStatus,
