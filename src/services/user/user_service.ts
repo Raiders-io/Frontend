@@ -90,10 +90,12 @@ export const userService = {
 
   searchUsers: async (
     q: string,
+    signal?: AbortSignal,
     { page, limit }: PaginationParams = {}
   ): Promise<Paginated<UserSearchResult>> => {
     const { data } = await api.get<Paginated<UserSearchResult>>(`${PROFILE}/search`, {
       params: { q, page, limit },
+      signal,
     })
     return data
   },
@@ -183,4 +185,5 @@ export const userService = {
     const { data } = await api.get<Paginated<CreatedExam>>(`${PROFILE}/${userId}/exams`, { params })
     return data
   },
+
 }
