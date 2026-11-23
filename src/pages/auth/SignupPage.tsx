@@ -217,6 +217,7 @@ export default function SignupPage() {
   const { setAuth } = useAuthStore()
   const [formError, setFormError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   const {
     register,
@@ -374,8 +375,8 @@ export default function SignupPage() {
           <PasswordInput
             id="passwordConfirmation"
             autoComplete="new-password"
-            visible={showPassword}
-            onToggle={() => setShowPassword((v) => !v)}
+            visible={showConfirmation}
+            onToggle={() => setShowConfirmation((v) => !v)}
             invalid={!!errors.passwordConfirmation}
             aria-describedby="passwordConfirmation-message"
             {...register("passwordConfirmation")}
