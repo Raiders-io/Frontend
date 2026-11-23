@@ -10,9 +10,20 @@ import {
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { EditProfileDialog } from "@/pages/user/EditProfileDialog"
+import { ChangeEmailDialog } from "@/components/settings/ChangeEmailDialog"
+import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog"
 import {
   SettingRow,
   SettingsSection,
@@ -21,11 +32,7 @@ import { ThemeSelector } from "@/components/settings/ThemeSelector"
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog"
 import { authService } from "@/services/auth_service"
 import { useMe } from "@/services/user/user_queries"
-import {
-  changePageFileList,
-  changePageLogin,
-  changePageProfile,
-} from "@/utils/router/changePage"
+import { changePageFileList, changePageLogin } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
 import { useActionSettingsStore } from "@/utils/stores/action_settings_store"
 import { useAuthStore } from "@/utils/stores/auth_store"
@@ -74,7 +81,10 @@ function AccountSection() {
       description="Your sign-in details and public profile."
     >
       <SettingRow title="Email" description="Used to sign in.">
-        <span className="text-sm text-muted-foreground">{email ?? "—"}</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm text-muted-foreground">{email ?? "—"}</span>
+          <ChangeEmailDialog />
+        </div>
       </SettingRow>
 
       <SettingRow
@@ -89,10 +99,15 @@ function AccountSection() {
               {me ? `@${me.username}` : "—"}
             </span>
           )}
-          <Button variant="outline" size="sm" onClick={changePageProfile}>
-            Edit profile
-          </Button>
+          {me && <EditProfileDialog me={me} />}
         </div>
+      </SettingRow>
+
+      <SettingRow
+        title="Password"
+        description="Change the password you use to sign in."
+      >
+        <ChangePasswordDialog />
       </SettingRow>
 
       <SettingRow title="Session" description="Sign out on this device.">
@@ -113,7 +128,29 @@ function AppearanceSection() {
       title="Appearance"
       description="Choose how Raiders.io looks on this device."
     >
-      <ThemeSelector />
+      <div className="pb-4">
+        <ThemeSelector />
+      </div>
+
+      {/* TODO: wire to an i18n solution (e.g. react-i18next) and persist the choice. */}
+      <SettingRow
+        title="Language"
+        description="Language of the interface."
+        htmlFor="setting-language"
+      >
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">Coming soon</Badge>
+          <Select value="en" disabled>
+            <SelectTrigger id="setting-language" className="w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="fr">Français</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </SettingRow>
     </SettingsSection>
   )
 }
