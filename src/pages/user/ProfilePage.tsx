@@ -1,4 +1,6 @@
+import type { ComponentProps } from "react"
 import { useParams } from "react-router-dom"
+import axios from "axios"
 import { Button } from "@/components/ui/button"
 import {
   Empty,
@@ -9,6 +11,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import type { PrivateProfile } from "@/utils/types/user"
 import { useProfile } from "@/services/user/user_queries"
+import { UserBackground } from "@/components/user/UserBackground"
+import { changePageLogin } from "@/utils/router/changePage"
+import { useAuthStore } from "@/utils/stores/auth_store"
 import { ProfileHeader } from "./ProfileHeader"
 import { MyLearning } from "./MyLearning"
 import { CreatedContent } from "./CreatedContent"
@@ -17,10 +22,7 @@ import { EditProfileDialog } from "./EditProfileDialog"
 import { FriendButton } from "./FriendButton"
 import { Biography } from "../../components/user/Biography"
 import { getErrorMessage } from "./utils"
-import { UserBackground } from "@/components/user/UserBackground"
-import { changePageLogin } from "@/utils/router/changePage"
-import { useAuthStore } from "@/utils/stores/auth_store"
-import axios from "axios"
+import NotFound from "../NotFound"
 
 type ProfileMode = "owner" | "visitor" | "guest"
 
@@ -42,33 +44,130 @@ function LoginButton({ label = "Log in" }: { label?: string }) {
   )
 }
 
+function ProfileBackground({
+  user,
+  isLoading,
+}: {
+  user?: ComponentProps<typeof UserBackground>["user"]
+  isLoading: boolean
+}) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-74 overflow-hidden sm:h-78 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+    >
+      {user ? (
+        <UserBackground
+          user={user}
+          className="absolute inset-0 size-full object-cover animate-in fade-in duration-500"
+        />
+      ) : (
+        // Statique (pas de pulse) : le skeleton du contenu indique déjà le chargement
+        <div
+          className={
+            isLoading
+              ? "absolute inset-0 bg-muted"
+              : "absolute inset-0 bg-gradient-to-b from-muted/60 to-transparent"
+          }
+        />
+      )}
+    </div>
+  )
+}
+
+function SectionSkeleton({
+  cards = 2,
+  cardClassName = "h-28",
+}: {
+  cards?: number
+  cardClassName?: string
+}) {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-6 w-36" />
+      <div className="grid gap-3 sm:grid-cols-2">
+        {Array.from({ length: cards }).map((_, i) => (
+          <Skeleton key={i} className={`w-full rounded-lg ${cardClassName}`} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function BioSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-6 w-28" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-11/12" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    </div>
+  )
+}
+
+function FriendsSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-6 w-24" />
+      <div className="space-y-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="size-10 shrink-0 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-1/2" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function ProfileSkeleton({ mode }: { mode: ProfileMode }) {
   const isOwner = mode === "owner"
+
   return (
-    <div className="space-y-10" aria-busy="true" aria-label="Loading profile">
-      <div className="flex items-center gap-6">
+    <div
+      className="space-y-10"
+      role="status"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span className="sr-only">Loading profile…</span>
+
+      {/* Header : avatar + nom + action (présente dans les 3 modes) */}
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
         <Skeleton className="size-24 shrink-0 rounded-full" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-7 w-48" />
-          <Skeleton className="h-4 w-28" />
+        <div className="w-full flex-1 space-y-2">
+          <Skeleton className="mx-auto h-7 w-48 sm:mx-0" />
+          <Skeleton className="mx-auto h-4 w-28 sm:mx-0" />
         </div>
-        {mode !== "guest" && <Skeleton className="h-9 w-24 rounded-md" />}
+        <Skeleton
+          className={`h-9 shrink-0 rounded-md ${
+            mode === "guest" ? "w-40" : "w-24"
+          }`}
+        />
       </div>
 
-      <div className={isOwner ? OWNER_GRID : undefined}>
-        <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-lg" />
-          ))}
-        </div>
-        {isOwner && (
-          <div className="space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 w-full rounded-lg" />
-            ))}
+      {/* Corps : même structure que le rendu final */}
+      {isOwner ? (
+        <div className={OWNER_GRID}>
+          <div className="space-y-8">
+            <BioSkeleton />
+            <SectionSkeleton cards={2} />
+            <SectionSkeleton cards={4} cardClassName="h-36" />
           </div>
-        )}
-      </div>
+          <FriendsSkeleton />
+        </div>
+      ) : (
+        <div className="space-y-8">
+          <BioSkeleton />
+          <SectionSkeleton cards={4} cardClassName="h-36" />
+        </div>
+      )}
     </div>
   )
 }
@@ -116,10 +215,17 @@ function ProfileContent({
 }) {
   const { data: user, error, isPending, refetch } = useProfile(userId)
 
+  if (axios.isAxiosError(error) && error.response?.status === 404) {
+    return (
+      <NotFound
+        title="Profile not found"
+        description="This profile does not exist."
+      />
+    )
+  }
+
   const errorMessage = error
-    ? axios.isAxiosError(error) && error.response?.status === 404
-      ? "This profile does not exist."
-      : getErrorMessage(error, "Failed to load profile")
+    ? getErrorMessage(error, "Failed to load profile")
     : null
 
   const renderActions = () => {
@@ -135,11 +241,10 @@ function ProfileContent({
   }
 
   return (
-    <div className="relative min-h-screen w-full">
-      <UserBackground
-        user={user}
-        className="absolute inset-x-0 top-0 -z-10 h-74 sm:h-78"
-      />
+    // `isolate` crée un stacking context : le -z-10 du fond reste
+    // derrière le contenu sans passer derrière le body/layout parent.
+    <div className="relative isolate min-h-dvh w-full">
+      <ProfileBackground user={user} isLoading={isPending && !error} />
 
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
         {errorMessage ? (

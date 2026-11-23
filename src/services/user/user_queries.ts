@@ -10,6 +10,7 @@ import {
 import { userService } from "./user_service"
 import type { PublicProfile, RelationshipStatus, UpdateMePayload } from "@/utils/types/user"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import axios from "axios"
 
 const USERNAME_CHECK_DEBOUNCE_MS = 400
 
@@ -147,10 +148,10 @@ export function useMe() {
 
 export function useProfile(identifier?: string) {
   return useQuery<PublicProfile>({
-    enabled: Boolean(identifier),
     queryKey: identifier === undefined ? userKeys.me() : userKeys.profile(identifier),
-    queryFn: () =>
-      identifier === undefined ? userService.fetchMe() : userService.fetchProfile(identifier),
+    queryFn: () => identifier === undefined ? userService.fetchMe() : userService.fetchProfile(identifier),
+    retry: (count, error) => count < 2 && !(axios.isAxiosError(error) && error.response?.status === 404),
+    refetchOnWindowFocus: false,
   })
 }
 
