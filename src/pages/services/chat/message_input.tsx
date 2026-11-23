@@ -4,9 +4,13 @@ import { z } from 'zod'
 import { ArrowUp } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { socket } from '@/utils/lib/socket'
+
+const MAX_LENGTH = 2000
 
 const schema = z.object({
-	content: z.string().trim().min(1),
+	content: z.string().trim().min(1).max(MAX_LENGTH),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -22,9 +26,14 @@ export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: 
 		defaultValues: { content: '' },
 	})
 
-	const canSend = watch('content').trim().length > 0
+	const content = watch('content')
+	const canSend = content.trim().length > 0 && content.length <= MAX_LENGTH
 
 	const submit = handleSubmit(({ content }) => {
+		if (!socket.connected) {
+			toast.error('Pas de connexion, message non envoyé')
+			return
+		}
 		onSend(content)
 		reset()
 	})
@@ -36,7 +45,8 @@ export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: 
 					{...register('content')}
 					placeholder={placeholder}
 					autoComplete="off"
-					className="h-11 rounded-full border-transparent bg-muted px-5 focus-visible:border-input focus-visible:bg-background"
+					maxLength={MAX_LENGTH}
+					className="h-11 flex-1 rounded-full border-transparent bg-muted px-5 focus-visible:border-input focus-visible:bg-background"
 				/>
 				<Button
 					type="submit"
@@ -48,6 +58,11 @@ export function MessageInput({ onSend, placeholder = 'Écrire un message…' }: 
 					<span className="sr-only">Envoyer</span>
 				</Button>
 			</div>
+			{content.length > MAX_LENGTH - 200 && (
+				<p className="mt-1 pr-14 text-right font-mono text-[10px] text-muted-foreground">
+					{content.length} / {MAX_LENGTH}
+				</p>
+			)}
 		</form>
 	)
 }
