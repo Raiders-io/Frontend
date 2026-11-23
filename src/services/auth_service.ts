@@ -1,6 +1,8 @@
 import api from "@/utils/lib/axios"
 import type {
   AuthResponse,
+  ChangeEmailPayload,
+  ChangePasswordPayload,
   Credentials,
   LoginPayload,
   SignupPayload,
@@ -19,6 +21,9 @@ export const authService = {
     )
     return data
   },
+
+  changePassword: async (password: ChangePasswordPayload): Promise<void> => {},
+  changeEmail: async (email: ChangeEmailPayload): Promise<void> => {},
 
   deleteAccount: async (): Promise<void> => {
     await api.delete("/api/v1/auth/users/")

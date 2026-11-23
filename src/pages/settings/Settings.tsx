@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EditProfileDialog } from "@/pages/user/EditProfileDialog"
-import { ChangeEmailDialog } from "@/components/settings/ChangeEmailDialog"
-import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog"
 import {
   SettingRow,
   SettingsSection,
@@ -36,6 +34,8 @@ import { changePageFileList, changePageLogin } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
 import { useActionSettingsStore } from "@/utils/stores/action_settings_store"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import { ChangeEmailDialog } from "@/components/settings/ChangeEmailDialog"
+import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog"
 
 /* -------------------------------------------------------------------------- */
 /*  Navigation (anchors to the sections below)                                */

@@ -16,14 +16,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { FormMessage } from "@/components/auth/FormMessage"
 import { UserAvatar } from "@/components/user/UserAvatar"
 import { UserBackground } from "@/components/user/UserBackground"
 import {
@@ -447,9 +443,15 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                         WebP, 15 MB max, compressed automatically. Photo:
                         200×200 px min. Banner: 3:1 ratio, 600×200 px min.
                       </p>
-                      {avatar.error && <FieldError>{avatar.error}</FieldError>}
+                      {avatar.error && (
+                        <FormMessage id="avatar-message" tone="error">
+                          {avatar.error}
+                        </FormMessage>
+                      )}
                       {background.error && (
-                        <FieldError>{background.error}</FieldError>
+                        <FormMessage id="background-message" tone="error">
+                          {background.error}
+                        </FormMessage>
                       )}
                     </div>
                   </div>
@@ -462,18 +464,24 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                       <Input
                         id="firstname"
                         aria-invalid={!!errors.firstname}
+                        aria-describedby="firstname-message"
                         {...register("firstname")}
                       />
-                      <FieldError errors={[errors.firstname]} />
+                      <FormMessage id="firstname-message" tone="error">
+                        {errors.firstname?.message}
+                      </FormMessage>
                     </Field>
                     <Field data-invalid={!!errors.lastname}>
                       <FieldLabel htmlFor="lastname">Last name</FieldLabel>
                       <Input
                         id="lastname"
                         aria-invalid={!!errors.lastname}
+                        aria-describedby="lastname-message"
                         {...register("lastname")}
                       />
-                      <FieldError errors={[errors.lastname]} />
+                      <FormMessage id="lastname-message" tone="error">
+                        {errors.lastname?.message}
+                      </FormMessage>
                     </Field>
                   </div>
 
@@ -504,6 +512,7 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                             id="bio"
                             rows={4}
                             aria-invalid={fieldState.invalid}
+                            aria-describedby="bio-message"
                             className="max-h-32 resize-none overflow-y-auto sm:hidden"
                           />
 
@@ -520,13 +529,19 @@ export function EditProfileDialog({ me }: { me: PrivateProfile }) {
                             />
                           </div>
 
-                          <FieldError errors={[fieldState.error]} />
+                          <FormMessage id="bio-message" tone="error">
+                            {fieldState.error?.message}
+                          </FormMessage>
                         </Field>
                       )
                     }}
                   />
 
-                  <FieldError errors={[errors.root]} />
+                  {errors.root && (
+                    <FormMessage id="root-message" tone="error">
+                      {errors.root.message}
+                    </FormMessage>
+                  )}
                 </FieldGroup>
               </div>
 

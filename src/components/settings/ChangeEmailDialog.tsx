@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { isAxiosError } from "axios"
 import { AlertCircle, Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -21,6 +20,8 @@ import { PasswordInput } from "@/components/auth/PasswordInput"
 import { FormMessage } from "@/components/auth/FormMessage"
 import { authService } from "@/services/auth_service"
 import { useAuthStore } from "@/utils/stores/auth_store"
+import { emailSchema } from "@/utils/schema/authSchema"
+import { getErrorMessage } from "@/pages/user/utils"
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
@@ -30,12 +31,7 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 const makeSchema = (currentEmail: string) =>
   z
     .object({
-      email: z
-        .string()
-        .trim()
-        .toLowerCase()
-        .min(1, "Enter your new email address.")
-        .email("This email address looks invalid (e.g. name@example.com)."),
+      email: emailSchema,
       password: z.string().min(1, "Enter your password to confirm."),
     })
     .refine((d) => d.email !== currentEmail.trim().toLowerCase(), {
@@ -44,75 +40,6 @@ const makeSchema = (currentEmail: string) =>
     })
 
 type EmailForm = z.infer<ReturnType<typeof makeSchema>>
-type FieldName = keyof EmailForm
-
-/* -------------------------------------------------------------------------- */
-/*  Server error handling                                                     */
-/* -------------------------------------------------------------------------- */
-
-interface ApiErrorBody {
-  errors?: { field?: string; message?: string; rule?: string }[]
-}
-
-interface Failure {
-  field?: FieldName
-  type?: string
-  message: string
-}
-
-const EMAIL_TAKEN = "An account already exists with this email address."
-
-function parseError(error: unknown): Failure {
-  if (!isAxiosError<ApiErrorBody>(error)) {
-    return {
-      message: "Something unexpected happened. Please try again in a moment.",
-    }
-  }
-
-  const { response } = error
-  if (!response) {
-    return {
-      message:
-        error.code === "ECONNABORTED" || error.code === "ETIMEDOUT"
-          ? "The server is taking too long to respond. Please try again in a moment."
-          : "Can't reach the server. Check your internet connection and try again.",
-    }
-  }
-
-  const { status, data } = response
-
-  if (status === 409) return { field: "email", type: "taken", message: EMAIL_TAKEN }
-  if (status === 401 || status === 403) {
-    return { field: "password", message: "Incorrect password." }
-  }
-  if (status === 400 || status === 422) {
-    for (const apiError of data?.errors ?? []) {
-      if (apiError.field === "password") {
-        return { field: "password", message: "Incorrect password." }
-      }
-      if (apiError.field === "email") {
-        const taken = /unique|exist|taken|already/i.test(
-          `${apiError.rule ?? ""} ${apiError.message ?? ""}`,
-        )
-        return taken
-          ? { field: "email", type: "taken", message: EMAIL_TAKEN }
-          : { field: "email", message: "This email address isn't accepted." }
-      }
-    }
-    return { message: "Some information is invalid. Please check the form." }
-  }
-  if (status === 429) {
-    return {
-      message: "Too many attempts. Please wait a moment before trying again.",
-    }
-  }
-  if (status >= 500) {
-    return {
-      message: "Something went wrong on our side. Please try again in a moment.",
-    }
-  }
-  return { message: "Email update failed. Please try again in a moment." }
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Component                                                                 */
@@ -135,7 +62,6 @@ export function ChangeEmailDialog() {
     handleSubmit,
     watch,
     reset,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<EmailForm>({
     resolver: zodResolver(schema),
@@ -143,6 +69,7 @@ export function ChangeEmailDialog() {
     defaultValues: { email: "", password: "" },
   })
 
+  // The banner describes the previous attempt: drop it as soon as a field changes.
   useEffect(() => {
     const { unsubscribe } = watch(() => setFormError(null))
     return () => unsubscribe()
@@ -166,17 +93,7 @@ export function ChangeEmailDialog() {
       toast.success("Email updated.")
       handleOpenChange(false)
     } catch (error) {
-      console.error("Change email error:", error)
-      const failure = parseError(error)
-      if (failure.field) {
-        setError(
-          failure.field,
-          { type: failure.type ?? "server", message: failure.message },
-          { shouldFocus: true },
-        )
-      } else {
-        setFormError(failure.message)
-      }
+      setFormError(getErrorMessage(error, "Email update failed. Please try again."))
     }
   }
 
