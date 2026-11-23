@@ -10,7 +10,6 @@ import {
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -122,8 +121,16 @@ function AccountSection() {
   )
 }
 
+const LANGUAGES: { code: string; labelKey: string; fallback: string }[] = [
+  { code: "en", labelKey: "english", fallback: "English" },
+  { code: "fr", labelKey: "franais", fallback: "Français" },
+  { code: "es", labelKey: "espaol", fallback: "Español" },
+  { code: "de", labelKey: "deutsch", fallback: "Deutsch" },
+]
+
 function AppearanceSection() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const currentLanguage = i18n.language?.split("-")[0] || "en"
   return (
     <SettingsSection
       id="appearance"
@@ -135,24 +142,26 @@ function AppearanceSection() {
         <ThemeSelector />
       </div>
 
-      {/* TODO: wire to an i18n solution (e.g. react-i18next) and persist the choice. */}
       <SettingRow
-        title="Language"
+        title={t('language', 'Language')}
         description={t('languageOfTheInterface', 'Language of the interface.')}
         htmlFor="setting-language"
       >
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary">{t('comingSoon', 'Coming soon')}</Badge>
-          <Select value="en" disabled>
-            <SelectTrigger id="setting-language" className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="en">{t('english', 'English')}</SelectItem>
-              <SelectItem value="fr">{t('franais', 'Français')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select
+          value={currentLanguage}
+          onValueChange={(lng) => i18n.changeLanguage(lng)}
+        >
+          <SelectTrigger id="setting-language" className="w-36">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {LANGUAGES.map(({ code, labelKey, fallback }) => (
+              <SelectItem key={code} value={code}>
+                {t(labelKey, fallback)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </SettingRow>
     </SettingsSection>
   )
