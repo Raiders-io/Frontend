@@ -2,11 +2,11 @@ import { useCallback } from "react"
 import { BookOpen, ClipboardList } from "lucide-react"
 import { userService } from "@/services/user/user_service"
 import type { PaginationParams } from "@/utils/types/common"
-import { formatDate } from "./utils"
+import { formatDate } from "../../pages/user/utils"
 import {
   ItemRow,
   PaginatedSection,
-} from "../../components/user/PaginatedSection"
+} from "./PaginatedSection"
 
 /** Public: what this profile has created (lessons and exams). */
 export function CreatedContent({ userId }: { userId: string }) {

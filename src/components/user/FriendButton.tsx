@@ -10,8 +10,8 @@ import {
   useRemoveFriend,
   useSendFriendRequest,
 } from "@/services/user/user_queries"
-import { UnfriendDialog } from "./UnfriendDialog"
-import { getErrorMessage } from "./utils"
+import { UnfriendDialog } from "../../pages/user/UnfriendDialog"
+import { getErrorMessage } from "../../pages/user/utils"
 
 export function FriendButton({
   userId,
