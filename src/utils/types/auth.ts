@@ -9,6 +9,16 @@ export interface SignupPayload {
   passwordConfirmation: string
 }
 
+export interface ChangePasswordPayload {
+  password: string
+  passwordConfirmation: string
+}
+
+export interface ChangeEmailPayload {
+  email: string
+  password: string
+}
+
 export interface Credentials {
   id: string
   email: string

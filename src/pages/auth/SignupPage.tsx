@@ -22,6 +22,7 @@ import { useAuthStore } from "@/utils/stores/auth_store"
 import { AuthLayout } from "@/pages/auth/AuthLayout"
 import { changePageChooseUsername } from "@/utils/router/changePage"
 import { PATHS } from "@/utils/router/paths"
+import { emailSchema, newPasswordSchema } from "@/utils/schema/authSchema"
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
@@ -31,19 +32,8 @@ const PASSWORD_MIN_LENGTH = 8
 
 const signupSchema = z
   .object({
-    email: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(1, "Enter your email address.")
-      .email("This email address looks invalid (e.g. name@example.com)."),
-    password: z
-      .string()
-      .min(1, "Choose a password.")
-      .min(
-        PASSWORD_MIN_LENGTH,
-        `Your password must be at least ${PASSWORD_MIN_LENGTH} characters long.`,
-      ),
+    email: emailSchema,
+    password: newPasswordSchema,
     passwordConfirmation: z.string().min(1, "Confirm your password."),
     ageConfirmed: z
       .boolean()

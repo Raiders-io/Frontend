@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { isAxiosError } from "axios"
 import { AlertCircle, KeyRound, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -19,23 +18,20 @@ import { Label } from "@/components/ui/label"
 import { PasswordInput } from "@/components/auth/PasswordInput"
 import { FormMessage } from "@/components/auth/FormMessage"
 import { authService } from "@/services/auth_service"
+import {
+  PASSWORD_MIN_LENGTH,
+  newPasswordSchema,
+} from "@/utils/schema/authSchema"
+import { getErrorMessage } from "@/pages/user/utils"
 
 /* -------------------------------------------------------------------------- */
 /*  Validation                                                                */
 /* -------------------------------------------------------------------------- */
 
-const PASSWORD_MIN_LENGTH = 8
-
 const schema = z
   .object({
     currentPassword: z.string().min(1, "Enter your current password."),
-    password: z
-      .string()
-      .min(1, "Choose a new password.")
-      .min(
-        PASSWORD_MIN_LENGTH,
-        `Your password must be at least ${PASSWORD_MIN_LENGTH} characters long.`,
-      ),
+    password: newPasswordSchema,
     passwordConfirmation: z.string().min(1, "Confirm your new password."),
   })
   .refine((d) => d.password === d.passwordConfirmation, {
@@ -48,72 +44,6 @@ const schema = z
   })
 
 type PasswordForm = z.infer<typeof schema>
-type FieldName = keyof PasswordForm
-
-/* -------------------------------------------------------------------------- */
-/*  Server error handling                                                     */
-/* -------------------------------------------------------------------------- */
-
-interface ApiErrorBody {
-  errors?: { field?: string; message?: string }[]
-}
-
-interface Failure {
-  /** When set, the message is attached to this field instead of the banner. */
-  field?: FieldName
-  message: string
-}
-
-const WRONG_CURRENT = "Incorrect current password."
-
-function parseError(error: unknown): Failure {
-  if (!isAxiosError<ApiErrorBody>(error)) {
-    return {
-      message: "Something unexpected happened. Please try again in a moment.",
-    }
-  }
-
-  const { response } = error
-  if (!response) {
-    return {
-      message:
-        error.code === "ECONNABORTED" || error.code === "ETIMEDOUT"
-          ? "The server is taking too long to respond. Please try again in a moment."
-          : "Can't reach the server. Check your internet connection and try again.",
-    }
-  }
-
-  const { status, data } = response
-
-  if (status === 401 || status === 403) {
-    return { field: "currentPassword", message: WRONG_CURRENT }
-  }
-  if (status === 400 || status === 422) {
-    for (const apiError of data?.errors ?? []) {
-      if (apiError.field === "currentPassword") {
-        return { field: "currentPassword", message: WRONG_CURRENT }
-      }
-      if (apiError.field === "password") {
-        return {
-          field: "password",
-          message: "This password isn't accepted. Please try another one.",
-        }
-      }
-    }
-    return { message: "Some information is invalid. Please check the form." }
-  }
-  if (status === 429) {
-    return {
-      message: "Too many attempts. Please wait a moment before trying again.",
-    }
-  }
-  if (status >= 500) {
-    return {
-      message: "Something went wrong on our side. Please try again in a moment.",
-    }
-  }
-  return { message: "Password update failed. Please try again in a moment." }
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Component                                                                 */
@@ -131,7 +61,6 @@ export function ChangePasswordDialog() {
     handleSubmit,
     watch,
     reset,
-    setError,
     trigger,
     getValues,
     formState: { errors, isSubmitting },
@@ -170,17 +99,7 @@ export function ChangePasswordDialog() {
       toast.success("Password updated.")
       handleOpenChange(false)
     } catch (error) {
-      console.error("Change password error:", error)
-      const failure = parseError(error)
-      if (failure.field) {
-        setError(
-          failure.field,
-          { type: "server", message: failure.message },
-          { shouldFocus: true },
-        )
-      } else {
-        setFormError(failure.message)
-      }
+      setFormError(getErrorMessage(error, "Password update failed. Please try again."))
     }
   }
 
