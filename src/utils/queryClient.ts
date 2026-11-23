@@ -24,9 +24,10 @@ export const queryClient = new QueryClient({
         // ex: expiration de session -> déconnexion / redirection login
         // useAuthStore.getState().logout()
       }
-      // Les requêtes peuvent s'exclure avec meta: { silent: true }
+	  if (axios.isAxiosError(error) && error.response?.status === 404) return
       if (query.meta?.silent) return
       toast.error(getErrorMessage(error, "Something went wrong"))
+
     },
   }),
   defaultOptions: {
