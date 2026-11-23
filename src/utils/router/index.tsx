@@ -86,8 +86,8 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: PATHS.user(":userId"),
-        element: <PublicProfilePage />,
+        path: PATHS.user(":identifier"),
+        element: <PublicProfilePage/>,
       },
       {
         path: PATHS.settings,

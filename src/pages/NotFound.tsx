@@ -1,37 +1,34 @@
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card"
-import { changePageHome } from "@/utils/router/changePage"
-import { useLocation } from "react-router-dom"
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty"
 
-const NotFound = () => {
-  const location = useLocation() // Récupère l'URL actuelle
-
+export function NotFound({
+  title = "Page not found",
+  description = "The page you are looking for does not exist or has been moved.",
+}: {
+  title?: string
+  description?: string
+}) {
   return (
-    <div className="mx-auto w-full max-w-6xl p-6 text-center justify-center items-center flex flex-col gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>404 - Page non trouvée</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>La page que vous cherchez n'existe pas.</p>
-          <p>
-            Vous avez tenté d'accéder à la page :
-            <Card>
-              <CardContent>{location.pathname}</CardContent>
-            </Card>
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <Button onClick={changePageHome} aria-label="Retour à l'accueil">Retour à l'accueil</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <main className="flex flex-1 w-full items-center justify-center px-4 py-16">
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>{title}</EmptyTitle>
+          <EmptyDescription>{description}</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button asChild size="sm">
+            <Link to="/">Back to home</Link>
+          </Button>
+        </EmptyContent>
+      </Empty>
+    </main>
   )
 }
 
