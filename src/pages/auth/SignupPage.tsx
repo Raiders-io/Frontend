@@ -252,7 +252,7 @@ export default function SignupPage() {
   const onSubmit = async ({ email, password }: SignupForm) => {
     setFormError(null)
     try {
-      const response = await authService.signup({ email, password })
+      const response = await authService.signup({ email, password, passwordConfirmation})
       setAuth(response.data.user, response.data.token)
       changePageChooseUsername()
     } catch (error) {
