@@ -111,7 +111,7 @@ function AccountSection() {
       </SettingRow>
 
       <SettingRow title="Session" description="Sign out on this device.">
-        <Button variant="outline" size="sm" onClick={handleLogout}>
+        <Button variant="destructive" size="sm" onClick={handleLogout}>
           <LogOut />
           Log out
         </Button>
