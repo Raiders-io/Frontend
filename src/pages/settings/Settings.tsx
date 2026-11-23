@@ -88,8 +88,8 @@ function AccountSection() {
       </SettingRow>
 
       <SettingRow
-        title="Username"
-        description="Name, photo, banner and bio are edited from your profile."
+        title="Profile"
+        description="Username, name, photo, banner and bio are edited from your profile."
       >
         <div className="flex items-center gap-3">
           {isPending ? (

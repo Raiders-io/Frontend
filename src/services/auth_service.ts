@@ -22,8 +22,13 @@ export const authService = {
     return data
   },
 
-  changePassword: async (password: ChangePasswordPayload): Promise<void> => {},
-  changeEmail: async (email: ChangeEmailPayload): Promise<void> => {},
+  changePassword: async (payload: ChangePasswordPayload): Promise<void> => {
+    await api.patch("/api/v1/account/password", payload)
+  },
+
+  changeEmail: async (payload: ChangeEmailPayload): Promise<void> => {
+    await api.patch("/api/v1/account/email", payload)
+  },
 
   deleteAccount: async (): Promise<void> => {
     await api.delete("/api/v1/auth/users/")
