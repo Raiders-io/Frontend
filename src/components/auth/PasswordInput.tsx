@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import {
   InputGroup,
@@ -7,9 +8,11 @@ import {
 } from "@/components/ui/input-group"
 
 type PasswordInputProps = Omit<React.ComponentProps<"input">, "type"> & {
-  visible: boolean
-  onToggle: () => void
-  invalid: boolean
+  /** Controlled visibility. Omit it and the component manages it itself. */
+  visible?: boolean
+  onToggle?: () => void
+  /** Defaults to the `aria-invalid` prop. */
+  invalid?: boolean
 }
 
 export function PasswordInput({
@@ -18,25 +21,33 @@ export function PasswordInput({
   invalid,
   ...props
 }: PasswordInputProps) {
+  const [internalVisible, setInternalVisible] = useState(false)
+
+  const isVisible = visible ?? internalVisible
+  const toggle = onToggle ?? (() => setInternalVisible((v) => !v))
+  const isInvalid =
+    invalid ??
+    (props["aria-invalid"] === true || props["aria-invalid"] === "true")
+
   // overflow-hidden: the browser's autofill tint is painted as a square inside
   // the input; clipping the group keeps it flush with the rounded border.
   return (
     <InputGroup className="h-11 overflow-hidden bg-background">
       <InputGroupInput
         {...props}
-        type={visible ? "text" : "password"}
-        aria-invalid={invalid}
+        type={isVisible ? "text" : "password"}
+        aria-invalid={isInvalid}
         className="h-full"
       />
       <InputGroupAddon align="inline-end">
         <InputGroupButton
           type="button"
           size="icon-xs"
-          aria-label={visible ? "Hide password" : "Show password"}
-          aria-pressed={visible}
-          onClick={onToggle}
+          aria-label={isVisible ? "Hide password" : "Show password"}
+          aria-pressed={isVisible}
+          onClick={toggle}
         >
-          {visible ? <EyeOff /> : <Eye />}
+          {isVisible ? <EyeOff /> : <Eye />}
         </InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
