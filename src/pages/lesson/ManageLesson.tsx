@@ -24,11 +24,21 @@ type ViewMode = "all" | "public" | "private" | "by-file"
 
 export default function MyLessonsPage() {
   const [lessons, setLessons] = useState<Lesson[]>([])
-  const [files, setFiles] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>("all")
   const [layout, setLayout] = useState<ItemLayout>('grid')
   const [selectedFilename, setSelectedFilename] = useState<string | null>(null)
+
+  // Derived from the lessons so attachment changes are reflected in "By File".
+  const files = useMemo(() => {
+    const allFiles = new Map<string, FileItem>()
+    for (const lesson of lessons) {
+      for (const file of lesson.files ?? []) {
+        allFiles.set(file.filename, file)
+      }
+    }
+    return Array.from(allFiles.values())
+  }, [lessons])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,16 +48,6 @@ export default function MyLessonsPage() {
 
         const lessonsData = Array.isArray(response) ? response : [];
         setLessons(lessonsData)
-
-        const allFiles = new Map<string, FileItem>()
-        for (const lesson of lessonsData) {
-          if (lesson.files) {
-            for (const file of lesson.files) {
-              allFiles.set(file.filename, file)
-            }
-          }
-        }
-        setFiles(Array.from(allFiles.values()))
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -77,6 +77,12 @@ export default function MyLessonsPage() {
     } catch (error) {
       console.error("Error toggling privacy:", error)
     }
+  }
+
+  const handleFilesChange = (lessonId: string, nextFiles: FileItem[]) => {
+    setLessons((prev) =>
+      prev.map((l) => (l.lessonId === lessonId ? { ...l, files: nextFiles } : l))
+    )
   }
 
   const PanelRender = (option: string) => {
@@ -245,6 +251,7 @@ export default function MyLessonsPage() {
                   lesson={lesson}
                   onTogglePrivacy={handleTogglePrivacy}
                   onDelete={handleDelete}
+                  onFilesChange={handleFilesChange}
                 />
               }
             />

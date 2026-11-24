@@ -5,11 +5,13 @@ import {
   CustomResizablePanelHandle,
 } from "@/components/CustomResizablePanel"
 import LessonDisplay from "@/components/lesson/LessonDisplay"
-import { mockFiles } from "@/utils/mock"
+import FilePreviewDialog from "@/components/lesson/FilePreviewDialog"
 import { lessonService } from "@/services/lesson_service"
+import { objectService } from "@/services/object_service"
+import { toast } from "sonner"
 import { useParams, Link } from "react-router-dom"
 import { useEffect, useState } from "react"
-import type { Lesson } from "@/utils/types/lesson"
+import type { Lesson, file as FileItem } from "@/utils/types/lesson"
 import { ArrowLeft, PanelLeftClose, PanelRightClose } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/lib/shadcn"
@@ -19,9 +21,10 @@ interface LessonPageProps {
 }
 
 export default function LessonPage({ className }: LessonPageProps) {
-  const files = mockFiles
   const { author, slug } = useParams<{ author: string; slug: string }>()
   const [lesson, setLesson] = useState<Lesson | null>(null)
+  const [files, setFiles] = useState<FileItem[]>([])
+  const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   // Panel state
@@ -35,6 +38,13 @@ export default function LessonPage({ className }: LessonPageProps) {
       try {
         const data = await lessonService.getLessonByAuthorAndContent(author, slug)
         setLesson(data)
+        // Attachments are a separate resource; a failure here should not hide the lesson.
+        try {
+          setFiles(await lessonService.getFilesByLessonId(data.lessonId))
+        } catch (error) {
+          console.error("Error fetching lesson files:", error)
+          setFiles([])
+        }
       } catch (error) {
         console.error("Error fetching lesson:", error)
       } finally {
@@ -43,6 +53,25 @@ export default function LessonPage({ className }: LessonPageProps) {
     }
     fetchLesson()
   }, [author, slug])
+
+  // Attachments belong to the lesson author, so they are read through the owner's route.
+  const handleFileDownload = async (file: FileItem) => {
+    if (!lesson) return
+    try {
+      const blob = await objectService.downloadFrom(lesson.authorId, file.filename)
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = file.filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Download error:", error)
+      toast.error(`Impossible to download ${file.filename}.`)
+    }
+  }
 
   const toggleLeft = () => setLeftCollapsed(!leftCollapsed)
   const toggleRight = () => setRightCollapsed(!rightCollapsed)
@@ -124,7 +153,12 @@ export default function LessonPage({ className }: LessonPageProps) {
                   {loading ? (
                     <LessonSkeleton />
                   ) : lesson ? (
-                    <LessonDisplay lesson={lesson} files={files} />
+                    <LessonDisplay
+                      lesson={lesson}
+                      files={files}
+                      onFilePreview={setPreviewFile}
+                      onFileDownload={handleFileDownload}
+                    />
                   ) : (
                     <EmptyState message="No lesson available." />
                   )}
@@ -148,6 +182,15 @@ export default function LessonPage({ className }: LessonPageProps) {
             </CustomResizablePanelRightZone>
           )}
         </CustomResizablePanelGroup>
+
+        {lesson && (
+          <FilePreviewDialog
+            ownerId={lesson.authorId}
+            file={previewFile}
+            onClose={() => setPreviewFile(null)}
+            onDownload={handleFileDownload}
+          />
+        )}
 
         {/* Floating re-open buttons when a panel is collapsed */}
         {leftCollapsed && (

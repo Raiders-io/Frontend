@@ -6,8 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Lock,
   Globe,
-  FileText,
   Download,
+  Eye,
   Calendar,
   User,
   Paperclip,
@@ -20,6 +20,7 @@ interface LessonDisplayProps {
   lesson: Lesson
   files?: FileItem[]
   onFileDownload?: (file: FileItem) => void
+  onFilePreview?: (file: FileItem) => void
   onBack?: () => void
 }
 
@@ -42,6 +43,7 @@ export default function LessonDisplay({
   lesson,
   files,
   onFileDownload,
+  onFilePreview,
   onBack,
 }: LessonDisplayProps) {
   const createdLabel = formatDate(lesson.createdAt)
@@ -184,7 +186,11 @@ export default function LessonDisplay({
           <ul className="mt-4 space-y-2">
             {mergedFiles.map((file, index) => (
               <li key={index}>
-                <FileCard file={file} onDownload={onFileDownload} />
+                <FileCard
+                  file={file}
+                  onPreview={onFilePreview}
+                  onDownload={onFileDownload}
+                />
               </li>
             ))}
           </ul>
@@ -201,34 +207,57 @@ export default function LessonDisplay({
 /* ---------- File card ---------- */
 function FileCard({
   file,
+  onPreview,
   onDownload,
 }: {
   file: FileItem
+  onPreview?: (file: FileItem) => void
   onDownload?: (file: FileItem) => void
 }) {
   const ext = file.filename.split(".").pop()?.toUpperCase() ?? "FILE"
   return (
     <div className="group flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 transition-colors hover:border-primary/40 hover:bg-muted/40">
-      <div className="flex min-w-0 flex-1 items-center gap-3">
+      <button
+        type="button"
+        onClick={() => onPreview?.(file)}
+        disabled={!onPreview}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-default"
+      >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
           {ext.slice(0, 4)}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium text-foreground">{file.filename}</p>
           <p className="text-xs text-muted-foreground">
-            Click to download
+            {onPreview ? "Click to preview" : "Attached file"}
           </p>
         </div>
+      </button>
+      <div className="flex shrink-0 items-center gap-1">
+        {onPreview && (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => onPreview(file)}
+            aria-label={`Preview ${file.filename}`}
+            title="Preview"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        )}
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onDownload?.(file)}
+          disabled={!onDownload}
+          aria-label={`Download ${file.filename}`}
+          title="Download"
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <Download className="h-4 w-4" />
+        </Button>
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDownload?.(file)}
-        className="gap-1.5 text-muted-foreground group-hover:text-foreground"
-      >
-        <FileText className="h-4 w-4" />
-        <Download className="h-4 w-4" />
-      </Button>
     </div>
   )
 }
