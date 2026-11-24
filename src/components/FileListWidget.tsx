@@ -59,6 +59,8 @@ export default function FileListWidget({
   initialLimit = 10,
   maxHeight,
   onFileSelect,
+  showRowActions = true,
+  attachedFileNames,
 }: FileListWidgetProps & { showActionSettings?: boolean }) {
   const [files, setFiles] = useState<FileObject[]>([])
   const [loading, setLoading] = useState(true)
@@ -279,10 +281,16 @@ export default function FileListWidget({
   const containerClassName =
     mode === "compact" ? "w-full p-4" : "mx-auto w-full max-w-6xl p-6"
 
+  const attachedSet = useMemo(
+    () => new Set(attachedFileNames ?? []),
+    [attachedFileNames],
+  )
+
   const hasAnyActionButton =
-    actionSettings.showDownloadButton ||
-    actionSettings.showVisibilityButton ||
-    actionSettings.showDeleteButton
+    showRowActions &&
+    (actionSettings.showDownloadButton ||
+      actionSettings.showVisibilityButton ||
+      actionSettings.showDeleteButton)
 
   const baseColumns: FileListTableColumn[] = ["Select", "Icon", "Name", "Size"]
   const fullColumns: FileListTableColumn[] = [
@@ -525,12 +533,15 @@ export default function FileListWidget({
                       onDelete={handleDelete}
                       onChangeVisibility={changeVisibility}
                       isSelected={selectedFiles.has(file.name)}
+                      isAttached={attachedSet.has(file.name)}
                       onRowClick={onFileSelect}
                       actionSettings={{
-                        showDownloadButton: actionSettings.showDownloadButton,
+                        showDownloadButton:
+                          showRowActions && actionSettings.showDownloadButton,
                         showVisibilityButton:
-                          actionSettings.showVisibilityButton,
-                        showDeleteButton: actionSettings.showDeleteButton,
+                          showRowActions && actionSettings.showVisibilityButton,
+                        showDeleteButton:
+                          showRowActions && actionSettings.showDeleteButton,
                       }}
                     />
                   ))}

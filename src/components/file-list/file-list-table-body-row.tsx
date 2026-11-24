@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { CustomCheckbox } from "@/components/CustomCheckbox"
 import { DownloadIcon, Globe, GlobeOff, TrashIcon } from "lucide-react"
 import { DeleteButton } from "@/components/DeleteButton"
+import { Badge } from "@/components/ui/badge"
 
 type FileListTableBodyRowProps = {
   file: FileObject
@@ -21,6 +22,7 @@ type FileListTableBodyRowProps = {
     visibility?: FileObject["visibility"],
   ) => void
   isSelected: boolean
+  isAttached?: boolean
   onRowClick?: (file: FileObject) => void
   actionSettings?: {
     showDownloadButton?: boolean
@@ -41,6 +43,7 @@ export default function FileListTableBodyRow({
   onDelete,
   onChangeVisibility,
   isSelected,
+  isAttached = false,
   onRowClick,
   actionSettings = {},
 }: FileListTableBodyRowProps) {
@@ -71,7 +74,12 @@ export default function FileListTableBodyRow({
         </TableCell>
       )}
       {columns.includes("Name") && (
-        <TableCell className="px-4 py-3 font-medium">{file.name}</TableCell>
+        <TableCell className="px-4 py-3 font-medium">
+          <div className="flex items-center gap-2">
+            <span className="truncate">{file.name}</span>
+            {isAttached && <Badge variant="secondary">Attached</Badge>}
+          </div>
+        </TableCell>
       )}
       {columns.includes("Size") && (
         <TableCell className="px-4 py-3">

@@ -64,6 +64,30 @@ export const objectService = {
     return response.data
   },
 
+  // Owner-scoped variants: work for any owner's file, as long as the caller may
+  // read it (owner, or the file is public). Used for lesson attachments.
+  downloadFrom: async (ownerId: string, fileName: string): Promise<Blob> => {
+    const response = await api.get<Blob>(
+      `/api/v1/storage/users/${encodeURIComponent(ownerId)}/objects/${encodeURIComponent(fileName)}`,
+      { responseType: "blob" },
+    )
+    return response.data
+  },
+
+  previewFrom: async (
+    ownerId: string,
+    fileName: string,
+  ): Promise<{ blob: Blob; mimeType: string }> => {
+    const response = await api.get<Blob>(
+      `/api/v1/storage/users/${encodeURIComponent(ownerId)}/objects/preview/${encodeURIComponent(fileName)}`,
+      { responseType: "blob" },
+    )
+    const mimeType = String(
+      response.headers["content-type"] || response.data.type || "",
+    )
+    return { blob: response.data, mimeType }
+  },
+
   getFile: async (
     fileName: string,
   ): Promise<{ blob: Blob; mimeType: string }> => {

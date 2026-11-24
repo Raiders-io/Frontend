@@ -62,6 +62,10 @@ export type FileListWidgetProps = {
   maxHeight?: string
   onFileSelect?: (file: FileObject) => void
   showSelectColumn?: boolean
+  /** Hides the per-row download/visibility/delete buttons for this instance only. */
+  showRowActions?: boolean
+  /** Names of files already attached somewhere; those rows get an "Attached" badge. */
+  attachedFileNames?: string[]
 }
 
 export type QuotaResponse = {

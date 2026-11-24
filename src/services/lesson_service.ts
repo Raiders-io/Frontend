@@ -1,4 +1,5 @@
 import api from "@/utils/lib/axios"
+import { isAxiosError } from "axios"
 import type {
   Lesson,
   LessonSearchParams,
@@ -88,8 +89,15 @@ export const lessonService = {
   // ==========================================
 
   getFilesByLessonId: async (lessonId: string): Promise<file[]> => {
-    const { data } = await api.get<file[]>(`/api/v1/lessons/byId/${lessonId}/files`)
-    return data
+    try {
+      const { data } = await api.get<file[]>(`/api/v1/lessons/byId/${lessonId}/files`)
+      return data
+    } catch (error) {
+      // The backend answers 404 when the lesson has no attached files, which is
+      // an empty list for the caller, not a failure.
+      if (isAxiosError(error) && error.response?.status === 404) return []
+      throw error
+    }
   },
 
   attachFilesToLesson: async (lessonId: string, payload: FileOperationPayload): Promise<unknown> => {
