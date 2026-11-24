@@ -34,11 +34,13 @@ export function useSearchResource({
 
   const isExamSearch = resource === "exam"
   const isFileSearch = resource === "file"
-  const isLessonSearch = !isExamSearch && !isFileSearch
+  const isSearchUer = resource === "user"
+  const isLessonSearch = !isExamSearch && !isFileSearch && !isSearchUer
 
   const lessonSearch = useSearchLesson({ enabled: enabled && isLessonSearch })
   const examSearch = useSearchExam({ enabled: enabled && isExamSearch, useMock })
   const fileSearch = useSearchFiles({ enabled: enabled && isFileSearch })
+  // const userSearch = userSearchUser({ enabled: enabled && isSearchUer })
 
   const active = isExamSearch ? examSearch : isFileSearch ? fileSearch : lessonSearch
 
@@ -49,6 +51,9 @@ export function useSearchResource({
     if (isFileSearch) {
       return fileSearch.items.map((data) => ({ kind: "file", data }))
     }
+    // if (isSearchUser) {
+    //   return userSearch.items.map((data) => ({ kind: "user", data }))
+    // }
     return lessonSearch.items.map((data) => ({ kind: "lesson", data }))
   }, [isExamSearch, isFileSearch, examSearch.items, fileSearch.items, lessonSearch.items])
 
