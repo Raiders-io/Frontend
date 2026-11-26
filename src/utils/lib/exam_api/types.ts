@@ -47,6 +47,7 @@ export type CreateExamPayload = {
   title: string
   description: string
   tags: string[]
+  lesson_related_id?: string | null
   questions: {
     id: string
     position: number

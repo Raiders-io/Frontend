@@ -13,6 +13,7 @@ import type { Lesson } from "@/utils/types/lesson"
 import { ArrowLeft, PanelLeftClose, PanelRightClose } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/lib/shadcn"
+import { LessonRelatedExams } from "@/components/exam/LessonRelatedExams"
 
 interface LessonPageProps {
   className?: string
@@ -138,12 +139,14 @@ export default function LessonPage({ className }: LessonPageProps) {
           {!rightCollapsed && (
             <CustomResizablePanelRightZone>
               <div className="h-full overflow-y-auto p-6">
-                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6">
-                  <h2 className="text-lg font-semibold tracking-tight">Exam</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    This section is under development.
-                  </p>
-                </div>
+                {lesson ? (
+                  <LessonRelatedExams lessonUuid={lesson.lessonId} />
+                ) : (
+                  <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6">
+                    <h2 className="text-lg font-semibold tracking-tight">Exam</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">Load a lesson to see related exams.</p>
+                  </div>
+                )}
               </div>
             </CustomResizablePanelRightZone>
           )}

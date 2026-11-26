@@ -22,6 +22,8 @@ export const PATHS = {
   privacy: "/privacy",
   cookies: "/cookies",
   examAuthoring: "/exam/authoring",
+  examAuthoringForLesson: (lessonUuid: string) =>
+    `/exam/authoring?lesson_related_id=${encodeURIComponent(lessonUuid)}`,
   examPaper: "/exam/paper",
   examPaperView: (examId: string) => `/exam/paper/${examId}`,
 } as const;

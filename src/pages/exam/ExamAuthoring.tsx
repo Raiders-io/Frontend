@@ -5,10 +5,15 @@ import type { Question } from "@/utils/types/exam"
 import { examApi } from "@/utils/lib/exam_api/requests"
 import { toQuestion } from "@/utils/lib/exam_api/utils"
 import { GripVertical } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { InitExam } from "@/components/exam/InitExam"
+import { lessonService } from "@/services/lesson_service"
 
 export default function ExamAuthoring() {
+  const [searchParams] = useSearchParams()
+  const lessonRelatedId = searchParams.get("lesson_related_id")
+  const [lessonTitle, setLessonTitle] = useState<string | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [title, setTitle] = useState("")
   const [titleTags, setTitleTags] = useState<string[]>([])
@@ -27,6 +32,13 @@ export default function ExamAuthoring() {
       ]),
     ).values(),
   ]
+
+  useEffect(() => {
+    if (!lessonRelatedId) return
+    lessonService.getLessonById(lessonRelatedId)
+      .then((lesson) => setLessonTitle(lesson.title))
+      .catch(() => setLessonTitle(null))
+  }, [lessonRelatedId])
 
   function handleTitleChange(value: string) {
     setTitle(value)
@@ -140,6 +152,7 @@ export default function ExamAuthoring() {
         title: title.trim(),
         description: description.trim(),
         tags,
+        ...(lessonRelatedId ? { lesson_related_id: lessonRelatedId } : {}),
         questions: questions.map((question, index) => ({
           id: question.id,
           position: index + 1,
@@ -160,6 +173,14 @@ export default function ExamAuthoring() {
   return (
     <main className="flex flex-col gap-6 p-6">
       <h1 className="text-3xl font-bold">Create an exam</h1>
+      {lessonRelatedId && (
+        <section className="rounded-md border p-3" aria-label="Lesson related">
+          <h2 className="font-semibold">Lesson related</h2>
+          <p className="text-sm text-muted-foreground">
+            {lessonTitle ?? `Lesson UUID: ${lessonRelatedId}`}
+          </p>
+        </section>
+      )}
       <InitExam
         title={title}
         setTitle={handleTitleChange}

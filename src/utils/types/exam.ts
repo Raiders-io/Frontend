@@ -31,6 +31,7 @@ export type ExamSummary = {
   updatedAt: string | null
   authorId: string | null
   authorNickname: string | null
+  lessonRelatedId?: string | null
   tags: string[]
 }
 
@@ -38,6 +39,7 @@ export type ExamSearchParams = {
   page: number
   limit: number
   q: string
+  lesson_related_id?: string
 }
 
 export type PaginatedExamResponse = {
