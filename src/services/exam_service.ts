@@ -6,7 +6,7 @@ export const examService = {
     params: ExamSearchParams,
     signal?: AbortSignal,
   ): Promise<PaginatedExamResponse> => {
-    const { data } = await api.get<PaginatedExamResponse>("/exam-authorings", {
+    const { data } = await api.get<PaginatedExamResponse>("/api/v1/exam-authorings", {
       params,
       signal,
     })
@@ -17,7 +17,7 @@ export const examService = {
     lessonUuid: string,
     signal?: AbortSignal,
   ): Promise<ExamSummary[]> => {
-    const { data } = await api.get<PaginatedExamResponse>("/exam-authorings", {
+    const { data } = await api.get<PaginatedExamResponse>("/api/v1/exam-authorings", {
       params: { lesson_related_id: lessonUuid, page: 1, limit: 50, q: "" },
       signal,
     })
