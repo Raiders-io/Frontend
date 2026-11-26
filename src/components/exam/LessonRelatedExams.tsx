@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { PATHS } from "@/utils/router/paths"
 import { lessonExamService } from "@/services/lesson_exam_service"
+import { examApi } from "@/utils/lib/exam_api/requests"
 import type { ExamSummary } from "@/utils/types/exam"
 
 export function LessonRelatedExams({ lessonUuid }: { lessonUuid: string }) {
+  const navigate = useNavigate()
   const [exams, setExams] = useState<ExamSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [startingExamId, setStartingExamId] = useState<string | null>(null)
+  const [startError, setStartError] = useState<string | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -26,6 +30,20 @@ export function LessonRelatedExams({ lessonUuid }: { lessonUuid: string }) {
     return () => controller.abort()
   }, [lessonUuid])
 
+  async function startExam(examId: string) {
+    if (startingExamId) return
+    setStartingExamId(examId)
+    setStartError(null)
+    try {
+      const { data } = await examApi.startPaper(examId)
+      navigate(PATHS.examPaperView(data.id))
+    } catch (error) {
+      setStartError(error instanceof Error ? error.message : "Unable to start the exam.")
+    } finally {
+      setStartingExamId(null)
+    }
+  }
+
   return (
     <section className="rounded-lg border p-4">
       <div className="flex items-center justify-between gap-4">
@@ -39,15 +57,25 @@ export function LessonRelatedExams({ lessonUuid }: { lessonUuid: string }) {
       ) : exams.length === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">No exams linked to this lesson.</p>
       ) : (
-        <ul className="mt-3 space-y-2">
-          {exams.map((exam) => (
-            <li key={exam.id}>
-              <Link className="underline" to={PATHS.examPaperView(exam.id)}>
-                {exam.title ?? "Untitled exam"}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="mt-3 space-y-2">
+            {exams.map((exam) => (
+              <li key={exam.id}>
+                <button
+                  type="button"
+                  className="underline disabled:opacity-50"
+                  onClick={() => void startExam(exam.id)}
+                  disabled={startingExamId !== null}
+                >
+                  {startingExamId === exam.id ? "Starting exam…" : exam.title ?? "Untitled exam"}
+                </button>
+              </li>
+            ))}
+          </ul>
+          {startError && (
+            <p role="alert" className="mt-3 text-sm text-destructive">{startError}</p>
+          )}
+        </>
       )}
     </section>
   )

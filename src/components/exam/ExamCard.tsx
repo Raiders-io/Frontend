@@ -2,6 +2,7 @@ import { BookOpen } from "lucide-react"
 import { cn } from "@/utils/lib/shadcn"
 import type { ExamSummary } from "@/utils/types/exam"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
@@ -17,6 +18,7 @@ interface ExamCardProps {
   exam: ExamSummary
   variant?: Variant
   className?: string
+  onStart?: () => void
 }
 
 const cardSurface = [
@@ -65,6 +67,7 @@ export default function ExamCard({
   exam,
   variant = "default",
   className,
+  onStart,
 }: ExamCardProps) {
   const isPreview = variant === "preview"
   const title = exam.title?.trim() || "Untitled exam"
@@ -117,6 +120,24 @@ export default function ExamCard({
     )
   })()
 
+  const titleNode = (
+    <CardTitle className={examStyle.title[variant]}>
+      {onStart ? (
+        <Button
+          type="button"
+          variant="link"
+          aria-label={`Start exam: ${title}`}
+          className="h-auto p-0 text-left underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
+          onClick={onStart}
+        >
+          {title}
+        </Button>
+      ) : (
+        title
+      )}
+    </CardTitle>
+  )
+
   const descriptionNode = (
     <CardDescription
       className={cn(examStyle.description[variant], !description && "italic opacity-50")}
@@ -131,7 +152,7 @@ export default function ExamCard({
         <>
           <BookOpen aria-hidden="true" className="size-7 shrink-0 text-muted-foreground" />
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <CardTitle className={examStyle.title.preview}>{title}</CardTitle>
+            {titleNode}
             {descriptionNode}
           </div>
           {tagsNode}
@@ -144,7 +165,7 @@ export default function ExamCard({
         <>
           <CardHeader className={examStyle.header.default}>
             <div className="min-w-0 flex-1">
-              <CardTitle className={examStyle.title.default}>{title}</CardTitle>
+              {titleNode}
             </div>
           </CardHeader>
           <div className="min-h-0 flex-1 overflow-y-auto px-4">{descriptionNode}</div>
