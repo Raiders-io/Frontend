@@ -1,11 +1,10 @@
-import { useSearchLesson } from "@/utils/hooks/useSearch"
-import { useSearchFiles } from "@/utils/hooks/useSearchFiles"
+import { useSearchResource } from "@/utils/hooks/useSearchResource"
+import { getSearchItemKey, renderSearchItem } from "@/utils/utils/searchItem"
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
+import { Fragment } from "react"
 import { LoaderCircle } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import SkeletonCard from "../ui/skeletonCard"
-import LessonCard from "../lesson/LessonCard"
-import FileCard from "./FileCard"
 
 interface SearchPreviewProps {
   isFocus: boolean
@@ -22,13 +21,15 @@ export function SearchPreview({
   children,
   className,
 }: SearchPreviewProps) {
-  const isFile = resource === "file"
   const enabled = isFocus && query.trim().length >= 2
-  const lessonSearch = useSearchLesson({ query, limit: 5, enabled: enabled && !isFile })
-  const fileSearch = useSearchFiles({ query, limit: 10, enabled: enabled && isFile })
-  const total = isFile ? fileSearch.total : lessonSearch.total
-  const loading = isFile ? fileSearch.loading : lessonSearch.loading
-  const isOpen = enabled && (loading || (isFile ? fileSearch.items : lessonSearch.items)?.length > 0)
+  const limit = resource === "file" ? 10 : 5
+  const { items, total, loading } = useSearchResource({
+    resource,
+    query,
+    limit,
+    enabled,
+  })
+  const isOpen = enabled && (loading || items.length > 0)
   const location = useLocation()
 
   if (location.pathname.startsWith("/search")) {
@@ -60,27 +61,13 @@ export function SearchPreview({
               ? Array.from({ length: 5 }).map((_, i) => (
                 <SkeletonCard key={i} className="w-full max-h-20" />
               ))
-              : isFile
-                ? fileSearch.items?.length > 0
-                  ? fileSearch.items.map((file) => (
-                    <FileCard
-                      key={file.name}
-                      file={file}
-                      variant="preview"
-                      className="w-full"
-                    />
-                  ))
-                  : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>
-                : lessonSearch.items?.length > 0
-                  ? lessonSearch.items.map((item) => (
-                    <LessonCard
-                      key={item.lessonId}
-                      lesson={item}
-                      variant="preview"
-                      className="w-full max-h-20"
-                    />
-                  ))
-                  : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
+              : items.length > 0
+                ? items.map((item) => (
+                  <Fragment key={getSearchItemKey(item)}>
+                    {renderSearchItem(item, "preview", "w-full max-h-20")}
+                  </Fragment>
+                ))
+                : <p className="px-2 py-1 text-sm text-muted-foreground">No results found</p>}
           </div>
         </PopoverContent>
       </Popover>

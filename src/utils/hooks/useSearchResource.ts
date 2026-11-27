@@ -13,6 +13,10 @@ export type SearchableItem = Lesson | ExamSummary | FileObject
 interface UseSearchResourceOptions {
   /** Overrides the `resource` URL param (previews, tests, ...). */
   resource?: string
+  /** Overrides the `q` URL param (previews searching the input's text). */
+  query?: string
+  /** Overrides the `limit` URL param. */
+  limit?: number
   enabled?: boolean
   useMock?: boolean
 }
@@ -26,6 +30,8 @@ interface UseSearchResourceOptions {
  */
 export function useSearchResource({
   resource: resourceOverride,
+  query,
+  limit,
   enabled = true,
   useMock = false,
 }: UseSearchResourceOptions = {}) {
@@ -37,9 +43,9 @@ export function useSearchResource({
   const isSearchUer = resource === "user"
   const isLessonSearch = !isExamSearch && !isFileSearch && !isSearchUer
 
-  const lessonSearch = useSearchLesson({ enabled: enabled && isLessonSearch })
-  const examSearch = useSearchExam({ enabled: enabled && isExamSearch, useMock })
-  const fileSearch = useSearchFiles({ enabled: enabled && isFileSearch })
+  const lessonSearch = useSearchLesson({ query, limit, enabled: enabled && isLessonSearch })
+  const examSearch = useSearchExam({ query, limit, enabled: enabled && isExamSearch, useMock })
+  const fileSearch = useSearchFiles({ query, limit, enabled: enabled && isFileSearch })
   // const userSearch = userSearchUser({ enabled: enabled && isSearchUer })
 
   const active = isExamSearch ? examSearch : isFileSearch ? fileSearch : lessonSearch
