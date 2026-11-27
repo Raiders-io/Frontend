@@ -1,4 +1,4 @@
-import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react"
+import { Coffee, Monitor, Moon, Sparkles, Sun, type LucideIcon } from "lucide-react"
 import { useTheme, type Theme } from "@/components/theme-provider"
 import { cn } from "@/utils/lib/shadcn"
 
@@ -16,6 +16,18 @@ const OPTIONS: {
     icon: Monitor,
     preview: "bg-linear-to-r from-white from-50% to-zinc-900 to-50%",
   },
+  {
+    value: "coffee",
+    label: "Coffee",
+    icon: Coffee,
+    preview: "bg-[oklch(24%_0.023_329.708)]",
+  },
+  {
+    value: "silk",
+    label: "Silk",
+    icon: Sparkles,
+    preview: "bg-[oklch(97%_0.0035_67.78)]",
+  },
 ]
 
 /** Visual theme picker: three cards, one selected (radio semantics). */
@@ -26,7 +38,7 @@ export function ThemeSelector() {
     <div
       role="radiogroup"
       aria-label="Theme"
-      className="grid w-full grid-cols-3 gap-3"
+      className="grid w-full grid-cols-2 gap-3 sm:grid-cols-5"
     >
       {OPTIONS.map(({ value, label, icon: Icon, preview }) => {
         const active = theme === value
@@ -47,8 +59,17 @@ export function ThemeSelector() {
           >
             <span
               aria-hidden="true"
-              className={cn("h-14 w-full rounded-md border", preview)}
-            />
+              className={cn(
+                "flex h-14 w-full items-center justify-center rounded-md border",
+                preview,
+              )}
+            >
+              <img
+                src="/favicon.png"
+                alt=""
+                className="h-9 w-9 rounded-sm object-contain"
+              />
+            </span>
             <span className="flex items-center justify-center gap-1.5 pb-0.5">
               <Icon className="size-4" />
               {label}

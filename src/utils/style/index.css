@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, .coffee *));
 
 :root {
   --radius: 0.5rem;
@@ -62,6 +62,76 @@
   --border: hsl(240 4% 36%);
   --input: hsl(240 4% 36%);
   --ring: hsl(240 5% 45%);
+}
+
+/* "silk" theme: light palette ported from the daisyUI theme definition.
+   base-100 -> background/card, base-200 -> secondary/muted, base-300 -> border,
+   base-content -> foreground, error -> destructive. */
+.silk {
+  color-scheme: light;
+
+  --background: oklch(97% 0.0035 67.78);
+  --foreground: oklch(40% 0.0081 61.42);
+
+  --card: oklch(97% 0.0035 67.78);
+  --card-foreground: oklch(40% 0.0081 61.42);
+
+  --popover: oklch(97% 0.0035 67.78);
+  --popover-foreground: oklch(40% 0.0081 61.42);
+
+  --primary: oklch(23.27% 0.0249 284.3);
+  --primary-foreground: oklch(94.22% 0.2505 117.44);
+
+  --secondary: oklch(95% 0.0081 61.42);
+  --secondary-foreground: oklch(23.27% 0.0249 284.3);
+
+  --muted: oklch(95% 0.0081 61.42);
+  --muted-foreground: color-mix(in oklch, oklch(40% 0.0081 61.42) 70%, oklch(95% 0.0081 61.42));
+
+  --accent: oklch(23.27% 0.0249 284.3);
+  --accent-foreground: oklch(88.92% 0.2061 189.9);
+
+  --destructive: oklch(75.1% 0.1814 22.37);
+  --destructive-foreground: oklch(35.1% 0.1814 22.37);
+
+  --border: oklch(90% 0.0081 61.42);
+  --input: oklch(90% 0.0081 61.42);
+  --ring: oklch(23.27% 0.0249 284.3);
+}
+
+/* "coffee" theme: palette ported from the daisyUI theme definition.
+   base-100 -> background/card, base-200 -> muted, base-300 -> border,
+   base-content -> foreground, error -> destructive. */
+.coffee {
+  color-scheme: dark;
+
+  --background: oklch(24% 0.023 329.708);
+  --foreground: oklch(72.354% 0.092 79.129);
+
+  --card: oklch(24% 0.023 329.708);
+  --card-foreground: oklch(72.354% 0.092 79.129);
+
+  --popover: oklch(24% 0.023 329.708);
+  --popover-foreground: oklch(72.354% 0.092 79.129);
+
+  --primary: oklch(71.996% 0.123 62.756);
+  --primary-foreground: oklch(14.399% 0.024 62.756);
+
+  --secondary: oklch(34.465% 0.029 199.194);
+  --secondary-foreground: oklch(86.893% 0.005 199.194);
+
+  --muted: oklch(21% 0.021 329.708);
+  --muted-foreground: color-mix(in oklch, oklch(72.354% 0.092 79.129) 65%, oklch(21% 0.021 329.708));
+
+  --accent: oklch(42.621% 0.074 224.389);
+  --accent-foreground: oklch(88.524% 0.014 224.389);
+
+  --destructive: oklch(77.318% 0.128 31.871);
+  --destructive-foreground: oklch(15.463% 0.025 31.871);
+
+  --border: oklch(16% 0.019 329.708);
+  --input: oklch(16% 0.019 329.708);
+  --ring: oklch(71.996% 0.123 62.756);
 }
 
 @theme inline {
