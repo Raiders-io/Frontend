@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Download } from "lucide-react"
 import { cn } from "@/utils/lib/shadcn"
 import type { CardVariant } from "@/utils/types/common"
@@ -98,7 +98,6 @@ export default function FileCard({
   variant = "default",
   className,
 }: FileCardProps) {
-  const navigate = useNavigate()
   const [downloading, setDownloading] = useState(false)
 
   const handleDownload = async () => {
@@ -125,12 +124,12 @@ export default function FileCard({
 
   // ---------- Shared pieces ----------
 
-  /* Download sits above the stretched title link thanks to `relative z-10` */
+  /* Download sits above the overlay link thanks to `relative z-20` */
   const downloadButton = (
     <Button
       variant="ghost"
       size="icon"
-      className="relative z-10 shrink-0"
+      className="relative z-20 shrink-0"
       onClick={handleDownload}
       disabled={downloading}
       aria-label={`Download ${file.name}`}
@@ -139,22 +138,25 @@ export default function FileCard({
     </Button>
   )
 
-  /* ④ the Button is the interactive element. Its ::after stretches over the
-     whole card (nearest positioned ancestor = the Card), making the entire
-     card clickable. The download action uses `relative z-10` to stay above it. */
+  /* ④ the whole-card overlay Link is the interactive element. Its title
+     underlines whenever the card is hovered. */
+  const viewLink = (
+    <Link
+      to={PATHS.fileView(encodeURIComponent(file.name))}
+      className="absolute inset-0 z-10 rounded-[inherit] focus-visible:outline-none"
+      aria-label={`View ${file.name}`}
+    />
+  )
+
+  /* ④ plain text – the overlay link handles navigation */
   const titleNode = (
     <CardTitle className={fileStyle.Title[variant]}>
-      <Button
-        variant='link'
-        className="underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
+      <span
+        className="text-primary underline-offset-4 group-hover/card:underline"
         title={file.name}
-        onClick={(e) => {
-          e.preventDefault()
-          navigate(PATHS.fileView(encodeURIComponent(file.name)))
-        }}
       >
         {file.name}
-      </Button>
+      </span>
     </CardTitle>
   )
 
@@ -180,6 +182,7 @@ export default function FileCard({
   if (variant === "preview") {
     return (
       <Card className={cn(fileStyle.base.preview, cardSurface, className)}>
+        {viewLink}
         <span className="flex size-8 shrink-0 items-center justify-center">
           {getFileIcon(file.mimeType, file.name)}
         </span>
@@ -197,7 +200,8 @@ export default function FileCard({
   if (variant === "default") {
     return (
       <Card className={cn(fileStyle.base.default, cardSurface, className)}>
-        <div className="absolute right-2 top-2 z-10">{downloadButton}</div>
+        {viewLink}
+        <div className="absolute right-2 top-2 z-20">{downloadButton}</div>
         <span className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
           {getFileIcon(file.mimeType, file.name, "size-9")}
         </span>
@@ -211,6 +215,7 @@ export default function FileCard({
   /* ③ compact card: tighter header + content + footer */
   return (
     <Card className={cn(fileStyle.base.small, cardSurface, className)}>
+      {viewLink}
       <CardHeader className={fileStyle.Header.small}>
         <span className="flex size-8 shrink-0 items-center justify-center">
           {getFileIcon(file.mimeType, file.name)}

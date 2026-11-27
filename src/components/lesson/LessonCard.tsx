@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { changePageLessonView } from "@/utils/router/changePage"
+import { PATHS } from "@/utils/router/paths"
 import type { CardVariant } from "@/utils/types/common"
 
 
@@ -188,7 +188,7 @@ export default function LessonCard({
   const actionsColumn = actions && (
     <div
       className={cn(
-        "relative z-10 flex shrink-0 flex-col gap-1",
+        "relative z-20 flex shrink-0 flex-col gap-1",
         lessonStyle.Actions[variant]
       )}
     >
@@ -196,19 +196,14 @@ export default function LessonCard({
     </div>
   )
 
-  /* ① the Link is the interactive element. Its ::after stretches over the
-     whole card (nearest positioned ancestor = the Card), making the entire
-     card clickable. Other interactive elements use `relative z-10` to stay
-     above it. The title underlines whenever the card is hovered. */
+  /* ① the title is plain text; the whole-card overlay Link (added in the
+     return) is the interactive element. It underlines whenever the card is
+     hovered, signalling the clickable surface. */
   const titleNode = (
     <CardTitle className={lessonStyle.Title[variant]}>
-      <Button
-        variant='link'
-        className="underline-offset-4 group-hover/card:underline after:absolute after:inset-0 after:content-['']"
-        onClick={(e) => { e.preventDefault(); changePageLessonView(author.username, slug) }}
-      >
+      <span className="text-primary underline-offset-4 group-hover/card:underline">
         {title}
-      </Button>
+      </span>
     </CardTitle>
   )
 
@@ -253,7 +248,7 @@ export default function LessonCard({
       <span>By:</span>
       <Link
         to={`/users/${author.username}/`}
-        className={cn("relative z-10", lessonStyle.AuthorLink[variant])}
+        className={cn("relative z-20", lessonStyle.AuthorLink[variant])}
       >
         {author.username}
       </Link>
@@ -285,7 +280,7 @@ export default function LessonCard({
       <Button
         variant="link"
         size="sm"
-        className="relative z-10 h-auto w-fit gap-1 p-0 text-xs text-muted-foreground/70 hover:text-foreground"
+        className="relative z-20 h-auto w-fit gap-1 p-0 text-xs text-muted-foreground/70 hover:text-foreground"
       >
         {open ? "Show less" : "Show more"}
         <ChevronDown
@@ -331,10 +326,10 @@ export default function LessonCard({
             open={open}
             onOpenChange={setOpen}
             // When expanded the description can scroll, so lift it above the
-            // stretched link to let the mouse wheel reach it
+            // overlay link to let the mouse wheel reach it
             className={cn(
               lessonStyle.DescriptionScroll[variant],
-              open && "relative z-10"
+              open && "relative z-20"
             )}
           >
             {descriptionNode}
@@ -387,6 +382,11 @@ export default function LessonCard({
 
   return (
     <Card className={cn(lessonStyle.base[variant], cardSurface, className)}>
+      <Link
+        to={PATHS.lessonView(author.username, slug)}
+        className="absolute inset-0 z-10 rounded-[inherit] focus-visible:outline-none"
+        aria-label={`View lesson ${title}`}
+      />
       {headerCardVariant()}
       {contentCardVariant()}
       {footerCardVariant()}
