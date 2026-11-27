@@ -6,18 +6,33 @@ import { useSearch } from "@/utils/hooks/useSearch"
 import { useSearchQueryParams } from "@/utils/hooks/searchParams"
 
 interface UseSearchExamOptions {
+  query?: string
+  limit?: number
   enabled?: boolean
   useMock?: boolean
 }
 
 type ExamSearchRequest = ExamSearchParams & { useMock: boolean }
 
-export function useSearchExam({ enabled = true, useMock = false }: UseSearchExamOptions = {}) {
-  const { query, page, limit } = useSearchQueryParams()
+export function useSearchExam({
+  query: queryOverride,
+  limit: limitOverride,
+  enabled = true,
+  useMock = false,
+}: UseSearchExamOptions = {}) {
+  const { query: urlQuery, page, limit } = useSearchQueryParams()
+
+  const isPreview = queryOverride !== undefined
+  const query = queryOverride ?? urlQuery
 
   const params = useMemo<ExamSearchRequest>(
-    () => ({ q: query, page, limit, useMock }),
-    [query, page, limit, useMock],
+    () => ({
+      q: query,
+      page: isPreview ? 1 : page,
+      limit: limitOverride ?? limit,
+      useMock,
+    }),
+    [query, page, limit, limitOverride, isPreview, useMock],
   )
 
   const fetcher = useCallback(async (searchParams: ExamSearchRequest, signal?: AbortSignal) => {
