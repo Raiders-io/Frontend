@@ -1,36 +1,41 @@
-import { Coffee, Monitor, Moon, Sparkles, Sun, type LucideIcon } from "lucide-react"
-import { useTheme, type Theme } from "@/components/theme-provider"
+import { useTheme } from "@/components/theme-provider"
+import { THEME_OPTIONS } from "@/components/theme-options"
 import { cn } from "@/utils/lib/shadcn"
 
-const OPTIONS: {
-  value: Theme
-  label: string
-  icon: LucideIcon
-  preview: string
-}[] = [
-  { value: "light", label: "Light", icon: Sun, preview: "bg-white" },
-  { value: "dark", label: "Dark", icon: Moon, preview: "bg-zinc-900" },
-  {
-    value: "system",
-    label: "System",
-    icon: Monitor,
-    preview: "bg-linear-to-r from-white from-50% to-zinc-900 to-50%",
-  },
-  {
-    value: "coffee",
-    label: "Coffee",
-    icon: Coffee,
-    preview: "bg-[oklch(24%_0.023_329.708)]",
-  },
-  {
-    value: "silk",
-    label: "Silk",
-    icon: Sparkles,
-    preview: "bg-[oklch(97%_0.0035_67.78)]",
-  },
-]
+/**
+ * Miniature fake UI (bar, button, text lines) painted with the theme's own
+ * colours, so the card previews the palette without showing the real site.
+ */
+function ThemeMockup({ schemes }: { schemes: string[] }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex h-14 w-full overflow-hidden rounded-md border"
+    >
+      {schemes.map((scheme) => (
+        <span
+          key={scheme}
+          className={cn(
+            "flex min-w-0 flex-1 flex-col gap-1 bg-background p-1.5",
+            scheme,
+          )}
+        >
+          <span className="flex items-center gap-1">
+            <span className="h-1.5 w-5 rounded-full bg-foreground/70" />
+            <span className="ml-auto h-2.5 w-3 rounded-sm bg-primary" />
+          </span>
+          <span className="h-1.5 w-full rounded-full bg-muted-foreground/40" />
+          <span className="flex gap-1">
+            <span className="h-3 flex-1 rounded-sm bg-secondary" />
+            <span className="h-3 flex-1 rounded-sm bg-accent" />
+          </span>
+        </span>
+      ))}
+    </span>
+  )
+}
 
-/** Visual theme picker: three cards, one selected (radio semantics). */
+/** Visual theme picker: one card per theme, the selected one highlighted. */
 export function ThemeSelector() {
   const { theme, setTheme } = useTheme()
 
@@ -40,7 +45,7 @@ export function ThemeSelector() {
       aria-label="Theme"
       className="grid w-full grid-cols-2 gap-3 sm:grid-cols-5"
     >
-      {OPTIONS.map(({ value, label, icon: Icon, preview }) => {
+      {THEME_OPTIONS.map(({ value, label, icon: Icon, previewSchemes }) => {
         const active = theme === value
         return (
           <button
@@ -57,19 +62,7 @@ export function ThemeSelector() {
                 : "hover:bg-muted/50",
             )}
           >
-            <span
-              aria-hidden="true"
-              className={cn(
-                "flex h-14 w-full items-center justify-center rounded-md border",
-                preview,
-              )}
-            >
-              <img
-                src="/favicon.png"
-                alt=""
-                className="h-9 w-9 rounded-sm object-contain"
-              />
-            </span>
+            <ThemeMockup schemes={previewSchemes} />
             <span className="flex items-center justify-center gap-1.5 pb-0.5">
               <Icon className="size-4" />
               {label}

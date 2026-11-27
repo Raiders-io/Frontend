@@ -13,6 +13,7 @@ import {
 } from "@/utils/router/changePage"
 import { GithubLogo } from "@/components/GithubLogo"
 import { Button } from "@/components/ui/button"
+import { ThemeMenu } from "@/components/ThemeMenu"
 
 const NAV_COLUMNS: {
   heading: string
@@ -102,17 +103,20 @@ export const FooterComponent = () => {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Raiders.io - Project Transcendence
           </p>
-          <Button
-            onClick={() =>
-              window.open("https://github.com/Raiders-io", "_blank")
-            }
-            aria-label="View Project on GitHub"
-            className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            variant="link"
-          >
-            <GithubLogo />
-            GitHub
-          </Button>
+          <div className="flex items-center gap-4">
+            <ThemeMenu />
+            <Button
+              onClick={() =>
+                window.open("https://github.com/Raiders-io", "_blank")
+              }
+              aria-label="View Project on GitHub"
+              className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              variant="link"
+            >
+              <GithubLogo />
+              GitHub
+            </Button>
+          </div>
         </div>
       </div>
     </footer>
