@@ -40,22 +40,26 @@ export const formatDate = (dateString?: string) => {
   }).format(date)
 }
 
-export const getFileIcon = (mimeType?: string, fileName?: string) => {
+export const getFileIcon = (
+  mimeType?: string,
+  fileName?: string,
+  className = "h-4 w-4",
+) => {
   const label = `${mimeType ?? ""} ${fileName?.match(/\.[^.]+$/)?.[0] ?? ""}`.toLowerCase() ?? ""
 
-  if (label.includes("image")) 
-    return <FileImageIcon className="h-4 w-4" />
-  if (label.includes("video")) 
-    return <MonitorPlay className="h-4 w-4" />
-  if (label.includes("audio")) 
-    return <AudioLines className="h-4 w-4" />
-  if (label.includes("pdf")) 
-    return <ScrollText className="h-4 w-4" />
+  if (label.includes("image"))
+    return <FileImageIcon className={className} />
+  if (label.includes("video"))
+    return <MonitorPlay className={className} />
+  if (label.includes("audio"))
+    return <AudioLines className={className} />
+  if (label.includes("pdf"))
+    return <ScrollText className={className} />
   if (label.includes("zip") || label.includes("rar") || label.includes("tar"))
-    return <FileArchiveIcon className="h-4 w-4" />
-  if (label.includes("json")) 
-    return <FileJsonIcon className="h-4 w-4" />
-  if (label.includes("text") || label.includes("plain") || label.includes("markdown")) 
-    return <FileText className="h-4 w-4" />
-  return <Type className="h-4 w-4" />
+    return <FileArchiveIcon className={className} />
+  if (label.includes("json"))
+    return <FileJsonIcon className={className} />
+  if (label.includes("text") || label.includes("plain") || label.includes("markdown"))
+    return <FileText className={className} />
+  return <Type className={className} />
 }
