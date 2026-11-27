@@ -216,7 +216,7 @@ function FilesSection() {
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="ghost" size="sm" onClick={resetToDefaults}>
             <RotateCcw />
-            Reset
+            Reset to defaults actions
           </Button>
           <Button variant="outline" size="sm" onClick={changePageFileList}>
             Open my files
