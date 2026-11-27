@@ -16,12 +16,12 @@ import {
 } from "@/components/ui/card"
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { changePageLessonView } from "@/utils/router/changePage"
+import type { CardVariant } from "@/utils/types/common"
 
-type Variant = "preview" | "default" | "small"
 
 interface LessonCardProps {
   lesson: Lesson
-  variant?: Variant
+  variant?: CardVariant
   expandThreshold?: number
   actions?: ReactNode
   className?: string
@@ -151,7 +151,7 @@ const lessonStyle = {
 }
 
 /* How many tags each variant shows (undefined = all) */
-const TAG_LIMIT: Record<Variant, number | undefined> = {
+const TAG_LIMIT: Record<CardVariant, number | undefined> = {
   default: undefined,
   small: 2,
   preview: 2,
@@ -295,9 +295,9 @@ export default function LessonCard({
     </CollapsibleTrigger>
   )
 
-  // ---------- Variant layouts ----------
+  // ---------- CardVariant layouts ----------
 
-  const headerVariant = () => {
+  const headerCardVariant = () => {
     if (isPreview) {
       /* ⑦ one flat, wrappable row spanning the whole line:
          icon | title+summary | tags | metadata | actions(right) */
@@ -356,7 +356,7 @@ export default function LessonCard({
     )
   }
 
-  const contentVariant = () => {
+  const contentCardVariant = () => {
     // Preview renders its tags inline in the row
     if (isPreview || tags.length === 0) return null
     return (
@@ -366,7 +366,7 @@ export default function LessonCard({
     )
   }
 
-  const footerVariant = () => {
+  const footerCardVariant = () => {
     // Preview keeps everything in the single row above
     if (isPreview) return null
     if (!isDefault) {
@@ -387,9 +387,9 @@ export default function LessonCard({
 
   return (
     <Card className={cn(lessonStyle.base[variant], cardSurface, className)}>
-      {headerVariant()}
-      {contentVariant()}
-      {footerVariant()}
+      {headerCardVariant()}
+      {contentCardVariant()}
+      {footerCardVariant()}
     </Card>
   )
 }
